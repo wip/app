@@ -8,4 +8,4 @@ function probotPlugin (robot) {
 	'pull_request.edited',
 	'pull_request.synchronize'
  ], handlePullRequestChange.bind(null, robot))
- }
+}
