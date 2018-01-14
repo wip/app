@@ -3,7 +3,7 @@ cache:
   directories:
     - $HOME/.npm
 node_js:
-  - 8
+  - lts/*
 before_install:
   - npm install -g greenkeeper-lockfile@1
 before_script:
@@ -18,15 +18,9 @@ branches:
     - master
     - /^greenkeeper.*$/
 
-deploy:
-  script: scripts/deploy.sh
-  provider: script
-  skip_cleanup: true
-  on:
-    branch: master
-
 jobs:
   include:
+    - script: npm run test
     - stage: release
       node_js: lts/*
       script:
