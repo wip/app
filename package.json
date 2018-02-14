@@ -35,7 +35,7 @@
     "probot": "^4.0.0"
   },
   "jest": {
-    "testRegex": "/test/unit/*.test.js$"
+    "testRegex": "/test/unit/.+\\.test\\.js$"
   },
   "devDependencies": {
     "jest": "^22.3.0",
