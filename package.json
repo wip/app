@@ -17,6 +17,9 @@
     "lint": "standard",
     "semantic-release": "semantic-release"
   },
+  "standard": {
+    "globals": [ "jest", "it", "expect", "describe" ]
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/gr2m/wip-bot.git"
