@@ -31,6 +31,9 @@
   "dependencies": {
     "probot": "^4.0.0"
   },
+  "jest": {
+    "testRegex": "/test/unit/.*Spec.js$"
+  },
   "devDependencies": {
     "jest": "^22.3.0",
     "localtunnel": "^1.8.3",
