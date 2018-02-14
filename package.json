@@ -32,6 +32,7 @@
     "probot": "^4.0.0"
   },
   "devDependencies": {
+    "jest": "^22.3.0",
     "localtunnel": "^1.8.3",
     "semantic-release": "^12.2.2",
     "standard": "^11.0.0"
