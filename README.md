@@ -8,12 +8,12 @@
 
 ## Usage
 
-- Install the app on your GitHub Repositories: [github.com/apps/wip](https://github.com/apps/wip)
-- When creating a pull request that you don’t want to be merged, simply add the
-  word "wip" or "do not merge" (not case-sensitive) somewhere in the pull request title,
-  or add a label containing "wip"
-- The WIP bot will set/update the status of the pull request depending on the
-  pull request's title or labels.
+1. Install the app on your GitHub Repositories: [github.com/apps/wip](https://github.com/apps/wip)
+2. The WIP bot sets status of the request title to pending if it finds  "wip" or "do not merge" (not case-sensitive) in
+   1. The pull request title
+   2. One of the pull request labels
+   3. One of the pull request commit messages
+3. If it doesn’t find the words anywhere, it will set status to success
 
 ## Local setup
 
@@ -28,6 +28,17 @@
 - Store the private key as `private-key.pem` in the repository’s directory
 - Start the app with `APP_ID=1234 npm start` where `1234` is your GitHub App’s ID
 - update your GitHub App’s `Webhook URL` to your localtunnel.me URL
+
+## Contribute
+
+If you’d like to contribute a bug fix or feature to `wip-bot`, please fork the repository, then clone it to your computer. Then install dependencies and run the tests 
+
+```
+npm install
+npm test
+```
+
+Before adding a feature, create an issue first to ask if it’s within the scope of the app. If possible, add tests to your pull requests.
 
 ## License
 
