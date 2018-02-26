@@ -16,6 +16,9 @@ describe('handlePullRequestChange', () => {
         },
         pullRequests: {
           getCommits: jest.fn().mockReturnValue({ data: [] })
+        },
+        issues: {
+          getIssueLabels: jest.fn().mockReturnValue({ data: [] })
         }
       }
     }
