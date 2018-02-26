@@ -29,6 +29,17 @@
 - Start the app with `APP_ID=1234 npm start` where `1234` is your GitHub App’s ID
 - update your GitHub App’s `Webhook URL` to your localtunnel.me URL
 
+## Contribute
+
+If you’d like to contribute a bug fix or feature to `wip-bot`, please fork the repository, then clone it to your computer. Then install dependencies and run the tests 
+
+```
+npm install
+npm test
+```
+
+Before adding a feature, create an issue first to ask if it’s within the scope of the app. If possible, add tests to your pull requests.
+
 ## License
 
 [Apache 2.0](LICENSE)
