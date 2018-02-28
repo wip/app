@@ -40,7 +40,7 @@
   },
   "homepage": "https://github.com/gr2m/wip-bot#readme",
   "dependencies": {
-    "probot": "^5.0.1"
+    "probot": "^6.0.0"
   },
   "jest": {
     "testRegex": "/test/unit/.+\\.test\\.js$"
