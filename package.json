@@ -58,6 +58,7 @@
     "alias": "wip-bot",
     "env": {
       "APP_ID": "@wip-bot-app-id",
+      "LOG_LEVEL": "@wip-bot-log-level",
       "NODE_ENV": "production",
       "PRIVATE_KEY": "@wip-bot-private-key",
       "WEBHOOK_SECRET": "@wip-bot-webhook-secret"
