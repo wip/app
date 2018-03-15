@@ -8,6 +8,9 @@ describe('handlePullRequestChange', () => {
         pull_request: {
           head: { sha: 'sha' },
           title: prTitle
+        },
+        repository: {
+          private: true
         }
       },
       github: {
