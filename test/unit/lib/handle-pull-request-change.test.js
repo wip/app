@@ -105,8 +105,22 @@ describe('handlePullRequestChange', () => {
     expect(context.repo).lastCalledWith(pendingStatusObject)
   })
 
-  it('creates success status if a commit message does not contain `wip` or `do not merge`', async () => {
-    const context = createMockCommitContext('my commit message')
+  it('creates pending status if a commit message begins with `fixup!`', async () => {
+    const context = createMockCommitContext('fixup! my commit message')
+    await handlePullRequestChange(context)
+
+    expect(context.repo).lastCalledWith(pendingStatusObject)
+  })
+
+  it('creates pending status if a commit message begins with `squash!`', async () => {
+    const context = createMockCommitContext('squash! my commit message')
+    await handlePullRequestChange(context)
+
+    expect(context.repo).lastCalledWith(pendingStatusObject)
+  })
+
+  it('creates success status if a commit message does not contain `wip` or `do not merge` or begin with `fixup!` or `squash!`', async () => {
+    const context = createMockCommitContext('my commit fixup! squash! message')
     await handlePullRequestChange(context)
 
     expect(context.repo).lastCalledWith(successStatusObject)
