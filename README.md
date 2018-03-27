@@ -9,7 +9,7 @@
 ## Usage
 
 1. Install the app on your GitHub Repositories: [github.com/apps/wip](https://github.com/apps/wip)
-2. The WIP bot sets status of the request title to pending if it finds  "wip" or "do not merge" (not case-sensitive) in
+2. The WIP bot sets status of the request title to pending if it finds  "wip", "work in progress" or "do not merge" (not case-sensitive) in
    1. The pull request title
    2. One of the pull request labels
    3. One of the pull request commit messages
