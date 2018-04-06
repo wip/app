@@ -25,13 +25,22 @@
   npm install
   ```
 - Create your own GitHub app: [instructions](https://probot.github.io/docs/development/#configure-a-github-app)
-- Store the private key as `private-key.pem` in the repository’s directory
-- Start the app with `APP_ID=1234 npm start` where `1234` is your GitHub App’s ID
-- update your GitHub App’s `Webhook URL` to your localtunnel.me URL
+- On your local machine, copy `.env.example` to `.env`.
+- Go to [smee.io](https://smee.io) and click **Start a new channel**. Set `WEBHOOK_PROXY_URL` in `.env` to the URL that you are redirected to.
+- [Create a new GitHub App](https://github.com/settings/apps/new) with:
+  - **Webhook URL**: Use your `WEBHOOK_PROXY_URL` from the previous step.
+  - **Webhook Secret**: `development`.
+  - **Permissions & events**
+    - Commit statuses **(read & write)**
+    - Pull Requests **(read only)**
+    - Subscribe to events **Pull request**
+- Download the private key and move it to your project's directory. It will get picked up by Probot automatically.
+- Edit `.env` and set `APP_ID` to the ID of the app you just created. The App ID can be found in your app settings page here
+- Run `$ npm start` to start the server/
 
 ## Contribute
 
-If you’d like to contribute a bug fix or feature to `wip-bot`, please fork the repository, then clone it to your computer. Then install dependencies and run the tests 
+If you’d like to contribute a bug fix or feature to `wip-bot`, please fork the repository, then clone it to your computer. Then install dependencies and run the tests
 
 ```
 npm install
