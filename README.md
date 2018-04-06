@@ -33,7 +33,7 @@
   - **Permissions & events**
     - Commit statuses **(read & write)**
     - Pull Requests **(read only)**
-    - Pull Requests **(read only)**
+    - Subscribe to events **Pull request**
 - Download the private key and move it to your project's directory. It will get picked up by Probot automatically.
 - Edit `.env` and set `APP_ID` to the ID of the app you just created. The App ID can be found in your app settings page here
 - Run `$ npm start` to start the server/
