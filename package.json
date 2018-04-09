@@ -52,7 +52,8 @@
     "standard": "^11.0.0"
   },
   "engines": {
-    "node": "8"
+    "node": ">=8.3.0",
+    "npm": ">=5.3.0"
   },
   "now": {
     "alias": "wip-bot",
