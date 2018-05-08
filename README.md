@@ -1,4 +1,4 @@
-<p align=center><img src="assets/wip-logo.png" alt="" width="200" height="200"></p>
+<p align=center><a href="https://github.com/gr2m/wip-bot/tree/master/assets"><img src="assets/wip-logo.png" alt="" width="200" height="200"></a></p>
 
 <h1 align="center">wip-bot</h1>
 
