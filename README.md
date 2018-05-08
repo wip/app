@@ -57,6 +57,6 @@ Before adding a feature, create an issue first to ask if it’s within the scope
 
 The logo was created by [Micah Ilbery](https://github.com/micahilbery).
 
-## License
+## Legal
 
-[Apache 2.0](LICENSE)
+License: [Apache 2.0](LICENSE). [Privacy Policy](PRIVACY_POLICY.md)
