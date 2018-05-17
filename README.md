@@ -1,14 +1,12 @@
 <p align=center><a href="https://github.com/gr2m/wip-bot/tree/master/assets"><img src="assets/wip-logo.png" alt="" width="200" height="200"></a></p>
 
-<h1 align="center">wip-bot</h1>
+<h1 align="center">DO NOT MERGE – as a service.</h1>
 
 <p align="center">
   <a href="https://stats.uptimerobot.com/Dq46zf6PY" rel="nofollow"><img src="https://img.shields.io/uptimerobot/status/m779429441-a6394a1f5546b634ac6b52f8.svg" alt="Uptime Robot status"></a>
   <a href="https://travis-ci.org/gr2m/wip-bot" rel="nofollow"><img alt="Build Status" src="https://travis-ci.org/gr2m/wip-bot.svg?branch=master"></a>
   <a href="https://greenkeeper.io/" rel="nofollow"><img src="https://badges.greenkeeper.io/gr2m/wip-bot.svg" alt="Greenkeeper badge"></a>
 </p>
-
-<p align=center>DO NOT MERGE – as a service.</p>
 
 ![WIP bot screencast](assets/wip.gif)
 
