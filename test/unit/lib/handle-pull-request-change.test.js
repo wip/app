@@ -112,14 +112,14 @@ describe('handlePullRequestChange', () => {
     expect(context.repo).lastCalledWith(successStatusObject)
   })
 
-  it('creates pending status if a label contains `wip`', async () => {
+  it.skip('(blocked by #76) creates pending status if a label contains `wip`', async () => {
     const context = createMockLabelContext('WIP')
     await handlePullRequestChange(context)
 
     expect(context.repo).lastCalledWith(pendingStatusObject)
   })
 
-  it('creates pending status if a label contains `do not merge`', async () => {
+  it.skip('(blocked by #76) creates pending status if a label contains `do not merge`', async () => {
     const context = createMockLabelContext('do not merge')
     await handlePullRequestChange(context)
 
