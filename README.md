@@ -24,8 +24,8 @@
 - Setup repository
 
   ```
-  git clone git@github.com:wip/app.git
-  cd wip-bot
+  git clone git@github.com:wip/app.git wip-app
+  cd wip-app
   npm install
   ```
 - Create your own GitHub app: [instructions](https://probot.github.io/docs/development/#configure-a-github-app)
@@ -44,7 +44,7 @@
 
 ## Contribute
 
-If you’d like to contribute a bug fix or feature to `wip-bot`, please fork the repository, then clone it to your computer. Then install dependencies and run the tests
+If you’d like to contribute a bug fix or feature to the `wip` app, please fork the repository, then clone it to your computer. Then install dependencies and run the tests
 
 ```
 npm install
