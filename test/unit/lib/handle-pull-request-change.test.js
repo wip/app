@@ -1,6 +1,7 @@
 const handlePullRequestChange = require('../../../lib/handle-pull-request-change')
 
 describe('handlePullRequestChange', () => {
+  console.log = jest.fn()
   const createMockContext = prTitle => {
     return {
       repo: jest.fn(),
@@ -8,10 +9,15 @@ describe('handlePullRequestChange', () => {
         pull_request: {
           head: { sha: 'sha' },
           title: prTitle,
-          labels: []
+          labels: [],
+          number: 123
         },
         repository: {
-          private: true
+          private: false,
+          full_name: 'owner/repo',
+          owner: {
+            login: 'owner'
+          }
         }
       },
       github: {
@@ -29,7 +35,7 @@ describe('handlePullRequestChange', () => {
   }
 
   const createMockCommitContext = commitMessage => {
-    const context = createMockContext('Example PR title')
+    const context = createMockContext('Default pull request title')
 
     context.github.pullRequests.getCommits = jest.fn().mockReturnValue({
       data: [{ commit: { message: commitMessage } }]
@@ -39,7 +45,7 @@ describe('handlePullRequestChange', () => {
   }
 
   const createMockLabelContext = labelName => {
-    const context = createMockContext('Example PR title')
+    const context = createMockContext('Default pull request title')
 
     context.payload.pull_request.labels = [{ name: labelName }]
 
@@ -63,38 +69,48 @@ describe('handlePullRequestChange', () => {
   }
 
   it('creates pending status if PR title contains `wip`', async () => {
-    const context = createMockContext('[wip] foo bar commit message')
+    const context = createMockContext('[wip] Pull request title')
     await handlePullRequestChange(context)
 
     expect(context.repo).lastCalledWith(pendingStatusObject)
+    expect(console.log).lastCalledWith('owner/repo#123 "[wip] Pull request title" — pending')
   })
-
   it('creates pending status if PR title contains `WIP`', async () => {
-    const context = createMockContext('foo WIP bar commit message')
+    const context = createMockContext('[WIP] Pull request title')
     await handlePullRequestChange(context)
 
     expect(context.repo).lastCalledWith(pendingStatusObject)
+    expect(console.log).lastCalledWith('owner/repo#123 "[WIP] Pull request title" — pending')
   })
-
   it('creates pending status if PR title contains `do not merge` case insensitive', async () => {
-    const context = createMockContext('foo dO NoT mERGe bar commit message')
+    const context = createMockContext('foo dO NoT mERGe bar')
     await handlePullRequestChange(context)
 
     expect(context.repo).lastCalledWith(pendingStatusObject)
+    expect(console.log).lastCalledWith('owner/repo#123 "foo dO NoT mERGe bar" — pending')
+  })
+  it('creates success status if PR title contains `work in progress`', async () => {
+    const context = createMockContext('Pull request title – work in progress')
+    await handlePullRequestChange(context)
+
+    expect(context.repo).lastCalledWith(pendingStatusObject)
+    expect(console.log).lastCalledWith('owner/repo#123 "Pull request title – work in progress" — pending')
   })
 
   it('creates success status if PR title does NOT contain `wip`', async () => {
-    const context = createMockContext('[xxx] foo bar commit message')
+    const context = createMockContext('[xxx] Pull request title')
     await handlePullRequestChange(context)
 
     expect(context.repo).lastCalledWith(successStatusObject)
+    expect(console.log).lastCalledWith('owner/repo#123 "[xxx] Pull request title" — success')
   })
 
   it('creates pending status if a commit message contains `wip`', async () => {
-    const context = createMockCommitContext('[wip] foo bar commit message')
+    const context = createMockCommitContext('[wip] commit message')
     await handlePullRequestChange(context)
 
     expect(context.repo).lastCalledWith(pendingStatusObject)
+    expect(console.log).lastCalledWith('owner/repo#123 "Default pull request title" — pending')
   })
 
   it('creates pending status if a commit message contains `do not merge`', async () => {
@@ -102,6 +118,7 @@ describe('handlePullRequestChange', () => {
     await handlePullRequestChange(context)
 
     expect(context.repo).lastCalledWith(pendingStatusObject)
+    expect(console.log).lastCalledWith('owner/repo#123 "Default pull request title" — pending')
   })
 
   it('creates success status if a commit message does not contain `wip` or `do not merge`', async () => {
@@ -109,6 +126,7 @@ describe('handlePullRequestChange', () => {
     await handlePullRequestChange(context)
 
     expect(context.repo).lastCalledWith(successStatusObject)
+    expect(console.log).lastCalledWith('owner/repo#123 "Default pull request title" — success')
   })
 
   it('creates pending status if a label contains `wip`', async () => {
@@ -116,6 +134,7 @@ describe('handlePullRequestChange', () => {
     await handlePullRequestChange(context)
 
     expect(context.repo).lastCalledWith(pendingStatusObject)
+    expect(console.log).lastCalledWith('owner/repo#123 "Default pull request title" — pending')
   })
 
   it('creates pending status if a label contains `do not merge`', async () => {
@@ -123,6 +142,7 @@ describe('handlePullRequestChange', () => {
     await handlePullRequestChange(context)
 
     expect(context.repo).lastCalledWith(pendingStatusObject)
+    expect(console.log).lastCalledWith('owner/repo#123 "Default pull request title" — pending')
   })
 
   it('creates success status if a label does not contain `wip` or `do not merge`', async () => {
@@ -130,5 +150,15 @@ describe('handlePullRequestChange', () => {
     await handlePullRequestChange(context)
 
     expect(context.repo).lastCalledWith(successStatusObject)
+    expect(console.log).lastCalledWith('owner/repo#123 "Default pull request title" — success')
+  })
+
+  it('does not log pull request title or repository name when private', async () => {
+    const context = createMockContext('[wip] Pull request title')
+    context.payload.repository.private = true
+    await handlePullRequestChange(context)
+
+    expect(context.repo).lastCalledWith(pendingStatusObject)
+    expect(console.log).lastCalledWith('owner/<private>#123 — pending')
   })
 })
