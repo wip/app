@@ -7,7 +7,8 @@ describe('handlePullRequestChange', () => {
       payload: {
         pull_request: {
           head: { sha: 'sha' },
-          title: prTitle
+          title: prTitle,
+          labels: []
         },
         repository: {
           private: true
@@ -40,9 +41,7 @@ describe('handlePullRequestChange', () => {
   const createMockLabelContext = labelName => {
     const context = createMockContext('Example PR title')
 
-    context.github.issues.getIssueLabels = jest.fn().mockReturnValue({
-      data: [{ name: labelName }]
-    })
+    context.payload.pull_request.labels = [{ name: labelName }]
 
     return context
   }
@@ -112,14 +111,14 @@ describe('handlePullRequestChange', () => {
     expect(context.repo).lastCalledWith(successStatusObject)
   })
 
-  it.skip('(blocked by #76) creates pending status if a label contains `wip`', async () => {
+  it('creates pending status if a label contains `wip`', async () => {
     const context = createMockLabelContext('WIP')
     await handlePullRequestChange(context)
 
     expect(context.repo).lastCalledWith(pendingStatusObject)
   })
 
-  it.skip('(blocked by #76) creates pending status if a label contains `do not merge`', async () => {
+  it('creates pending status if a label contains `do not merge`', async () => {
     const context = createMockLabelContext('do not merge')
     await handlePullRequestChange(context)
 
