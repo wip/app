@@ -1,5 +1,5 @@
 {
-  "name": "wip-bot",
+  "name": "wip",
   "version": "0.0.0-development",
   "description": "",
   "main": "index.js",
@@ -14,8 +14,8 @@
     "test": "jest",
     "test:watch": "jest . --watch",
     "pretest": "npm run lint",
-    "lint": "standard",
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release",
+    "lint": "standard"
   },
   "standard": {
     "globals": [
@@ -47,7 +47,6 @@
   },
   "devDependencies": {
     "jest": "^22.3.0",
-    "localtunnel": "^1.8.3",
     "semantic-release": "^15.0.0",
     "standard": "^11.0.0"
   },
@@ -55,14 +54,20 @@
     "node": ">=8.3.0",
     "npm": ">=5.3.0"
   },
+
+  "release": {
+    "prepare": [],
+    "verifyConditions": ["@semantic-release/github"],
+    "publish": ["@semantic-release/github"]
+  },
   "now": {
-    "alias": "wip-bot",
+    "alias": "wip",
     "env": {
-      "APP_ID": "@wip-bot-app-id",
-      "LOG_LEVEL": "@wip-bot-log-level",
+      "APP_ID": "@app-id",
+      "LOG_LEVEL": "@log-level",
       "NODE_ENV": "production",
-      "PRIVATE_KEY": "@wip-bot-private-key",
-      "WEBHOOK_SECRET": "@wip-bot-webhook-secret"
+      "PRIVATE_KEY": "@private-key",
+      "WEBHOOK_SECRET": "@webhook-secret"
     }
   }
 }
