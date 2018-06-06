@@ -19,6 +19,9 @@
    3. One of the pull request commit messages
 3. If it doesn’t find the words anywhere, it will set status to success
 
+If you use the WIP App **we strongly recommend** to [subscribe to our updates](https://github.com/wip/app/issues/89).
+If you like it, please star this repository :)
+
 ## Local setup
 
 - Setup repository
