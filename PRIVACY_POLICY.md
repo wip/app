@@ -36,3 +36,7 @@ I may update this privacy policy from time to time. Thus, you are advised to rev
 ## Contact me
 
 If you have any questions or suggestions about my Privacy Policy, do not hesitate to contact me at `wip@martynus.net`.
+
+## License
+
+This document may be reused under a [Creative Commons Attribution-ShareAlike License](https://creativecommons.org/licenses/by-sa/4.0/).
