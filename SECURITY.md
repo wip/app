@@ -1,21 +1,24 @@
 # Security Policy
 
-1. Reporting security problems to WIP
-2. Security Point of Contact
-3. Incident Response Process
-4. Vulnerability Management Plan
-5. License
+1. [Reporting security problems to WIP](#reporting)
+2. [Security Point of Contact](#contact)
+3. [Incident Response Process](#process)
+4. [Vulnerability Management Plan](#vulnerability-management)
+5. [License](#credit)
 
+<a name="reporting"></a>
 ## Reporting security problems to WIP
 
 **DO NOT CREATE AN ISSUE** to report a security problems. Instead please
 send an email to wip.incident-response@martynus.net
 
+<a name="contact"></a>
 ## Security Point of Contact
 
 The security point of contact is Gregor Martynus. Gregor responds to security
 incident reports as fast as possible, but always within one business day.
 
+<a name="process"></a>
 ## Incident Response
 
 In case an incident is discovered or reported, I will follow the following
@@ -44,10 +47,12 @@ Once the incident is confirmed to be resolved, I will summarize the lessons
 learned from the incident and create a list of actions I will take to prevent
 it from happening again.
 
+<a name="vulnerability-management"></a>
 ## Vulnerability Management Plans
 
 TBD
 
+<a name="credit"></a>
 ## Credit
 
 This Security Policy is based on [npm’s Security Policy](https://www.npmjs.com/policies/security).
