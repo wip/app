@@ -59,4 +59,4 @@ The logo was created by [Micah Ilbery](https://github.com/micahilbery).
 
 ## Legal
 
-License: [Apache 2.0](LICENSE). [Privacy Policy](PRIVACY_POLICY.md)
+License: [Apache 2.0](LICENSE). [Privacy Policy](https://github.com/wip/policies/blob/master/PRIVACY.md). [Security Policy](https://github.com/wip/policies/blob/master/SECURITY.md)
