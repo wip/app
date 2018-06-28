@@ -40,7 +40,7 @@
   },
   "homepage": "https://github.com/wip/app#readme",
   "dependencies": {
-    "probot": "^6.0.0"
+    "probot": "^7.0.0"
   },
   "jest": {
     "testRegex": "/test/unit/.+\\.test\\.js$"
