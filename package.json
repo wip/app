@@ -54,11 +54,14 @@
     "node": ">=8.3.0",
     "npm": ">=5.3.0"
   },
-
   "release": {
     "prepare": [],
-    "verifyConditions": ["@semantic-release/github"],
-    "publish": ["@semantic-release/github"]
+    "verifyConditions": [
+      "@semantic-release/github"
+    ],
+    "publish": [
+      "@semantic-release/github"
+    ]
   },
   "now": {
     "alias": "wip",
