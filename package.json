@@ -40,6 +40,7 @@
   },
   "homepage": "https://github.com/wip/app#readme",
   "dependencies": {
+    "logdna-bunyan": "^1.0.1",
     "probot": "^7.0.0"
   },
   "jest": {
@@ -71,7 +72,9 @@
       "LOG_LEVEL": "@log-level",
       "NODE_ENV": "production",
       "PRIVATE_KEY": "@private-key",
-      "WEBHOOK_SECRET": "@webhook-secret"
+      "WEBHOOK_SECRET": "@webhook-secret",
+      "LOGDNA_API_KEY": "@logdna-api-key",
+      "SENTRY_DSN": "@sentry-dsn"
     }
   }
 }
