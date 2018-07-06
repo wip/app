@@ -12,6 +12,9 @@ describe('handlePullRequestChange', () => {
         ...logMock,
         child: () => logMock
       },
+      event: {
+        event: 'pull_request'
+      },
       payload: {
         pull_request: {
           head: { sha: 'sha' },
