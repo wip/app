@@ -44,7 +44,7 @@
     "probot": "^7.0.0"
   },
   "jest": {
-    "testRegex": "/test/unit/.+\\.test\\.js$"
+    "testURL": "http://localhost/"
   },
   "devDependencies": {
     "jest": "^22.3.0",
@@ -55,15 +55,6 @@
   "engines": {
     "node": ">=8.3.0",
     "npm": ">=5.3.0"
-  },
-  "release": {
-    "prepare": [],
-    "verifyConditions": [
-      "@semantic-release/github"
-    ],
-    "publish": [
-      "@semantic-release/github"
-    ]
   },
   "now": {
     "alias": "wip",
@@ -76,5 +67,14 @@
       "LOGDNA_API_KEY": "@logdna-api-key",
       "SENTRY_DSN": "@sentry-dsn"
     }
+  },
+  "release": {
+    "prepare": [],
+    "verifyConditions": [
+      "@semantic-release/github"
+    ],
+    "publish": [
+      "@semantic-release/github"
+    ]
   }
 }
