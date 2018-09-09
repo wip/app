@@ -32,10 +32,10 @@ describe('handlePullRequestChange', () => {
       github: {
         repos: {
           createStatus: jest.fn(),
-          getCombinedStatusForRef: jest.fn().mockReturnValue({data: {statuses: []}})
+          getCombinedStatusForRef: jest.fn().mockReturnValue({ data: { statuses: [] } })
         },
         pullRequests: {
-          getCommits: jest.fn().mockReturnValue({data: []})
+          getCommits: jest.fn().mockReturnValue({ data: [] })
         }
       }
     }
