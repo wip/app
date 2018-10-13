@@ -5,6 +5,7 @@
 <p align="center">
   <a href="https://stats.uptimerobot.com/Dq46zf6PY" rel="nofollow"><img src="https://img.shields.io/uptimerobot/status/m779429441-a6394a1f5546b634ac6b52f8.svg" alt="Uptime Robot status"></a>
   <a href="https://travis-ci.com/wip/app" rel="nofollow"><img alt="Build Status" src="https://travis-ci.com/wip/app.svg?branch=master"></a>
+  <a href="https://coveralls.io/github/wip/app?branch=master" rel="nofollow"><img alt="Coverage Status" src="https://coveralls.io/repos/github/wip/app/badge.svg?branch=master"></a>
   <a href="https://greenkeeper.io/" rel="nofollow"><img src="https://badges.greenkeeper.io/wip/app.svg" alt="Greenkeeper badge"></a>
 </p>
 
@@ -12,54 +13,70 @@
 
 ## Usage
 
-1. Install the app on your GitHub Repositories: [github.com/apps/wip](https://github.com/apps/wip)
-2. The WIP bot sets status of the request title to pending if it finds  "wip", "work in progress" or "do not merge" (not case-sensitive) in
-   1. The pull request title
-   2. One of the pull request labels
-   3. One of the pull request commit messages
-3. If it doesn’t find the words anywhere, it will set status to success
+By default, WIP is setting a pull request status to pending if it finds one of the following terms in the pull request titles
 
-If you use the WIP App **we strongly recommend** to [subscribe to our updates](https://github.com/wip/app/issues/89).
-If you like it, please star this repository :)
+- `wip`
+- `work in progress`
+- `🚧`
 
-## Local setup
+The pro plan allows for [configuration](#configuration) of both the terms and the locations that the app is looking for the terms. The pending status can be overwritten by adding `@wip ready for review` to the pull request body.
 
-- Setup repository
+## Configuration
 
-  ```
-  git clone git@github.com:wip/app.git wip-app
-  cd wip-app
-  npm install
-  ```
-- Create your own GitHub app: [instructions](https://probot.github.io/docs/development/#configure-a-github-app)
-- On your local machine, copy `.env.example` to `.env`.
-- Go to [smee.io](https://smee.io) and click **Start a new channel**. Set `WEBHOOK_PROXY_URL` in `.env` to the URL that you are redirected to.
-- [Create a new GitHub App](https://github.com/settings/apps/new) with:
-  - **Webhook URL**: Use your `WEBHOOK_PROXY_URL` from the previous step.
-  - **Webhook Secret**: `development`.
-  - **Permissions & events**
-    - Commit statuses **(read & write)**
-    - Pull Requests **(read only)**
-    - Subscribe to events **Pull request**
-- Download the private key and move it to your project's directory. It will get picked up by Probot automatically.
-- Edit `.env` and set `APP_ID` to the ID of the app you just created. The App ID can be found in your app settings page here
-- Run `$ npm start` to start the server/
+Repositories belonging to an account or organization with a Pro plan subscription can be configured by creating a `.github/wip.yml` file. Two options can be configured
 
-## Contribute
+1. **locations**: any of `title` (pull request title), `label_name` and `commit_subject` (1st line of the pull request’s commit messages). Default: `title`
+2. **terms**: list of strings to look for in the defined locations. All terms are case-insensitive. Default: `wip`, `work in progress` and `🚧`
 
-If you’d like to contribute a bug fix or feature to the `wip` app, please fork the repository, then clone it to your computer. Then install dependencies and run the tests
+Example:
 
-```
-npm install
-npm test
+```yaml
+locations:
+- title
+- label_name
+- commit_subject
+terms:
+- do not merge
+- ⛔
 ```
 
-Before adding a feature, create an issue first to ask if it’s within the scope of the app. If possible, add tests to your pull requests.
+The above configuration makes WIP look for "do not merge" and "⛔" in the pull request title, all assigned label names and all commit subjects.
+
+You can also configure different terms for different locations:
+
+```yaml
+- terms: 🚧
+  locations:
+  - title
+  - label_name
+- terms:
+  - fixup!
+  - squash!
+  locations: commit_subject
+```
+
+The above configuration looks first for `🚧` in the pull request title and assigned label names. After that it looks for `fixup!` and `squash!` in the commit subjects.
+
+## About WIP
+
+Besides being a hopefully useful GitHub application, the WIP app is also meant as a reference implementation. I try to keep the complexity low and the code easy to follow. If you are thinking of creating your own GitHub app, the WIP might be a good starting point for you.
+
+Besides the code, I also made our [policies](https://github.com/wip/policies) good templates for your app.
+
+All revenue from the "pro" plan will be donated to [Rails Girls Summer of Code](https://railsgirlssummerofcode.org/). I only added the paid plan to make the WIP a real-life GitHub App example. If you cannot pay but depend on the pro features you can add your account with an explanation to the [`pro-plan-for-free.js` file]([`pro-plan-for-free.js).
+
+If you have any questions, please don’t hesitate to create an issue.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## Credits
+
+The WIP app was created by [Gregor Martynus](https://github.com/gr2m). You can follow him on twitter at [@gr2m](https://twitter.com/gr2m).
 
 The logo was created by [Micah Ilbery](https://github.com/micahilbery).
 
 ## Legal
 
-License: [Apache 2.0](LICENSE). [Privacy Policy](https://github.com/wip/policies/blob/master/PRIVACY.md). [Security Policy](https://github.com/wip/policies/blob/master/SECURITY.md)
+License: [Apache 2.0](LICENSE). [Privacy Policy](https://github.com/wip/policies/blob/master/PRIVACY.md). [Security Policy](https://github.com/wip/policies/blob/master/SECURITY.md). [Code of Conduct](CODE_OF_CONDUCT.md)
