@@ -10,19 +10,10 @@
   "scripts": {
     "start": "probot run ./index.js",
     "now-start": "PRIVATE_KEY=$(echo $PRIVATE_KEY | base64 -d) npm start",
-    "test": "jest",
-    "test:watch": "jest . --watch",
-    "pretest": "npm run lint",
+    "test": "tap --100 --coverage test/**/*-test.js",
+    "posttest": "npm run lint",
     "semantic-release": "semantic-release",
     "lint": "standard"
-  },
-  "standard": {
-    "globals": [
-      "jest",
-      "it",
-      "expect",
-      "describe"
-    ]
   },
   "repository": {
     "type": "git",
@@ -46,10 +37,15 @@
     "testURL": "http://localhost/"
   },
   "devDependencies": {
-    "jest": "^22.3.0",
+    "coveralls": "^3.0.1",
+    "lodash.clonedeep": "^4.5.0",
+    "lolex": "^2.7.0",
+    "proxyquire": "^2.0.1",
     "semantic-release": "^15.0.0",
+    "simple-mock": "^0.8.0",
     "smee-client": "^1.0.2",
-    "standard": "^12.0.1"
+    "standard": "^12.0.1",
+    "tap": "^12.0.1"
   },
   "engines": {
     "node": ">=8.3.0",
