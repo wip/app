@@ -5,6 +5,7 @@
   "main": "index.js",
   "files": [
     "index.js",
+    "pro-plan-for-free.js",
     "lib"
   ],
   "scripts": {
