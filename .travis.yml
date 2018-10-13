@@ -23,7 +23,3 @@ jobs:
       script: npm run test
     - stage: release
       script: npm run semantic-release
-      deploy:
-        script: scripts/deploy.sh
-        provider: script
-        skip_cleanup: true
