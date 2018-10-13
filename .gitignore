@@ -1,4 +1,6 @@
 .npmrc
+.nyc_output
+coverage
 node_modules
 package-lock.json
 private-key.pem
