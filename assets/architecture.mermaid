@@ -1,0 +1,29 @@
+graph TB
+  REQUEST(Webhook request) -- received by Probot --> IS_VALID{is valid?}
+
+  subgraph Probot
+    IS_VALID -- yes --> GET_AUTHENTICATION[authenticate]
+    GET_AUTHENTICATION --> EVENT_HANDLER(Event handler)
+
+    subgraph WIP app
+      EVENT_HANDLER --> IS_PRO_PLAN{pro plan?}
+      IS_PRO_PLAN -- no --> CHECK_TITLE[Check PR title]
+      IS_PRO_PLAN -- yes --> GET_CONFIG[Get configuration]
+      GET_CONFIG --> GET_CUSTOM_STATUS[Get custom status]
+      GET_CUSTOM_STATUS --> GET_CURRENT_STATUS[Get current status]
+      CHECK_TITLE --> GET_CURRENT_STATUS
+      GET_CURRENT_STATUS -->HAS_STATUS_CHANGE{status changed?}
+      HAS_STATUS_CHANGE -- yes --> US[Update status]
+    end
+  end
+
+  subgraph GitHub.com
+    PR(Pull Request) -- change triggers --> REQUEST
+  end
+
+  IS_VALID -- no --> DONE
+  HAS_STATUS_CHANGE -- no --> DONE
+  US --> PR
+  DONE["¯\_(ツ)_/¯"]
+
+style DONE fill:#FFF,stroke-width:0
