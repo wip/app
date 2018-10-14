@@ -63,7 +63,7 @@ Besides being a hopefully useful GitHub application, the WIP app is also meant a
 
 Besides the code, I also made our [policies](https://github.com/wip/policies) good templates for your app.
 
-All revenue from the "pro" plan will be donated to [Rails Girls Summer of Code](https://railsgirlssummerofcode.org/). I only added the paid plan to make the WIP a real-life GitHub App example. If you cannot pay but depend on the pro features you can add your account with an explanation to the [`pro-plan-for-free.js` file]([`pro-plan-for-free.js).
+All revenue from the "pro" plan will be donated to [Rails Girls Summer of Code](https://railsgirlssummerofcode.org/). I only added the paid plan to make the WIP a real-life GitHub App example. If you cannot pay but depend on the pro features you can add your account with an explanation to the [`pro-plan-for-free.js` file](pro-plan-for-free.js).
 
 If you have any questions, please don’t hesitate to create an issue.
 
