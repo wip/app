@@ -3,6 +3,7 @@ module.exports = wip
 const sendLogs = require('./lib/logs/send')
 const handlePullRequestChange = require('./lib/handle-pull-request-change')
 const handleRequestedAction = require('./lib/handle-requested-action')
+const handleMarketplacePurchase = require('./lib/handle-marketplace-purchase')
 
 function wip (app) {
   // listen to all relevant pull request event actions
@@ -16,6 +17,9 @@ function wip (app) {
 
   // listen to an overwrite request action from a check run
   app.on('check_run.requested_action', handleRequestedAction.bind(null, app))
+
+  // listen to marketplace events
+  app.on('marketplace_purchase', handleMarketplacePurchase.bind(null, app))
 
   sendLogs(app)
 }
