@@ -17,9 +17,11 @@ By default, WIP is setting a pull request status to pending if it finds one of t
 
 - `wip`
 - `work in progress`
-- `🚧`
+- :construction: 
 
 The pro plan allows for [configuration](#configuration) of both the terms and the locations that the app is looking for the terms. The pending status can be overwritten by adding `@wip ready for review` to the pull request body.
+
+🤖📯If you use the WIP app we strongly recommend to [subscribe to the updates](https://github.com/wip/app/issues/89)
 
 ## Configuration
 
@@ -55,7 +57,7 @@ You can also configure different terms for different locations:
   locations: commit_subject
 ```
 
-The above configuration looks first for `🚧` in the pull request title and assigned label names. After that it looks for `fixup!` and `squash!` in the commit subjects.
+The above configuration looks first for :construction: in the pull request title and assigned label names. After that it looks for `fixup!` and `squash!` in the commit subjects.
 
 ## About WIP
 
