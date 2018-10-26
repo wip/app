@@ -10,6 +10,7 @@
   "env": {
     "APP_ID": "@app-id",
     "APP_NAME": "WIP",
+    "DISABLE_STATS": "true",
     "LOG_LEVEL": "@log-level",
     "LOGDNA_API_KEY": "@logdna-api-key",
     "NODE_ENV": "production",
