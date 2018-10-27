@@ -293,6 +293,17 @@ test('request error (without code being parsed, see octokit/rest.js#684)', async
   t.end()
 })
 
+test('Create check error', async function (t) {
+  this.githubMock.checks.create = simple.mock().rejectWith(SERVER_ERROR)
+  this.logMock.error = simple.mock()
+
+  await this.app.receive(require('./events/new-pull-request-with-test-title.json'))
+
+  t.same(this.logMock.error.lastCall.arg.code, 500)
+
+  t.end()
+})
+
 test('custom APP_NAME', async function (t) {
   simple.mock(process.env, 'APP_NAME', 'WIP (local-dev)')
   await this.app.receive(require('./events/new-pull-request-with-test-title.json'))
