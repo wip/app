@@ -24,3 +24,7 @@ jobs:
       after_success: npm run coverage:ci
     - stage: release
       script: npm run semantic-release
+      deploy:
+        script: scripts/deploy.sh
+        provider: script
+        skip_cleanup: true
