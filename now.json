@@ -1,0 +1,21 @@
+{
+  "name": "wip",
+  "alias": "wip",
+  "scale": {
+    "all": {
+      "min": 1,
+      "max": 2
+    }
+  },
+  "env": {
+    "APP_ID": "@app-id",
+    "APP_NAME": "WIP",
+    "DISABLE_STATS": "true",
+    "LOG_LEVEL": "@log-level",
+    "LOGDNA_API_KEY": "@logdna-api-key",
+    "NODE_ENV": "production",
+    "PRIVATE_KEY": "@private-key",
+    "SENTRY_DSN": "@sentry-dsn",
+    "WEBHOOK_SECRET": "@webhook-secret"
+  }
+}
