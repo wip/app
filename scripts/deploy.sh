@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 now="npx now --debug --token=$NOW_TOKEN"
 
