@@ -10,5 +10,5 @@ $now rm --safe --yes wip
 echo "$ now --no-verify"
 $now --no-verify
 
-echo "$ now alias"
-$now alias
+echo "$ now alias --no-verify"
+$now alias --no-verify
