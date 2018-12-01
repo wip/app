@@ -5,7 +5,6 @@
 // your user or organization account with a comment explanation.
 
 module.exports = [
-  'gr2m', // 2018-10-11: It me! I made WIP and added my account here for testing
   'resistbot', // 2018-10-23: Volunteer run org, helping people engage in their democracy
   'itspugle' // 2018-10-24: Student creating tools to better enable volunteer groups
 ]
