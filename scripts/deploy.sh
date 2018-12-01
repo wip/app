@@ -8,7 +8,7 @@ $now rm --safe --yes wip
 
 # https://github.com/zeit/now-cli/blob/master/errors/verification-timeout.md
 echo "$ now --no-verify"
-$now
+$now --no-verify
 
 echo "$ now alias"
 $now alias
