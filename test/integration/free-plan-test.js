@@ -83,7 +83,6 @@ test('new pull request with "Test" title', async function (t) {
     action: 'opened',
     wip: false,
     change: true,
-    override: null,
     location: null,
     match: null
   })

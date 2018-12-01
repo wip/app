@@ -94,7 +94,8 @@ test('new pull request with "Test" title', async function (t) {
     change: true,
     override: null,
     location: null,
-    match: null
+    match: null,
+    hasConfig: false
   })
 
   t.end()
@@ -264,7 +265,8 @@ test('custom term: 🚧', async function (t) {
     change: true,
     override: null,
     location: 'title',
-    match: '🚧'
+    match: '🚧',
+    hasConfig: true
   })
 
   t.end()
