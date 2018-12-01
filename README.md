@@ -15,7 +15,7 @@ By default, WIP is setting a pull request status to pending if it finds one of t
 
 - wip
 - work in progress
-- :construction: 
+- :construction:
 
 The pro plan allows for [configuration](#configuration) of both the terms and the locations that the app is looking for the terms. The pending status can be overwritten by adding `@wip ready for review` to the pull request body.
 
@@ -23,7 +23,12 @@ The pro plan allows for [configuration](#configuration) of both the terms and th
 
 ## Configuration
 
-Repositories belonging to an account or organization with a Pro plan subscription can be configured by creating a `.github/wip.yml` file. Two options can be configured
+Repositories belonging to an account or organization with a Pro plan subscription can be configured by creating a `.github/wip.yml` file:
+
+1. In the repository you want the configuration to be applied in or
+2. In a repository with the name `.github` to apply the configuration to all repositories.
+
+Two options can be configured
 
 1. **locations**: any of `title` (pull request title), `label_name` and `commit_subject` (1st line of the pull request’s commit messages). Default: `title`
 2. **terms**: list of strings to look for in the defined locations. All terms are case-insensitive. Default: "wip", "work in progress" and ":construction:"
