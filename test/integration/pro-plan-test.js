@@ -76,7 +76,7 @@ test('new pull request with "Test" title', async function (t) {
   t.is(createCheckParams.conclusion, 'success')
   t.is(createCheckParams.output.title, 'Ready for review')
   t.match(createCheckParams.output.summary, /No match found based on configuration/)
-  t.match(createCheckParams.output.text, /`.github\/wip.yml` does not exist, the default configuration is applied/)
+  t.match(createCheckParams.output.text, /the default configuration is applied/)
   t.deepEqual(createCheckParams.actions, [])
 
   // check resulting logs
@@ -242,7 +242,7 @@ test('custom term: 🚧', async function (t) {
   t.is(createCheckParams.output.title, 'Work in progress')
   t.match(createCheckParams.output.summary, /The title "🚧 Test" contains "🚧"/)
   t.match(createCheckParams.output.summary, /You can override the status by adding "@wip ready for review"/)
-  t.match(createCheckParams.output.text, /terms: 🚧/)
+  t.match(createCheckParams.output.text, /<td>🚧<\/td>/)
   t.deepEqual(createCheckParams.actions, [{
     description: 'override status to "success"',
     identifier: 'override:1',
@@ -285,7 +285,7 @@ test('custom location: label_name', async function (t) {
   t.is(createCheckParams.status, 'in_progress')
   t.match(createCheckParams.output.summary, /The label "WIP" contains "WIP"/)
   t.match(createCheckParams.output.summary, /You can override the status by adding "@wip ready for review"/)
-  t.match(createCheckParams.output.text, /locations: label_name/)
+  t.match(createCheckParams.output.text, /<td>label_name<\/td>/)
 
   // check resulting logs
   const logParams = this.logMock.child.lastCall.arg
@@ -319,7 +319,7 @@ test('custom location: commits', async function (t) {
   t.is(createCheckParams.status, 'in_progress')
   t.match(createCheckParams.output.summary, /The commit subject "WIP: test" contains "WIP"/)
   t.match(createCheckParams.output.summary, /You can override the status by adding "@wip ready for review"/)
-  t.match(createCheckParams.output.text, /locations: commit_subject/)
+  t.match(createCheckParams.output.text, /<td>commit_subject<\/td>/)
 
   // check resulting logs
   const logParams = this.logMock.child.lastCall.arg
@@ -368,12 +368,25 @@ test('complex config', async function (t) {
   t.is(createCheckParams.status, 'in_progress')
   t.match(createCheckParams.output.summary, /The commit subject "fixup! test" contains "fixup!"/)
   t.match(createCheckParams.output.summary, /You can override the status by adding "@wip ready for review"/)
-  t.match(createCheckParams.output.text, /locations: commit_subject/)
+  t.match(createCheckParams.output.text, /<td>commit_subject<\/td>/)
 
   // check resulting logs
   const logParams = this.logMock.child.lastCall.arg
   t.is(logParams.location, 'commit_subject')
   t.is(logParams.match, 'fixup!')
+
+  t.end()
+})
+
+test('loads config from .github repository', async function (t) {
+  await this.app.receive(require('./events/new-pull-request-with-emoji-title.json'))
+
+  t.is(this.githubMock.repos.getContent.callCount, 2)
+  t.deepEqual(this.githubMock.repos.getContent.lastCall.arg, {
+    owner: 'wip',
+    repo: '.github',
+    path: '.github/wip.yml'
+  })
 
   t.end()
 })
@@ -490,7 +503,7 @@ test('pending pull request with override and "[WIP] test" title', async function
   t.end()
 })
 
-test('custom APP_NAME', { only: true }, async function (t) {
+test('custom APP_NAME', async function (t) {
   simple.mock(process.env, 'APP_NAME', 'WIP (local-dev)')
   await this.app.receive(require('./events/new-pull-request-with-test-title.json'))
   simple.restore()
