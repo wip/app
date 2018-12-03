@@ -80,7 +80,7 @@ test('new pull request with "Test" title', async function (t) {
   t.deepEqual(createCheckParams.actions, [])
 
   // check resulting logs
-  t.is(this.logMock.info.lastCall.arg, '✅ wip/app#1')
+  t.is(this.logMock.info.lastCall.args[1], '✅ wip/app#1')
   t.is(this.logMock.info.callCount, 1)
   t.deepEqual(this.logMock.child.lastCall.arg, {
     name: 'WIP',
@@ -251,7 +251,7 @@ test('custom term: 🚧', async function (t) {
   }])
 
   // check resulting logs
-  t.is(this.logMock.info.lastCall.arg, '⏳ wip/app#1 - "🚧" found in title')
+  t.is(this.logMock.info.lastCall.args[1], '⏳ wip/app#1 - "🚧" found in title')
   t.is(this.logMock.info.callCount, 1)
   t.deepEqual(this.logMock.child.lastCall.arg, {
     name: 'WIP',
@@ -438,7 +438,7 @@ test('override', async function (t) {
   t.match(createCheckParams.output.summary, /The status has been set to success by adding `@wip ready for review` to the pull request comment/)
 
   // check resulting logs
-  t.is(this.logMock.info.lastCall.arg, '❗️ wip/app#1')
+  t.is(this.logMock.info.lastCall.args[1], '❗️ wip/app#1')
   const logParams = this.logMock.child.lastCall.arg
   t.is(logParams.wip, false)
   t.is(logParams.override, true)
