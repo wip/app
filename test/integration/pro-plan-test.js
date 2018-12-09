@@ -240,7 +240,7 @@ test('custom term: 🚧', async function (t) {
   t.is(createCheckParams.status, 'in_progress')
   t.is(createCheckParams.completed_at, undefined)
   t.is(createCheckParams.status, 'in_progress')
-  t.is(createCheckParams.output.title, 'Title contains a construction sign!')
+  t.is(createCheckParams.output.title, 'Title contains a construction sign emoji!')
   t.match(createCheckParams.output.summary, /The title "🚧 Test" contains "🚧"/)
   t.match(createCheckParams.output.summary, /You can override the status by adding "@wip ready for review"/)
   t.match(createCheckParams.output.text, /<td>🚧<\/td>/)
