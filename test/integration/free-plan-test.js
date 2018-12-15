@@ -136,7 +136,7 @@ test('new pull request with "🚧 Test" title', async function (t) {
   // create new check run
   const createCheckParams = this.githubMock.checks.create.lastCall.arg
   t.is(createCheckParams.status, 'in_progress')
-t.is(createCheckParams.output.title, 'Title contains a construction emoji')
+  t.is(createCheckParams.output.title, 'Title contains a construction emoji')
   t.match(createCheckParams.output.summary, /The title "🚧 Test" contains "🚧"/)
   t.notMatch(createCheckParams.output.summary, /You can override the status by adding "@wip ready for review"/)
 
