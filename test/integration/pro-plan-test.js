@@ -112,7 +112,7 @@ test('new pull request with "[WIP] Test" title', async function (t) {
     description: 'override status to "success"',
     identifier: 'override:1'
   }])
-  t.is(createCheckParams.output.title, 'Work in progress')
+  t.is(createCheckParams.output.title, 'Title contains "WIP"')
   t.match(createCheckParams.output.summary, /The title "\[WIP\] Test" contains "WIP"/)
   t.match(createCheckParams.output.summary, /You can override the status by adding "@wip ready for review"/)
 
@@ -240,7 +240,7 @@ test('custom term: 🚧', async function (t) {
   t.is(createCheckParams.status, 'in_progress')
   t.is(createCheckParams.completed_at, undefined)
   t.is(createCheckParams.status, 'in_progress')
-  t.is(createCheckParams.output.title, 'Work in progress')
+  t.is(createCheckParams.output.title, 'Title contains a construction emoji')
   t.match(createCheckParams.output.summary, /The title "🚧 Test" contains "🚧"/)
   t.match(createCheckParams.output.summary, /You can override the status by adding "@wip ready for review"/)
   t.match(createCheckParams.output.text, /<td>🚧<\/td>/)

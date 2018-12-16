@@ -96,7 +96,7 @@ test('new pull request with "[WIP] Test" title', async function (t) {
   // create new check run
   const createCheckParams = this.githubMock.checks.create.lastCall.arg
   t.is(createCheckParams.status, 'in_progress')
-  t.is(createCheckParams.output.title, 'Work in progress')
+  t.is(createCheckParams.output.title, 'Title contains "WIP"')
   t.match(createCheckParams.output.summary, /The title "\[WIP\] Test" contains "WIP"/)
   t.notMatch(createCheckParams.output.summary, /You can override the status by adding "@wip ready for review"/)
 
@@ -117,7 +117,7 @@ test('new pull request with "[Work in Progress] Test" title', async function (t)
   // create new check run
   const createCheckParams = this.githubMock.checks.create.lastCall.arg
   t.is(createCheckParams.status, 'in_progress')
-  t.is(createCheckParams.output.title, 'Work in progress')
+  t.is(createCheckParams.output.title, 'Title contains "Work in Progress"')
   t.match(createCheckParams.output.summary, /The title "\[Work in Progress\] Test" contains "Work in Progress"/)
   t.notMatch(createCheckParams.output.summary, /You can override the status by adding "@wip ready for review"/)
 
@@ -136,7 +136,7 @@ test('new pull request with "🚧 Test" title', async function (t) {
   // create new check run
   const createCheckParams = this.githubMock.checks.create.lastCall.arg
   t.is(createCheckParams.status, 'in_progress')
-  t.is(createCheckParams.output.title, 'Work in progress')
+  t.is(createCheckParams.output.title, 'Title contains a construction emoji')
   t.match(createCheckParams.output.summary, /The title "🚧 Test" contains "🚧"/)
   t.notMatch(createCheckParams.output.summary, /You can override the status by adding "@wip ready for review"/)
 

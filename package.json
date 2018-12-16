@@ -31,6 +31,7 @@
   },
   "homepage": "https://github.com/wip/app#readme",
   "dependencies": {
+    "gemoji": "^4.2.1",
     "logdna-bunyan": "^1.0.1",
     "probot": "^7.0.0",
     "probot-config": "^1.0.0"
