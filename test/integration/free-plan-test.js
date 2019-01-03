@@ -150,6 +150,25 @@ test('new pull request with "🚧 Test" title', async function (t) {
   t.end()
 })
 
+test('new pull request with "🚧Test" title', async function (t) {
+  await this.app.receive(require('./events/new-pull-request-with-emoji-no-space-title.json'))
+
+  // create new check run
+  const createCheckParams = this.githubMock.checks.create.lastCall.arg
+  t.is(createCheckParams.status, 'in_progress')
+  t.is(createCheckParams.output.title, 'Title contains a construction emoji')
+  t.match(createCheckParams.output.summary, /The title "🚧Test" contains "🚧"/)
+  t.notMatch(createCheckParams.output.summary, /You can override the status by adding "@wip ready for review"/)
+
+  // check resulting logs
+  t.is(this.logMock.info.lastCall.args[1], '⏳ wip/app#1 - "🚧" found in title')
+  const logParams = this.logMock.child.lastCall.arg
+  t.is(logParams.location, 'title')
+  t.is(logParams.match, '🚧')
+
+  t.end()
+})
+
 test('pending pull request with "Test" title', async function (t) {
   // simulate existing check runs
   this.githubMock.checks.listForRef = simple.mock().resolveWith({

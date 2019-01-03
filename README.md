@@ -62,6 +62,9 @@ You can also configure different terms for different locations:
 
 The above configuration looks first for :no_entry: in the pull request title and assigned label names. After that it looks for `fixup!` and `squash!` in the commit subjects.
 
+**A Note About Term Matching:**  
+Terms which contain only non-word characters as defined by JS RegExp [^A-Za-z0-9_] are matched regardless of word boundaries. Any other terms (which may contain a mix of word and non-word characters will only match when surronded by start/end OR non-word characters.
+
 ## About WIP
 
 Besides being a hopefully useful GitHub application, the WIP app is also meant as a reference implementation ([source code](https://github.com/wip/app)). I try to keep the complexity low and the code easy to follow. If you are thinking of creating your own GitHub app, the WIP might be a good starting point for you.

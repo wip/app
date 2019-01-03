@@ -273,6 +273,57 @@ test('custom term: 🚧', async function (t) {
   t.end()
 })
 
+test('custom term: 🚧NoSpace', async function (t) {
+  // custom configuration
+  this.githubMock.repos.getContent = simple.mock().resolveWith({
+    data: {
+      content: Buffer.from('terms: 🚧').toString('base64')
+    }
+  })
+
+  await this.app.receive(require('./events/new-pull-request-with-emoji-no-space-title.json'))
+
+  // create new check run
+  const createCheckParams = this.githubMock.checks.create.lastCall.arg
+  t.is(this.githubMock.checks.create.callCount, 1)
+  t.is(createCheckParams.owner, 'wip')
+  t.is(createCheckParams.repo, 'app')
+  t.is(createCheckParams.name, 'WIP')
+  t.is(createCheckParams.status, 'in_progress')
+  t.is(createCheckParams.completed_at, undefined)
+  t.is(createCheckParams.status, 'in_progress')
+  t.is(createCheckParams.output.title, 'Title contains a construction emoji')
+  t.match(createCheckParams.output.summary, /The title "🚧Test" contains "🚧"/)
+  t.match(createCheckParams.output.summary, /You can override the status by adding "@wip ready for review"/)
+  t.match(createCheckParams.output.text, /<td>🚧<\/td>/)
+  t.deepEqual(createCheckParams.actions, [{
+    description: 'override status to "success"',
+    identifier: 'override:1',
+    label: '✅ Ready for review'
+  }])
+
+  // check resulting logs
+  t.is(this.logMock.info.lastCall.args[1], '⏳ wip/app#1 - "🚧" found in title')
+  t.is(this.logMock.info.callCount, 1)
+  t.deepEqual(this.logMock.child.lastCall.arg, {
+    name: 'WIP',
+    account: 1,
+    repo: 1,
+    private: false,
+    plan: 'pro',
+    event: 'pull_request',
+    action: 'opened',
+    wip: true,
+    change: true,
+    override: null,
+    location: 'title',
+    match: '🚧',
+    hasConfig: true
+  })
+
+  t.end()
+})
+
 test('custom location: label_name', async function (t) {
   // custom configuration
   this.githubMock.repos.getContent = simple.mock().resolveWith({
