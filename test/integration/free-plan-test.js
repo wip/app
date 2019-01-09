@@ -60,6 +60,7 @@ test('new pull request with "Test" title', async function (t) {
   t.is(createCheckParams.repo, 'app')
   t.is(createCheckParams.name, 'WIP')
   t.is(createCheckParams.status, 'completed')
+  t.is(createCheckParams.started_at, '1970-01-01T00:00:00.000Z')
   t.same(createCheckParams.completed_at, NOW)
   t.is(createCheckParams.status, 'completed')
   t.is(createCheckParams.conclusion, 'success')
