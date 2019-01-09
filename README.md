@@ -63,7 +63,7 @@ You can also configure different terms for different locations:
 The above configuration looks first for :no_entry: in the pull request title and assigned label names. After that it looks for `fixup!` and `squash!` in the commit subjects.
 
 **A Note About Term Matching:**  
-Terms which contain only non-word characters as defined by JS RegExp [^A-Za-z0-9_] are matched regardless of word boundaries. Any other terms (which may contain a mix of word and non-word characters will only match when surronded by start/end OR non-word characters.
+Terms which contain only non-word characters as defined by JS RegExp [^A-Za-z0-9_] are matched regardless of word boundaries. Any other terms (which may contain a mix of word and non-word characters will only match when surrounded by start/end OR non-word characters.
 
 ## About WIP
 
