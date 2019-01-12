@@ -4,10 +4,8 @@ const simple = require('simple-mock')
 const { beforeEach, test } = require('tap')
 
 const plugin = require('../../')
-const NOT_FOUND_ERROR = new Error('Not found')
-NOT_FOUND_ERROR.code = 404
-const SERVER_ERROR = new Error('Ooops')
-SERVER_ERROR.code = 500
+const NOT_FOUND_ERROR = Object.assign(new Error('Not found'), { status: 404 })
+const SERVER_ERROR = Object.assign(new Error('Ooops'), { status: 500 })
 const NOW = new Date(0)
 
 beforeEach(function (done) {
@@ -15,7 +13,7 @@ beforeEach(function (done) {
   this.app = new Application()
   this.githubMock = {
     apps: {
-      checkMarketplaceListingAccount: simple.mock().rejectWith(NOT_FOUND_ERROR)
+      checkAccountIsAssociatedWithAny: simple.mock().rejectWith(NOT_FOUND_ERROR)
     },
     checks: {
       create: simple.mock(),
@@ -257,7 +255,7 @@ test('ready pull request with "Test" title', async function (t) {
 
 test('active marketplace "free" plan', async function (t) {
   // simulate that user subscribed to free plan
-  this.githubMock.apps.checkMarketplaceListingAccount = simple.mock().resolveWith({
+  this.githubMock.apps.checkAccountIsAssociatedWithAny = simple.mock().resolveWith({
     data: {
       marketplace_purchase: {
         plan: {
@@ -298,7 +296,7 @@ test('request error', async function (t) {
 
 test('request error (without code being parsed, see octokit/rest.js#684)', async function (t) {
   // simulate request error
-  this.githubMock.checks.listForRef = simple.mock().rejectWith(new Error('{"code": 123}'))
+  this.githubMock.checks.listForRef = simple.mock().rejectWith(new Error('{"status": 123}'))
   this.logMock.error = simple.mock()
 
   await this.app.receive(require('./events/new-pull-request-with-test-title.json'))
@@ -307,7 +305,7 @@ test('request error (without code being parsed, see octokit/rest.js#684)', async
   t.is(this.githubMock.checks.create.callCount, 0)
 
   // check resulting logs
-  t.same(this.logMock.error.lastCall.arg.code, 123)
+  t.same(this.logMock.error.lastCall.arg.status, 123)
 
   t.end()
 })
@@ -318,7 +316,7 @@ test('Create check error', async function (t) {
 
   await this.app.receive(require('./events/new-pull-request-with-test-title.json'))
 
-  t.same(this.logMock.error.lastCall.args[1].code, 500)
+  t.same(this.logMock.error.lastCall.args[1].status, 500)
 
   t.end()
 })

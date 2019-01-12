@@ -7,7 +7,7 @@ test('throws error if getting config fails with error other than 404', async fun
     await getConfig({
       github: {
         repos: {
-          getContent () {
+          getContents () {
             throw new Error('oops')
           }
         }

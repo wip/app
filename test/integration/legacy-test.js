@@ -4,23 +4,21 @@ const simple = require('simple-mock')
 const { beforeEach, test } = require('tap')
 
 const plugin = require('../../')
-const NOT_FOUND_ERROR = new Error('Not found')
-NOT_FOUND_ERROR.code = 404
-const SERVER_ERROR = new Error('Ooops')
-SERVER_ERROR.code = 500
+const NOT_FOUND_ERROR = Object.assign(new Error('Not found'), { status: 404 })
+const SERVER_ERROR = Object.assign(new Error('Ooops'), { status: 500 })
 
 beforeEach(function (done) {
   lolex.install()
   this.app = new Application()
   this.githubMock = {
     apps: {
-      checkMarketplaceListingAccount: simple.mock().rejectWith(NOT_FOUND_ERROR)
+      checkAccountIsAssociatedWithAny: simple.mock().rejectWith(NOT_FOUND_ERROR)
     },
     checks: {
-      listForRef: simple.mock().rejectWith(new Error('{"code": 403}'))
+      listForRef: simple.mock().rejectWith(new Error('{"status": 403}'))
     },
     pullRequests: {
-      getCommits: simple.mock().resolveWith({ data: [] })
+      listCommits: simple.mock().resolveWith({ data: [] })
     },
     repos: {
       createStatus: simple.mock(),
@@ -101,7 +99,7 @@ test('new pull request with "[Work in Progress] Test" title', async function (t)
 
 test('new pull request with "WIP" in commit', async function (t) {
   // commit with "WIP: test" subject
-  this.githubMock.pullRequests.getCommits = simple.mock().resolveWith({
+  this.githubMock.pullRequests.listCommits = simple.mock().resolveWith({
     data: [{
       commit: {
         message: 'WIP: test'
@@ -123,7 +121,7 @@ test('new pull request with "WIP" in commit', async function (t) {
 
 test('new pull request with "DO NOT MERGE" in commit', async function (t) {
   // commit with "DO NOT MERGE: test" subject
-  this.githubMock.pullRequests.getCommits = simple.mock().resolveWith({
+  this.githubMock.pullRequests.listCommits = simple.mock().resolveWith({
     data: [{
       commit: {
         message: 'DO NOT MERGE: test'
@@ -145,7 +143,7 @@ test('new pull request with "DO NOT MERGE" in commit', async function (t) {
 
 test('new pull request without "WIP" in commit', async function (t) {
   // commit with "DO NOT MERGE: test" subject
-  this.githubMock.pullRequests.getCommits = simple.mock().resolveWith({
+  this.githubMock.pullRequests.listCommits = simple.mock().resolveWith({
     data: [{
       commit: {
         message: 'foo'
@@ -216,13 +214,13 @@ test('request error', async function (t) {
 
 test('request error (without code being parsed, see octokit/rest.js#684)', async function (t) {
   // simulate request error
-  this.githubMock.repos.createStatus = simple.mock().rejectWith(new Error('{"code": 123}'))
+  this.githubMock.repos.createStatus = simple.mock().rejectWith(new Error('{"status": 123}'))
   this.logMock.error = simple.mock()
 
   await this.app.receive(require('./events/new-pull-request-with-test-title.json'))
 
   // check resulting logs
-  t.same(this.logMock.error.lastCall.arg.code, 123)
+  t.same(this.logMock.error.lastCall.arg.status, 123)
 
   t.end()
 })

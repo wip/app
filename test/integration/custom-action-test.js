@@ -5,8 +5,7 @@ const { beforeEach, test } = require('tap')
 
 const plugin = require('../../')
 
-const SERVER_ERROR = new Error('Ooops')
-SERVER_ERROR.code = 500
+const SERVER_ERROR = Object.assign(new Error('Ooops'), { status: 500 })
 
 beforeEach(function (done) {
   lolex.install()
@@ -182,7 +181,7 @@ test('request error', async function (t) {
 
 test('request error (without code being parsed, see octokit/rest.js#684)', async function (t) {
   // simulate request error
-  this.githubMock.pullRequests.get = simple.mock().rejectWith(new Error('{"code": 123}'))
+  this.githubMock.pullRequests.get = simple.mock().rejectWith(new Error('{"status": 123}'))
   this.logMock.error = simple.mock()
 
   await this.app.receive(require('./events/requested-action-override.json'))
@@ -192,7 +191,7 @@ test('request error (without code being parsed, see octokit/rest.js#684)', async
 
   // check resulting logs
   t.is(this.logMock.error.callCount, 1)
-  t.same(this.logMock.error.lastCall.arg.code, 123)
+  t.same(this.logMock.error.lastCall.arg.status, 123)
 
   t.end()
 })
