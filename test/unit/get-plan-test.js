@@ -19,7 +19,7 @@ test('throws error if getting current plan fails with error other than 404', asy
     auth () {
       return {
         apps: {
-          checkMarketplaceListingAccount () {
+          checkAccountIsAssociatedWithAny () {
             throw new Error('oops')
           }
         }

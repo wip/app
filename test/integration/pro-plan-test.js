@@ -4,8 +4,8 @@ const simple = require('simple-mock')
 const { beforeEach, test } = require('tap')
 
 const plugin = require('../../')
-const NOT_FOUND_ERROR = new Error('Not found')
-NOT_FOUND_ERROR.code = 404
+// "code" was renamed to "status", we keep both for compatibility with probot-config
+const NOT_FOUND_ERROR = Object.assign(new Error('Not found'), { status: 404, code: 404 })
 const NOW = new Date(0)
 
 beforeEach(function (done) {
@@ -13,7 +13,7 @@ beforeEach(function (done) {
   this.app = new Application()
   this.githubMock = {
     apps: {
-      checkMarketplaceListingAccount: simple.mock().resolveWith({
+      checkAccountIsAssociatedWithAny: simple.mock().resolveWith({
         data: {
           marketplace_purchase: {
             plan: {
@@ -32,14 +32,14 @@ beforeEach(function (done) {
       })
     },
     repos: {
-      getContent: simple.mock().rejectWith(NOT_FOUND_ERROR),
+      getContents: simple.mock().rejectWith(NOT_FOUND_ERROR),
 
       // for legacy commit status override (#124)
       createStatus: simple.mock(),
       getCombinedStatusForRef: simple.mock().resolveWith({ data: { statuses: [] } })
     },
     pullRequests: {
-      getCommits: simple.mock().resolveWith({ data: [] })
+      listCommits: simple.mock().resolveWith({ data: [] })
     }
   }
   this.app.auth = () => Promise.resolve(this.githubMock)
@@ -224,7 +224,7 @@ test('ready pull request with "Test" title', async function (t) {
 
 test('custom term: 🚧', async function (t) {
   // custom configuration
-  this.githubMock.repos.getContent = simple.mock().resolveWith({
+  this.githubMock.repos.getContents = simple.mock().resolveWith({
     data: {
       content: Buffer.from('terms: 🚧').toString('base64')
     }
@@ -275,7 +275,7 @@ test('custom term: 🚧', async function (t) {
 
 test('custom term: 🚧NoSpace', async function (t) {
   // custom configuration
-  this.githubMock.repos.getContent = simple.mock().resolveWith({
+  this.githubMock.repos.getContents = simple.mock().resolveWith({
     data: {
       content: Buffer.from('terms: 🚧').toString('base64')
     }
@@ -326,7 +326,7 @@ test('custom term: 🚧NoSpace', async function (t) {
 
 test('custom location: label_name', async function (t) {
   // custom configuration
-  this.githubMock.repos.getContent = simple.mock().resolveWith({
+  this.githubMock.repos.getContents = simple.mock().resolveWith({
     data: {
       content: Buffer.from('locations: label_name').toString('base64')
     }
@@ -351,14 +351,14 @@ test('custom location: label_name', async function (t) {
 
 test('custom location: commits', async function (t) {
   // custom configuration
-  this.githubMock.repos.getContent = simple.mock().resolveWith({
+  this.githubMock.repos.getContents = simple.mock().resolveWith({
     data: {
       content: Buffer.from('locations: commit_subject').toString('base64')
     }
   })
 
   // commit with "WIP: test" subject
-  this.githubMock.pullRequests.getCommits = simple.mock().resolveWith({
+  this.githubMock.pullRequests.listCommits = simple.mock().resolveWith({
     data: [{
       commit: {
         message: 'WIP: test'
@@ -396,14 +396,14 @@ test('complex config', async function (t) {
   - fixup!
   - squash!
   locations: commit_subject`
-  this.githubMock.repos.getContent = simple.mock().resolveWith({
+  this.githubMock.repos.getContents = simple.mock().resolveWith({
     data: {
       content: Buffer.from(config).toString('base64')
     }
   })
 
   // commits
-  this.githubMock.pullRequests.getCommits = simple.mock().resolveWith({
+  this.githubMock.pullRequests.listCommits = simple.mock().resolveWith({
     data: [{
       commit: {
         message: 'fixup! test'
@@ -435,8 +435,8 @@ test('complex config', async function (t) {
 test('loads config from .github repository', async function (t) {
   await this.app.receive(require('./events/new-pull-request-with-emoji-title.json'))
 
-  t.is(this.githubMock.repos.getContent.callCount, 2)
-  t.deepEqual(this.githubMock.repos.getContent.lastCall.arg, {
+  t.is(this.githubMock.repos.getContents.callCount, 2)
+  t.deepEqual(this.githubMock.repos.getContents.lastCall.arg, {
     owner: 'wip',
     repo: '.github',
     path: '.github/wip.yml'
@@ -452,14 +452,14 @@ test('loads commits once only', async function (t) {
   locations: commit_subject
 - terms: 'bar'
   locations: commit_subject`
-  this.githubMock.repos.getContent = simple.mock().resolveWith({
+  this.githubMock.repos.getContents = simple.mock().resolveWith({
     data: {
       content: Buffer.from(config).toString('base64')
     }
   })
 
   // commits
-  this.githubMock.pullRequests.getCommits = simple.mock().resolveWith({
+  this.githubMock.pullRequests.listCommits = simple.mock().resolveWith({
     data: [{
       commit: {
         message: 'test'
@@ -469,7 +469,7 @@ test('loads commits once only', async function (t) {
 
   await this.app.receive(require('./events/new-pull-request-with-test-title.json'))
 
-  t.is(this.githubMock.pullRequests.getCommits.callCount, 1)
+  t.is(this.githubMock.pullRequests.listCommits.callCount, 1)
 
   t.end()
 })
