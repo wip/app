@@ -15,6 +15,7 @@
     "LOGDNA_API_KEY": "@logdna-api-key",
     "NODE_ENV": "production",
     "PRIVATE_KEY": "@private-key",
+    "REDIS_URL": "@redis-url",
     "SENTRY_DSN": "@sentry-dsn",
     "WEBHOOK_SECRET": "@webhook-secret"
   }
