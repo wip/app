@@ -33,7 +33,7 @@
   "dependencies": {
     "gemoji": "^4.2.1",
     "logdna-bunyan": "^1.0.1",
-    "probot": "8.0.0-octokit-16-preview.3",
+    "probot": "8.0.0-beta.2",
     "probot-config": "^1.0.1"
   },
   "jest": {
