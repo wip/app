@@ -345,6 +345,7 @@ test('custom location: label_name', async function (t) {
   const logParams = this.logMock.child.lastCall.arg
   t.is(logParams.location, 'label_name')
   t.is(logParams.match, 'WIP')
+  t.is(createCheckParams.output.title, 'Label contains "WIP"')
 
   t.end()
 })
