@@ -33,7 +33,7 @@
   "dependencies": {
     "gemoji": "^4.2.1",
     "logdna-bunyan": "^1.0.1",
-    "probot": "8.0.0-beta.3",
+    "probot": "8.0.0-octokit-16-preview.7",
     "probot-config": "^1.0.1"
   },
   "jest": {
@@ -48,7 +48,7 @@
     "simple-mock": "^0.8.0",
     "smee-client": "^1.0.2",
     "standard": "^12.0.1",
-    "tap": "^12.0.1"
+    "tap": "^12.5.1"
   },
   "engines": {
     "node": ">=8.10.0",
