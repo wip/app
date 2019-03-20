@@ -124,6 +124,13 @@ default_permissions:
   # https://developer.github.com/v3/apps/permissions/
   # organization_administration: read
 
+  # Manage a single file in a target repository
+  # https://developer.github.com/v3/apps/permissions/#permission-on-single-file
+  single_file: read
+
+# The file name (with path) your app can manage
+single_file_name: .github/wip.yml
+
 
 # The name of the GitHub App. Defaults to the name specified in package.json
 # name: My Probot App
