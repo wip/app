@@ -36,8 +36,8 @@ default_events:
 # - project_column
 # - public
 - pull_request
-- pull_request_review
-- pull_request_review_comment
+# - pull_request_review
+# - pull_request_review_comment
 # - push
 # - release
 # - repository
@@ -131,16 +131,14 @@ default_permissions:
 # The file name (with path) your app can manage
 single_file_name: .github/wip.yml
 
-
 # The name of the GitHub App. Defaults to the name specified in package.json
-# name: My Probot App
+name: WIP
 
 # The homepage of your GitHub App.
-# url: https://example.com/
+url: https://github.com/wip/app
 
 # A description of the GitHub App.
-# description: A description of my awesome app
+description: DO NOT MERGE – as a service
 
-# Set to true when your GitHub App is available to the public or false when it is only accessible to the owner of the app.
-# Default: true
+# Set to true when your GitHub App is available to the public or false when it is only accessible to the owner of the app. Default: true
 # public: false
