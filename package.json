@@ -48,7 +48,7 @@
     "simple-mock": "^0.8.0",
     "smee-client": "^1.0.2",
     "standard": "^12.0.1",
-    "tap": "^13.0.3"
+    "tap": "^14.0.0"
   },
   "engines": {
     "node": ">=8.10.0",
