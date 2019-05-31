@@ -32,8 +32,8 @@
   "homepage": "https://github.com/wip/app#readme",
   "dependencies": {
     "gemoji": "^4.2.1",
-    "logdna-bunyan": "^1.0.1",
-    "probot": "^9.2.8",
+    "logdna-bunyan": "^1.1.0",
+    "probot": "^9.2.13",
     "probot-config": "^1.0.1"
   },
   "jest": {
@@ -46,13 +46,13 @@
     "proxyquire": "^2.0.1",
     "semantic-release": "^15.13.12",
     "simple-mock": "^0.8.0",
-    "smee-client": "^1.0.2",
+    "smee-client": "^1.1.0",
     "standard": "^12.0.1",
     "tap": "^14.0.0"
   },
   "engines": {
-    "node": ">=8.10.0",
-    "npm": ">=5.3.0"
+    "node": ">=10.16.0",
+    "npm": ">=6.9.0"
   },
   "release": {
     "prepare": [],
