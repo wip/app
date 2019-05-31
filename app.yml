@@ -9,136 +9,38 @@
 #
 # Read more about GitHub App Manifests:
 # https://developer.github.com/apps/building-github-apps/creating-github-apps-from-a-manifest/
+#
+# Find a full example with all configuration options at
+# https://github.com/probot/create-probot-app/tree/master/templates/basic-js
 
-# The list of events the GitHub App subscribes to.
-# Uncomment the event names below to enable them.
+# The list of events the WIP GitHub App subscribes to.
 default_events:
-- check_run
-# - check_suite
-# - commit_comment
-# - create
-# - delete
-# - deployment
-# - deployment_status
-# - fork
-# - gollum
-# - issue_comment
-# - issues
-# - label
-# - milestone
-# - member
-# - membership
-# - org_block
-# - organization
-# - page_build
-# - project
-# - project_card
-# - project_column
-# - public
-- pull_request
-# - pull_request_review
-# - pull_request_review_comment
-# - push
-# - release
-# - repository
-# - repository_import
-# - status
-# - team
-# - team_add
-# - watch
+  - check_run
+  - pull_request
 
-# The set of permissions needed by the GitHub App. The format of the object uses
-# the permission name for the key (for example, issues) and the access type for
-# the value (for example, write).
-# Valid values are `read`, `write`, and `none`
+# The set of permissions needed by the  WIP GitHub App.
 default_permissions:
-  # Repository creation, deletion, settings, teams, and collaborators.
-  # https://developer.github.com/v3/apps/permissions/#permission-on-administration
-  # administration: read
-
-  # Checks on code.
+  # WIP is creating check runs, hence write permission for check runs is required
   # https://developer.github.com/v3/apps/permissions/#permission-on-checks
   checks: write
 
-  # Repository contents, commits, branches, downloads, releases, and merges.
-  # https://developer.github.com/v3/apps/permissions/#permission-on-contents
-  # contents: read
-
-  # Deployments and deployment statuses.
-  # https://developer.github.com/v3/apps/permissions/#permission-on-deployments
-  # deployments: read
-
-  # Issues and related comments, assignees, labels, and milestones.
-  # https://developer.github.com/v3/apps/permissions/#permission-on-issues
-  # issues: write
-
-  # Search repositories, list collaborators, and access repository metadata.
-  # https://developer.github.com/v3/apps/permissions/#metadata-permissions
-  # metadata: read
-
-  # Retrieve Pages statuses, configuration, and builds, as well as create new builds.
-  # https://developer.github.com/v3/apps/permissions/#permission-on-pages
-  # pages: read
-
-  # Pull requests and related comments, assignees, labels, milestones, and merges.
+  # WIP needs to check commit messages for the "pro" plan
   # https://developer.github.com/v3/apps/permissions/#permission-on-pull-requests
-  pull_requests: write
+  pull_requests: read
 
-  # Manage the post-receive hooks for a repository.
-  # https://developer.github.com/v3/apps/permissions/#permission-on-repository-hooks
-  # repository_hooks: read
-
-  # Manage repository projects, columns, and cards.
-  # https://developer.github.com/v3/apps/permissions/#permission-on-repository-projects
-  # repository_projects: read
-
-  # Retrieve security vulnerability alerts.
-  # https://developer.github.com/v4/object/repositoryvulnerabilityalert/
-  # vulnerability_alerts: read
-
-  # Commit statuses.
-  # https://developer.github.com/v3/apps/permissions/#permission-on-statuses
-  # statuses: read
-
-  # Organization members and teams.
-  # https://developer.github.com/v3/apps/permissions/#permission-on-members
-  # members: read
-
-  # View and manage users blocked by the organization.
-  # https://developer.github.com/v3/apps/permissions/#permission-on-organization-user-blocking
-  # organization_user_blocking: read
-
-  # Manage organization projects, columns, and cards.
-  # https://developer.github.com/v3/apps/permissions/#permission-on-organization-projects
-  # organization_projects: read
-
-  # Manage team discussions and related comments.
-  # https://developer.github.com/v3/apps/permissions/#permission-on-team-discussions
-  # team_discussions: read
-
-  # Manage the post-receive hooks for an organization.
-  # https://developer.github.com/v3/apps/permissions/#permission-on-organization-hooks
-  # organization_hooks: read
-
-  # Get notified of, and update, content references.
-  # https://developer.github.com/v3/apps/permissions/
-  # organization_administration: read
-
-  # Manage a single file in a target repository
+  # WIP is using the `.github/wip.yml` file for configuration when signed up for the "pro" plan
   # https://developer.github.com/v3/apps/permissions/#permission-on-single-file
   single_file: read
 
-# The file name (with path) your app can manage
+# WIP is using the `.github/wip.yml` file for configuration when signed up for the "pro" plan
+# https://developer.github.com/v3/apps/permissions/#permission-on-single-file
 single_file_name: .github/wip.yml
 
-# The name of the GitHub App. Defaults to the name specified in package.json
+# The name of the GitHub App. Defaults to the name specified in package.json, but we like it uppercase :)
 name: WIP
 
-# The homepage of your GitHub App.
+# Our homepage
 url: https://github.com/wip/app
 
 # A description of the GitHub App.
 description: DO NOT MERGE – as a service
-
-# Set to true when your GitHub App is available to the public or false when it is only accessible to the owner of the app. Default: true
-# public: false
