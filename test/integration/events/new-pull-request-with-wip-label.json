@@ -8,9 +8,11 @@
       "head": {
         "sha": "sha123"
       },
-      "labels": [{
-        "name": "WIP"
-      }]
+      "labels": [
+        {
+          "name": "WIP"
+        }
+      ]
     },
     "repository": {
       "id": 1,
@@ -21,6 +23,9 @@
         "id": 1,
         "login": "wip"
       }
+    },
+    "organization": {
+      "login": "wip"
     },
     "installation": {
       "id": 1
