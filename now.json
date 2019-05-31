@@ -12,11 +12,11 @@
     "APP_NAME": "WIP (beta)",
     "DISABLE_STATS": "true",
     "LOG_LEVEL": "@beta-log-level",
-    "LOGDNA_API_KEY": "@beta-logdna-api-key",
+    "LOGDNA_API_KEY": "@logdna-api-key",
     "NODE_ENV": "production",
     "PRIVATE_KEY": "@beta-private-key",
-    "REDIS_URL": "@beta-redis-url",
-    "SENTRY_DSN": "@beta-sentry-dsn",
+    "REDIS_URL": "@redis-url",
+    "SENTRY_DSN": "@sentry-dsn",
     "WEBHOOK_SECRET": "@beta-webhook-secret"
   }
 }
