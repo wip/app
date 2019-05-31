@@ -67,6 +67,7 @@ index c28efe9..b66fc35 100644
     "NODE_ENV": "production",
 -    "PRIVATE_KEY": "@private-key",
 +    "PRIVATE_KEY": "@beta-private-key",
+    "REDIS_URL": "@redis-url",
     "SENTRY_DSN": "@sentry-dsn",
 -    "WEBHOOK_SECRET": "@webhook-secret"
 +    "WEBHOOK_SECRET": "@beta-webhook-secret"
