@@ -5,7 +5,6 @@
 <p align="center">
   <a href="https://stats.uptimerobot.com/Dq46zf6PY" rel="nofollow"><img src="https://img.shields.io/uptimerobot/status/m779429441-a6394a1f5546b634ac6b52f8.svg" alt="Uptime Robot status"></a>
   <a href="https://travis-ci.com/wip/app" rel="nofollow"><img alt="Build Status" src="https://travis-ci.com/wip/app.svg?branch=master"></a>
-  <a href="https://coveralls.io/github/wip/app?branch=master" rel="nofollow"><img alt="Coverage Status" src="https://coveralls.io/repos/github/wip/app/badge.svg?branch=master"></a>
   <a href="https://greenkeeper.io/" rel="nofollow"><img src="https://badges.greenkeeper.io/wip/app.svg" alt="Greenkeeper badge"></a>
 </p>
 
@@ -37,12 +36,12 @@ Example:
 
 ```yaml
 locations:
-- title
-- label_name
-- commit_subject
+  - title
+  - label_name
+  - commit_subject
 terms:
-- do not merge
-- ⛔
+  - do not merge
+  - ⛔
 ```
 
 The above configuration makes WIP look for "do not merge" and ":no_entry:" in the pull request title, all assigned label names and all commit subjects.
@@ -52,18 +51,18 @@ You can also configure different terms for different locations:
 ```yaml
 - terms: ⛔
   locations:
-  - title
-  - label_name
+    - title
+    - label_name
 - terms:
-  - fixup!
-  - squash!
+    - fixup!
+    - squash!
   locations: commit_subject
 ```
 
 The above configuration looks first for :no_entry: in the pull request title and assigned label names. After that it looks for `fixup!` and `squash!` in the commit subjects.
 
 **A Note About Term Matching:**  
-Terms which contain only non-word characters as defined by JS RegExp [^A-Za-z0-9_] are matched regardless of word boundaries. Any other terms (which may contain a mix of word and non-word characters will only match when surrounded by start/end OR non-word characters.
+Terms which contain only non-word characters as defined by JS RegExp [^a-za-z0-9_] are matched regardless of word boundaries. Any other terms (which may contain a mix of word and non-word characters will only match when surrounded by start/end OR non-word characters.
 
 ## About WIP
 
