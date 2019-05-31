@@ -78,7 +78,6 @@ test('new pull request with "Test" title', async function (t) {
   t.is(createCheckParams.output.title, 'Ready for review')
   t.match(createCheckParams.output.summary, /No match found based on configuration/)
   t.match(createCheckParams.output.text, /the default configuration is applied/)
-  t.deepEqual(createCheckParams.actions, [])
 
   // check resulting logs
   t.is(this.logMock.info.lastCall.args[1], '✅ wip/app#1')
@@ -108,11 +107,6 @@ test('new pull request with "[WIP] Test" title', async function (t) {
   // create new check run
   const createCheckParams = this.githubMock.checks.create.lastCall.arg
   t.is(createCheckParams.status, 'in_progress')
-  t.deepEqual(createCheckParams.actions, [{
-    label: '✅ Ready for review',
-    description: 'override status to "success"',
-    identifier: 'override:1'
-  }])
   t.is(createCheckParams.output.title, 'Title contains "WIP"')
   t.match(createCheckParams.output.summary, /The title "\[WIP\] Test" contains "WIP"/)
   t.match(createCheckParams.output.summary, /You can override the status by adding "@wip ready for review"/)
@@ -245,11 +239,6 @@ test('custom term: 🚧', async function (t) {
   t.match(createCheckParams.output.summary, /The title "🚧 Test" contains "🚧"/)
   t.match(createCheckParams.output.summary, /You can override the status by adding "@wip ready for review"/)
   t.match(createCheckParams.output.text, /<td>🚧<\/td>/)
-  t.deepEqual(createCheckParams.actions, [{
-    description: 'override status to "success"',
-    identifier: 'override:1',
-    label: '✅ Ready for review'
-  }])
 
   // check resulting logs
   t.is(this.logMock.info.lastCall.args[1], '⏳ wip/app#1 - "🚧" found in title')
@@ -296,11 +285,6 @@ test('custom term: 🚧NoSpace', async function (t) {
   t.match(createCheckParams.output.summary, /The title "🚧Test" contains "🚧"/)
   t.match(createCheckParams.output.summary, /You can override the status by adding "@wip ready for review"/)
   t.match(createCheckParams.output.text, /<td>🚧<\/td>/)
-  t.deepEqual(createCheckParams.actions, [{
-    description: 'override status to "success"',
-    identifier: 'override:1',
-    label: '✅ Ready for review'
-  }])
 
   // check resulting logs
   t.is(this.logMock.info.lastCall.args[1], '⏳ wip/app#1 - "🚧" found in title')
@@ -482,11 +466,6 @@ test('override', async function (t) {
   const createCheckParams = this.githubMock.checks.create.lastCall.arg
   t.is(createCheckParams.status, 'completed')
   t.is(createCheckParams.conclusion, 'success')
-  t.deepEqual(createCheckParams.actions, [{
-    label: '🔄 Reset',
-    description: 'Remove status override',
-    identifier: 'reset:1'
-  }])
   t.is(createCheckParams.output.title, 'Ready for review (override)')
   t.match(createCheckParams.output.summary, /The status has been set to success by adding `@wip ready for review` to the pull request comment/)
 
@@ -519,7 +498,6 @@ test('pending pull request with override', async function (t) {
   const createCheckParams = this.githubMock.checks.create.lastCall.arg
   t.is(createCheckParams.status, 'completed')
   t.is(createCheckParams.conclusion, 'success')
-  t.deepEqual(createCheckParams.actions, [])
   t.is(createCheckParams.output.title, 'Ready for review')
   t.match(createCheckParams.output.summary, /No match found based on configuration/)
 
