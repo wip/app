@@ -23,6 +23,10 @@ default_permissions:
   # https://developer.github.com/v3/apps/permissions/#permission-on-checks
   checks: write
 
+  # This is read by default: search repositories, list collaborators, and access repository metadata.
+  # https://developer.github.com/v3/apps/permissions/#metadata-permissions
+  metadata: read
+
   # WIP needs to check commit messages for the "pro" plan
   # https://developer.github.com/v3/apps/permissions/#permission-on-pull-requests
   pull_requests: read
