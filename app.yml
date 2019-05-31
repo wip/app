@@ -15,7 +15,6 @@
 
 # The list of events the WIP GitHub App subscribes to.
 default_events:
-  - check_run
   - pull_request
 
 # The set of permissions needed by the  WIP GitHub App.
