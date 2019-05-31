@@ -8,15 +8,15 @@
     }
   },
   "env": {
-    "APP_ID": "@wip-app-id",
+    "APP_ID": "@beta-app-id",
     "APP_NAME": "WIP (beta)",
     "DISABLE_STATS": "true",
-    "LOG_LEVEL": "@wip-log-level",
-    "LOGDNA_API_KEY": "@wip-logdna-api-key",
+    "LOG_LEVEL": "@beta-log-level",
+    "LOGDNA_API_KEY": "@beta-logdna-api-key",
     "NODE_ENV": "production",
-    "PRIVATE_KEY": "@wip-private-key",
-    "REDIS_URL": "@wip-redis-url",
-    "SENTRY_DSN": "@wip-sentry-dsn",
-    "WEBHOOK_SECRET": "@wip-webhook-secret"
+    "PRIVATE_KEY": "@beta-private-key",
+    "REDIS_URL": "@beta-redis-url",
+    "SENTRY_DSN": "@beta-sentry-dsn",
+    "WEBHOOK_SECRET": "@beta-webhook-secret"
   }
 }
