@@ -40,7 +40,6 @@
     "testURL": "http://localhost/"
   },
   "devDependencies": {
-    "coveralls": "^3.0.3",
     "lodash.clonedeep": "^4.5.0",
     "lolex": "^4.0.1",
     "proxyquire": "^2.0.1",

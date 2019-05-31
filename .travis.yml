@@ -19,7 +19,6 @@ jobs:
   include:
     - stage: test
       script: npm run test
-      after_success: npm run coverage:ci
     - stage: release
       script: npm run semantic-release
       deploy:
