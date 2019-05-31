@@ -38,61 +38,61 @@ Note that the WIP is simple by design. I’m sure there are plenty of features t
 
 1. Update `now.json`
 
-  ```diff
-  diff --git a/now.json b/now.json
-  index c28efe9..b66fc35 100644
-  --- a/now.json
-  +++ b/now.json
-  @@ -1,6 +1,6 @@
-  {
-  -  "name": "wip",
-  -  "alias": "wip",
-  +  "name": "wip-beta",
-  +  "alias": "wip-beta",
-    "scale": {
-      "all": {
-        "min": 1,
-  @@ -8,14 +8,14 @@
-      }
-    },
-    "env": {
-  -    "APP_ID": "@app-id",
-  -    "APP_NAME": "WIP",
-  +    "APP_ID": "@beta-app-id",
-  +    "APP_NAME": "WIP (beta)",
-      "DISABLE_STATS": "true",
-  -    "LOG_LEVEL": "@log-level",
-  +    "LOG_LEVEL": "@beta-log-level",
-      "LOGDNA_API_KEY": "@logdna-api-key",
-      "NODE_ENV": "production",
-  -    "PRIVATE_KEY": "@private-key",
-  +    "PRIVATE_KEY": "@beta-private-key",
-      "SENTRY_DSN": "@sentry-dsn",
-  -    "WEBHOOK_SECRET": "@webhook-secret"
-  +    "WEBHOOK_SECRET": "@beta-webhook-secret"
+```diff
+diff --git a/now.json b/now.json
+index c28efe9..b66fc35 100644
+--- a/now.json
++++ b/now.json
+@@ -1,6 +1,6 @@
+{
+-  "name": "wip",
+-  "alias": "wip",
++  "name": "wip-beta",
++  "alias": "wip-beta",
+  "scale": {
+    "all": {
+      "min": 1,
+@@ -8,14 +8,14 @@
     }
+  },
+  "env": {
+-    "APP_ID": "@app-id",
+-    "APP_NAME": "WIP",
++    "APP_ID": "@beta-app-id",
++    "APP_NAME": "WIP (beta)",
+    "DISABLE_STATS": "true",
+-    "LOG_LEVEL": "@log-level",
++    "LOG_LEVEL": "@beta-log-level",
+    "LOGDNA_API_KEY": "@logdna-api-key",
+    "NODE_ENV": "production",
+-    "PRIVATE_KEY": "@private-key",
++    "PRIVATE_KEY": "@beta-private-key",
+    "SENTRY_DSN": "@sentry-dsn",
+-    "WEBHOOK_SECRET": "@webhook-secret"
++    "WEBHOOK_SECRET": "@beta-webhook-secret"
   }
-  ```
+}
+```
 
 2. Update `deploy.sh` if you plan to continously deploy from GitHub. Not needed when only deploying locally
 
-  ```diff
-  diff --git a/scripts/deploy.sh b/scripts/deploy.sh
-  index a70ffa9..ae50b8f 100755
-  --- a/scripts/deploy.sh
-  +++ b/scripts/deploy.sh
-  @@ -3,8 +3,8 @@ set -e
-  
-  now="npx now --debug --token=$NOW_TOKEN"
-  
-  -echo "$ now rm --safe --yes wip"
-  -$now rm --safe --yes wip
-  +echo "$ now rm --safe --yes wip-beta"
-  +$now rm --safe --yes wip-beta
-  
-  # https://github.com/zeit/now-cli/blob/master/errors/verification-timeout.md
-  echo "$ now --no-verify"
-  ```
+```diff
+diff --git a/scripts/deploy.sh b/scripts/deploy.sh
+index a70ffa9..ae50b8f 100755
+--- a/scripts/deploy.sh
++++ b/scripts/deploy.sh
+@@ -3,8 +3,8 @@ set -e
+
+now="npx now --debug --token=$NOW_TOKEN"
+
+-echo "$ now rm --safe --yes wip"
+-$now rm --safe --yes wip
++echo "$ now rm --safe --yes wip-beta"
++$now rm --safe --yes wip-beta
+
+# https://github.com/zeit/now-cli/blob/master/errors/verification-timeout.md
+echo "$ now --no-verify"
+```
 
 ## Resources
 
