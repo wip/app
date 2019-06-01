@@ -128,7 +128,11 @@ test('installation', async function (t) {
       text: 'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Rails Girls Summer of Code](https://railsgirlssummerofcode.org/).'
     },
     conclusion: 'success',
-    completed_at: '1970-01-01T00:00:00.000Z'
+    completed_at: '1970-01-01T00:00:00.000Z',
+    request: {
+      retries: 3,
+      retryAfter: 3
+    }
   })
 
   t.deepEqual(two.arg, {
@@ -143,6 +147,10 @@ test('installation', async function (t) {
       title: 'Title contains "WIP"',
       summary: 'The title "[WIP] Test" contains "WIP".',
       text: 'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Rails Girls Summer of Code](https://railsgirlssummerofcode.org/).'
+    },
+    request: {
+      retries: 3,
+      retryAfter: 3
     }
   })
 
@@ -257,7 +265,11 @@ test('repositories added', async function (t) {
       text: 'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Rails Girls Summer of Code](https://railsgirlssummerofcode.org/).'
     },
     conclusion: 'success',
-    completed_at: '1970-01-01T00:00:00.000Z'
+    completed_at: '1970-01-01T00:00:00.000Z',
+    request: {
+      retries: 3,
+      retryAfter: 3
+    }
   })
 
   t.deepEqual(two.arg, {
@@ -272,6 +284,10 @@ test('repositories added', async function (t) {
       title: 'Title contains "WIP"',
       summary: 'The title "[WIP] Test" contains "WIP".',
       text: 'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Rails Girls Summer of Code](https://railsgirlssummerofcode.org/).'
+    },
+    request: {
+      retries: 3,
+      retryAfter: 3
     }
   })
 
@@ -289,7 +305,11 @@ test('repositories added', async function (t) {
       text: 'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Rails Girls Summer of Code](https://railsgirlssummerofcode.org/).'
     },
     conclusion: 'success',
-    completed_at: '1970-01-01T00:00:00.000Z'
+    completed_at: '1970-01-01T00:00:00.000Z',
+    request: {
+      retries: 3,
+      retryAfter: 3
+    }
   })
 
   t.deepEqual(four.arg, {
@@ -304,6 +324,10 @@ test('repositories added', async function (t) {
       title: 'Title contains "WIP"',
       summary: 'The title "[WIP] Test" contains "WIP".',
       text: 'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Rails Girls Summer of Code](https://railsgirlssummerofcode.org/).'
+    },
+    request: {
+      retries: 3,
+      retryAfter: 3
     }
   })
 
@@ -383,7 +407,11 @@ test('permissions accepted', async function (t) {
       text: 'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Rails Girls Summer of Code](https://railsgirlssummerofcode.org/).'
     },
     conclusion: 'success',
-    completed_at: '1970-01-01T00:00:00.000Z'
+    completed_at: '1970-01-01T00:00:00.000Z',
+    request: {
+      retries: 3,
+      retryAfter: 3
+    }
   })
 
   t.deepEqual(two.arg, {
@@ -398,6 +426,10 @@ test('permissions accepted', async function (t) {
       title: 'Title contains "WIP"',
       summary: 'The title "[WIP] Test" contains "WIP".',
       text: 'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Rails Girls Summer of Code](https://railsgirlssummerofcode.org/).'
+    },
+    request: {
+      retries: 3,
+      retryAfter: 3
     }
   })
 
