@@ -1,0 +1,15 @@
+{
+  "name": "installation",
+  "payload": {
+    "action": "new_permissions_accepted",
+    "installation": {
+      "id": 1,
+      "account": {
+        "type": "Organization",
+        "id": 1,
+        "login": "wip"
+      },
+      "repository_selection": "selected"
+    }
+  }
+}

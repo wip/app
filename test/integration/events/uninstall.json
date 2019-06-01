@@ -1,0 +1,15 @@
+{
+  "name": "installation",
+  "payload": {
+    "action": "deleted",
+    "installation": {
+      "id": 1,
+      "account": {
+        "type": "Organization",
+        "id": 1,
+        "login": "wip"
+      },
+      "repository_selection": "all"
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "installation_repositories",
+  "payload": {
+    "action": "added",
+    "installation": {
+      "id": 1,
+      "account": {
+        "type": "Organization",
+        "id": 1,
+        "login": "wip"
+      },
+      "repository_selection": "selected"
+    },
+    "repositories_added": [
+      {
+        "name": "repo1"
+      },
+      {
+        "name": "repo2"
+      }
+    ]
+  }
+}
