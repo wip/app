@@ -1,6 +1,6 @@
 {
-  "name": "wip-beta",
-  "alias": "wip-beta",
+  "name": "wip",
+  "alias": "wip",
   "scale": {
     "all": {
       "min": 1,
@@ -8,15 +8,15 @@
     }
   },
   "env": {
-    "APP_ID": "@beta-app-id",
-    "APP_NAME": "WIP (beta)",
+    "APP_ID": "@app-id",
+    "APP_NAME": "WIP",
     "DISABLE_STATS": "true",
     "LOG_LEVEL": "fatal",
     "LOGDNA_API_KEY": "@logdna-api-key",
     "NODE_ENV": "production",
-    "PRIVATE_KEY": "@beta-private-key",
+    "PRIVATE_KEY": "@private-key",
     "REDIS_URL": "@redis-url",
     "SENTRY_DSN": "@sentry-dsn",
-    "WEBHOOK_SECRET": "@beta-webhook-secret"
+    "WEBHOOK_SECRET": "@webhook-secret"
   }
 }
