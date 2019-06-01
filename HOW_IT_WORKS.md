@@ -8,4 +8,4 @@ When installed, the WIP app starts receiving request for every [pull request eve
 
 The event handler checks if the installation belongs to a free plan or a paid plan. For the free plan it only checks if the PR title contains one of the default terms such as "WIP" or "🚧". For the paid plan it loads the configuration and gets the status of the pull request based on that.
 
-Finally, it compares the new to the current state and updates it if it changed.
+Finally, it compares the new to the current state and updates if it changed.
