@@ -11,7 +11,7 @@
     "APP_ID": "@beta-app-id",
     "APP_NAME": "WIP (beta)",
     "DISABLE_STATS": "true",
-    "LOG_LEVEL": "@beta-log-level",
+    "LOG_LEVEL": "fatal",
     "LOGDNA_API_KEY": "@logdna-api-key",
     "NODE_ENV": "production",
     "PRIVATE_KEY": "@beta-private-key",
