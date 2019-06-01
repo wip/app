@@ -6,7 +6,6 @@ const { beforeEach, test } = require('tap')
 const plugin = require('../../')
 const NOT_FOUND_ERROR = Object.assign(new Error('Not found'), { status: 404 })
 const SERVER_ERROR = Object.assign(new Error('Ooops'), { status: 500 })
-const NOW = new Date(0)
 
 beforeEach(function (done) {
   lolex.install()
@@ -59,7 +58,7 @@ test('new pull request with "Test" title', async function (t) {
   t.is(createCheckParams.name, 'WIP')
   t.is(createCheckParams.status, 'completed')
   t.is(createCheckParams.started_at, '1970-01-01T00:00:00.000Z')
-  t.same(createCheckParams.completed_at, NOW)
+  t.is(createCheckParams.completed_at, '1970-01-01T00:00:00.000Z')
   t.is(createCheckParams.status, 'completed')
   t.is(createCheckParams.conclusion, 'success')
   t.is(createCheckParams.output.title, 'Ready for review')

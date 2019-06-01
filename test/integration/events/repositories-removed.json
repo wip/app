@@ -1,0 +1,23 @@
+{
+  "name": "installation_repositories",
+  "payload": {
+    "action": "removed",
+    "installation": {
+      "id": 1,
+      "account": {
+        "type": "Organization",
+        "id": 1,
+        "login": "wip"
+      },
+      "repository_selection": "selected"
+    },
+    "repositories_removed": [
+      {
+        "name": "repo1"
+      },
+      {
+        "name": "repo2"
+      }
+    ]
+  }
+}
