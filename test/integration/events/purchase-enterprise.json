@@ -1,18 +1,18 @@
 {
   "name": "marketplace_purchase",
   "payload": {
-    "action":"purchased",
-    "marketplace_purchase":{
-       "account":{
-          "type":"User",
-          "id":1,
-          "login":"wip"
-       },
-       "plan":{
-          "name":"Enterprise",
-          "monthly_price_in_cents":1000,
-          "price_model":"FLAT_RATE"
-       }
+    "action": "purchased",
+    "marketplace_purchase": {
+      "account": {
+        "type": "Organization",
+        "id": 1,
+        "login": "wip"
+      },
+      "plan": {
+        "name": "Enterprise",
+        "monthly_price_in_cents": 1000,
+        "price_model": "FLAT_RATE"
+      }
     }
   }
 }

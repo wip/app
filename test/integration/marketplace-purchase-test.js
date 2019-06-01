@@ -23,35 +23,35 @@ beforeEach(function (done) {
 test('purchase free', async function (t) {
   await this.app.receive(require('./events/purchase.json'))
 
-  t.is(this.logMock.info.lastCall.arg, '🆕🆓 User wip purchased Free')
+  t.is(this.logMock.info.lastCall.arg, '🆕🆓 Organization wip purchased Free')
 
   t.end()
 })
 test('purchase enterprise', async function (t) {
   await this.app.receive(require('./events/purchase-enterprise.json'))
 
-  t.is(this.logMock.info.lastCall.arg, '🆕💰 User wip purchased Enterprise')
+  t.is(this.logMock.info.lastCall.arg, '🆕💰 Organization wip purchased Enterprise')
 
   t.end()
 })
 test('upgrade', async function (t) {
   await this.app.receive(require('./events/upgrade.json'))
 
-  t.is(this.logMock.info.lastCall.arg, '⬆️💵 User wip changed to Pro')
+  t.is(this.logMock.info.lastCall.arg, '⬆️💵 Organization wip changed to Pro')
 
   t.end()
 })
 test('upgrade', async function (t) {
   await this.app.receive(require('./events/downgrade.json'))
 
-  t.is(this.logMock.info.lastCall.arg, '⬇️💵 User wip changed to Pro')
+  t.is(this.logMock.info.lastCall.arg, '⬇️💵 Organization wip changed to Pro')
 
   t.end()
 })
 test('cancellation', async function (t) {
   await this.app.receive(require('./events/cancellation.json'))
 
-  t.is(this.logMock.info.lastCall.arg, '🚫🆓 User wip cancelled Free')
+  t.is(this.logMock.info.lastCall.arg, '🚫🆓 Organization wip cancelled Free')
 
   t.end()
 })
