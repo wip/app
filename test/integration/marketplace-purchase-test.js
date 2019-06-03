@@ -55,3 +55,11 @@ test('cancellation', async function (t) {
 
   t.end()
 })
+
+test('pending_change', async function (t) {
+  await this.app.receive(require('./events/upgrade-pending.json'))
+
+  t.is(this.logMock.info.callCount, 0)
+
+  t.end()
+})
