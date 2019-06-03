@@ -1,0 +1,25 @@
+{
+  "name": "marketplace_purchase",
+  "payload": {
+    "action": "pending_change",
+    "marketplace_purchase": {
+      "account": {
+        "type": "Organization",
+        "id": 1,
+        "login": "wip"
+      },
+      "plan": {
+        "name": "Pro",
+        "monthly_price_in_cents": 100,
+        "price_model": "FLAT_RATE"
+      }
+    },
+    "previous_marketplace_purchase": {
+      "plan": {
+        "name": "Free",
+        "monthly_price_in_cents": 0,
+        "price_model": "FREE"
+      }
+    }
+  }
+}
