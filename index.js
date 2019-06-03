@@ -16,12 +16,18 @@ function wip (app) {
     'pull_request.synchronize'
   ], handlePullRequestChange.bind(null, app))
 
-  // listen to marketplace events
-  app.on('marketplace_purchase', handleMarketplacePurchase.bind(null, app))
+  // listen to relevatn marketplace purchase events
+  app.on([
+    'marketplace_purchase.purchased',
+    'marketplace_purchase.changed',
+    'marketplace_purchase.cancelled'
+  ], handleMarketplacePurchase.bind(null, app))
 
-  // listen
-  app.on('installation', handleInstallation.bind(null, app))
-  app.on('installation_repositories', handleInstallation.bind(null, app))
+  // listen to installation events
+  app.on([
+    'installation',
+    'installation_repositories'
+  ], handleInstallation.bind(null, app))
 
   sendLogs(app)
   logMemoryUsage(app)
