@@ -16,7 +16,7 @@ function wip (app) {
     'pull_request.synchronize'
   ], handlePullRequestChange.bind(null, app))
 
-  // listen to relevatn marketplace purchase events
+  // listen to relevant marketplace purchase events
   app.on([
     'marketplace_purchase.purchased',
     'marketplace_purchase.changed',
