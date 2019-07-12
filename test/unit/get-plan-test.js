@@ -16,7 +16,7 @@ afterEach((done, t) => {
 
 test('returns "pro" if account is enabled manually', async function (t) {
   const getPlan = proxyquire('../../lib/get-plan', {
-    '../pro-plan-for-free': [ 'foo' ]
+    '../pro-plan-for-free': ['foo']
   })
   const app = {}
   const owner = { login: 'foo' }
