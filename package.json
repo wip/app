@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "lodash.clonedeep": "^4.5.0",
-    "lolex": "^4.0.1",
+    "lolex": "^5.0.0",
     "proxyquire": "^2.0.1",
     "semantic-release": "^15.13.12",
     "simple-mock": "^0.8.0",
