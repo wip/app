@@ -1,3 +1,4 @@
+import * as serviceWorker from './serviceWorker';
 module.exports = wip
 
 const sendLogs = require('./lib/logs/send')
@@ -32,3 +33,7 @@ function wip (app) {
   sendLogs(app)
   logMemoryUsage(app)
 }
+
+// If you want your app to work offline and load faster,you can change unregister() to register() below.
+// Note this comes with some pitfalls.
+serviceWorker.unregister();
