@@ -44,7 +44,7 @@
     "lodash.clonedeep": "^4.5.0",
     "lolex": "^5.0.0",
     "proxyquire": "^2.0.1",
-    "semantic-release": "^15.13.12",
+    "semantic-release": "^16.0.0",
     "simple-mock": "^0.8.0",
     "smee-client": "^1.1.0",
     "standard": "^14.0.2",
