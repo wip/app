@@ -125,7 +125,7 @@ test('installation', async function (t) {
     output: {
       title: 'Ready for review',
       summary: 'No match found based on configuration',
-      text: 'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Rails Girls Summer of Code](https://railsgirlssummerofcode.org/).'
+      text: 'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.'
     },
     conclusion: 'success',
     completed_at: '1970-01-01T00:00:00.000Z',
@@ -146,7 +146,7 @@ test('installation', async function (t) {
     output: {
       title: 'Title contains "WIP"',
       summary: 'The title "[WIP] Test" contains "WIP".',
-      text: 'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Rails Girls Summer of Code](https://railsgirlssummerofcode.org/).'
+      text: 'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.'
     },
     request: {
       retries: 3,
@@ -262,7 +262,7 @@ test('repositories added', async function (t) {
     output: {
       title: 'Ready for review',
       summary: 'No match found based on configuration',
-      text: 'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Rails Girls Summer of Code](https://railsgirlssummerofcode.org/).'
+      text: 'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.'
     },
     conclusion: 'success',
     completed_at: '1970-01-01T00:00:00.000Z',
@@ -283,7 +283,7 @@ test('repositories added', async function (t) {
     output: {
       title: 'Title contains "WIP"',
       summary: 'The title "[WIP] Test" contains "WIP".',
-      text: 'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Rails Girls Summer of Code](https://railsgirlssummerofcode.org/).'
+      text: 'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.'
     },
     request: {
       retries: 3,
@@ -302,7 +302,7 @@ test('repositories added', async function (t) {
     output: {
       title: 'Ready for review',
       summary: 'No match found based on configuration',
-      text: 'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Rails Girls Summer of Code](https://railsgirlssummerofcode.org/).'
+      text: 'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.'
     },
     conclusion: 'success',
     completed_at: '1970-01-01T00:00:00.000Z',
@@ -323,7 +323,7 @@ test('repositories added', async function (t) {
     output: {
       title: 'Title contains "WIP"',
       summary: 'The title "[WIP] Test" contains "WIP".',
-      text: 'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Rails Girls Summer of Code](https://railsgirlssummerofcode.org/).'
+      text: 'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.'
     },
     request: {
       retries: 3,
@@ -404,7 +404,7 @@ test('permissions accepted', async function (t) {
     output: {
       title: 'Ready for review',
       summary: 'No match found based on configuration',
-      text: 'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Rails Girls Summer of Code](https://railsgirlssummerofcode.org/).'
+      text: 'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.'
     },
     conclusion: 'success',
     completed_at: '1970-01-01T00:00:00.000Z',
@@ -425,7 +425,7 @@ test('permissions accepted', async function (t) {
     output: {
       title: 'Title contains "WIP"',
       summary: 'The title "[WIP] Test" contains "WIP".',
-      text: 'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Rails Girls Summer of Code](https://railsgirlssummerofcode.org/).'
+      text: 'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.'
     },
     request: {
       retries: 3,
