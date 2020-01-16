@@ -34,7 +34,7 @@
     "gemoji": "^4.2.1",
     "logdna-bunyan": "^1.1.0",
     "pluralize": "^8.0.0",
-    "probot": "^9.2.13",
+    "probot": "^9.9.1",
     "probot-config": "^1.0.1"
   },
   "jest": {
