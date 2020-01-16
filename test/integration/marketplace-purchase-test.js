@@ -14,6 +14,7 @@ beforeEach(function (done) {
   this.logMock.debug = simple.mock()
   this.logMock.trace = simple.mock()
   this.logMock.info = simple.mock()
+  this.logMock.warn = simple.mock()
   this.logMock.error = simple.mock().callFn(console.log)
   this.logMock.child = simple.mock().returnWith(this.logMock)
   this.app.log = this.logMock
