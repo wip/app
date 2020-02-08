@@ -14,7 +14,8 @@
     "test": "tap --100 --coverage test/**/*-test.js",
     "posttest": "npm run lint",
     "semantic-release": "semantic-release",
-    "lint": "standard"
+    "lint": "prettier --check '{lib,test}/**/*.{js,json,ts}' 'docs/*.{js,json}' index.js *.md package.json",
+    "lint:fix": "prettier --write '{lib,test}/**/*.{js,json,ts}' 'docs/*.{js,json}' index.js *.md package.json"
   },
   "repository": {
     "type": "git",
@@ -43,11 +44,11 @@
   "devDependencies": {
     "lodash.clonedeep": "^4.5.0",
     "lolex": "^6.0.0",
+    "prettier": "^1.19.1",
     "proxyquire": "^2.0.1",
     "semantic-release": "^17.0.0",
     "simple-mock": "^0.8.0",
     "smee-client": "^1.1.0",
-    "standard": "^14.0.2",
     "tap": "^14.0.0"
   },
   "engines": {
