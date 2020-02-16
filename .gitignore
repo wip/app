@@ -4,3 +4,4 @@
 coverage
 node_modules
 private-key.pem
+.github/workflows/update-prettier.yml
