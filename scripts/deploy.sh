@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-now="npx now@16 --debug --token=$ZEIT_TOKEN"
+now="npx now@16 --debug --token=$NOW_TOKEN"
 
 echo "$ now rm --safe --yes wip"
 $now rm --safe --yes wip
