@@ -32,7 +32,7 @@
   },
   "homepage": "https://github.com/wip/app#readme",
   "dependencies": {
-    "gemoji": "^4.2.1",
+    "gemoji": "^5.0.1",
     "logdna-bunyan": "^1.1.0",
     "pluralize": "^8.0.0",
     "probot": "^9.9.1",
