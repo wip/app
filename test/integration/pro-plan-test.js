@@ -254,7 +254,7 @@ test('ready pull request with "Test" title', async function(t) {
   t.end();
 });
 
-test("custom term: 🚧", async function(t) {
+test("custom term: 🚧", { only: true }, async function(t) {
   // custom configuration
   this.githubMock.repos.getContents = simple.mock().resolveWith({
     data: {
