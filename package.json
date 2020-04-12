@@ -1,6 +1,7 @@
 {
   "name": "wip",
   "version": "0.0.0-development",
+  "private": true,
   "description": "DO NOT MERGE – as a service.",
   "main": "index.js",
   "files": [
@@ -54,14 +55,5 @@
   "engines": {
     "node": ">=10.7.0",
     "npm": ">=5.3.0"
-  },
-  "release": {
-    "prepare": [],
-    "verifyConditions": [
-      "@semantic-release/github"
-    ],
-    "publish": [
-      "@semantic-release/github"
-    ]
   }
 }
