@@ -14,9 +14,9 @@ afterEach((done, t) => {
   done();
 });
 
-test('returns "pro" if account is enabled manually', async function(t) {
+test('returns "pro" if account is enabled manually', async function (t) {
   const getPlan = proxyquire("../../lib/get-plan", {
-    "../pro-plan-for-free": ["foo"]
+    "../pro-plan-for-free": ["foo"],
   });
   const app = {};
   const owner = { login: "foo" };
@@ -26,7 +26,7 @@ test('returns "pro" if account is enabled manually', async function(t) {
   t.end();
 });
 
-test('returns "pro" for GitHub Enterprise Server installations', async function(t) {
+test('returns "pro" for GitHub Enterprise Server installations', async function (t) {
   const getPlan = require("../../lib/get-plan");
   const app = {};
   const owner = { login: "foo" };
@@ -38,7 +38,7 @@ test('returns "pro" for GitHub Enterprise Server installations', async function(
   t.end();
 });
 
-test("throws error if getting current plan fails with error other than 404", async function(t) {
+test("throws error if getting current plan fails with error other than 404", async function (t) {
   const getPlan = require("../../lib/get-plan");
   const app = {
     auth() {
@@ -46,10 +46,10 @@ test("throws error if getting current plan fails with error other than 404", asy
         apps: {
           checkAccountIsAssociatedWithAny() {
             throw new Error("oops");
-          }
-        }
+          },
+        },
       };
-    }
+    },
   };
   const owner = { login: "foo" };
   try {

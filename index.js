@@ -14,7 +14,7 @@ function wip(app) {
       "pull_request.edited",
       "pull_request.labeled",
       "pull_request.unlabeled",
-      "pull_request.synchronize"
+      "pull_request.synchronize",
     ],
     handlePullRequestChange.bind(null, app)
   );
@@ -24,7 +24,7 @@ function wip(app) {
     [
       "marketplace_purchase.purchased",
       "marketplace_purchase.changed",
-      "marketplace_purchase.cancelled"
+      "marketplace_purchase.cancelled",
     ],
     handleMarketplacePurchase.bind(null, app)
   );

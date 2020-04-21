@@ -7,25 +7,27 @@ const plugin = require("../../");
 const NOT_FOUND_ERROR = Object.assign(new Error("Not found"), { status: 404 });
 const SERVER_ERROR = Object.assign(new Error("Ooops"), { status: 500 });
 
-beforeEach(function(done) {
+beforeEach(function (done) {
   lolex.install();
   this.app = new Application();
   this.githubMock = {
     apps: {
-      checkAccountIsAssociatedWithAny: simple.mock().rejectWith(NOT_FOUND_ERROR)
+      checkAccountIsAssociatedWithAny: simple
+        .mock()
+        .rejectWith(NOT_FOUND_ERROR),
     },
     checks: {
-      listForRef: simple.mock().rejectWith(new Error('{"status": 403}'))
+      listForRef: simple.mock().rejectWith(new Error('{"status": 403}')),
     },
     pullRequests: {
-      listCommits: simple.mock().resolveWith({ data: [] })
+      listCommits: simple.mock().resolveWith({ data: [] }),
     },
     repos: {
       createStatus: simple.mock(),
       getCombinedStatusForRef: simple
         .mock()
-        .resolveWith({ data: { statuses: [] } })
-    }
+        .resolveWith({ data: { statuses: [] } }),
+    },
   };
   this.app.auth = () => Promise.resolve(this.githubMock);
   this.logMock = simple.mock();
@@ -39,7 +41,7 @@ beforeEach(function(done) {
   done();
 });
 
-test('new pull request with "Test" title', async function(t) {
+test('new pull request with "Test" title', async function (t) {
   await this.app.receive(
     require("./events/new-pull-request-with-test-title.json")
   );
@@ -58,7 +60,7 @@ test('new pull request with "Test" title', async function(t) {
   t.end();
 });
 
-test('new pull request with "Test" title from user', async function(t) {
+test('new pull request with "Test" title from user', async function (t) {
   await this.app.receive(
     require("./events/new-pull-request-with-test-title-from-user.json")
   );
@@ -77,7 +79,7 @@ test('new pull request with "Test" title from user', async function(t) {
   t.end();
 });
 
-test("request error", async function(t) {
+test("request error", async function (t) {
   // simulate request error
   this.githubMock.repos.createStatus = simple.mock().rejectWith(SERVER_ERROR);
   this.logMock.error = simple.mock();

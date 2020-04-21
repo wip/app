@@ -7,7 +7,7 @@ const plugin = require("../../");
 
 const NOT_FOUND_ERROR = Object.assign(new Error("Not found"), { status: 404 });
 
-beforeEach(function(done) {
+beforeEach(function (done) {
   lolex.install();
   this.app = new Application();
   this.githubMock = {
@@ -17,27 +17,27 @@ beforeEach(function(done) {
         .mock()
         .rejectWith(NOT_FOUND_ERROR),
       listRepos: {
-        endpoint: { merge: simple.mock() }
-      }
+        endpoint: { merge: simple.mock() },
+      },
     },
     pulls: {
       list: {
-        endpoint: { merge: simple.mock() }
-      }
+        endpoint: { merge: simple.mock() },
+      },
     },
     checks: {
       create: simple.mock(),
       listForRef: simple.mock().resolveWith({
         data: {
-          check_runs: []
-        }
-      })
+          check_runs: [],
+        },
+      }),
     },
     repos: {
       getCombinedStatusForRef: simple
         .mock()
-        .resolveWith({ data: { statuses: [] } })
-    }
+        .resolveWith({ data: { statuses: [] } }),
+    },
   };
   this.app.auth = () => Promise.resolve(this.githubMock);
   this.logMock = simple.mock();
@@ -52,7 +52,7 @@ beforeEach(function(done) {
   done();
 });
 
-test("cancellation", async function(t) {
+test("cancellation", async function (t) {
   await this.app.receive(require("./events/uninstall.json"));
 
   t.is(this.logMock.info.lastCall.arg, "😭 Organization wip uninstalled");
@@ -60,7 +60,7 @@ test("cancellation", async function(t) {
   t.end();
 });
 
-test("repositories removed", async function(t) {
+test("repositories removed", async function (t) {
   await this.app.receive(require("./events/repositories-removed.json"));
 
   t.is(
@@ -71,13 +71,13 @@ test("repositories removed", async function(t) {
   t.end();
 });
 
-test("installation", async function(t) {
+test("installation", async function (t) {
   this.githubMock.paginate = simple.mock().resolveWith([
     {
       title: "Test",
       number: 1,
       head: {
-        sha: "sha123"
+        sha: "sha123",
       },
       labels: [],
       base: {
@@ -88,16 +88,16 @@ test("installation", async function(t) {
           private: false,
           owner: {
             id: 1,
-            login: "wip"
-          }
-        }
-      }
+            login: "wip",
+          },
+        },
+      },
     },
     {
       title: "[WIP] Test",
       number: 2,
       head: {
-        sha: "sha456"
+        sha: "sha456",
       },
       labels: [],
       base: {
@@ -108,11 +108,11 @@ test("installation", async function(t) {
           private: false,
           owner: {
             id: 1,
-            login: "wip"
-          }
-        }
-      }
-    }
+            login: "wip",
+          },
+        },
+      },
+    },
   ]);
 
   await this.app.receive(require("./events/install.json"));
@@ -134,14 +134,14 @@ test("installation", async function(t) {
       title: "Ready for review",
       summary: "No match found based on configuration",
       text:
-        'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.'
+        'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.',
     },
     conclusion: "success",
     completed_at: "1970-01-01T00:00:00.000Z",
     request: {
       retries: 3,
-      retryAfter: 3
-    }
+      retryAfter: 3,
+    },
   });
 
   t.deepEqual(two.arg, {
@@ -156,18 +156,18 @@ test("installation", async function(t) {
       title: 'Title contains "WIP"',
       summary: 'The title "[WIP] Test" contains "WIP".',
       text:
-        'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.'
+        'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.',
     },
     request: {
       retries: 3,
-      retryAfter: 3
-    }
+      retryAfter: 3,
+    },
   });
 
   t.end();
 });
 
-test("repositories added", async function(t) {
+test("repositories added", async function (t) {
   this.githubMock.paginate = simple
     .mock()
     .resolveWith([
@@ -175,7 +175,7 @@ test("repositories added", async function(t) {
         title: "Test",
         number: 1,
         head: {
-          sha: "sha123"
+          sha: "sha123",
         },
         labels: [],
         base: {
@@ -186,16 +186,16 @@ test("repositories added", async function(t) {
             private: false,
             owner: {
               id: 1,
-              login: "wip"
-            }
-          }
-        }
+              login: "wip",
+            },
+          },
+        },
       },
       {
         title: "[WIP] Test",
         number: 2,
         head: {
-          sha: "sha456"
+          sha: "sha456",
         },
         labels: [],
         base: {
@@ -206,18 +206,18 @@ test("repositories added", async function(t) {
             private: false,
             owner: {
               id: 1,
-              login: "wip"
-            }
-          }
-        }
-      }
+              login: "wip",
+            },
+          },
+        },
+      },
     ])
     .resolveWith([
       {
         title: "Test",
         number: 1,
         head: {
-          sha: "sha789"
+          sha: "sha789",
         },
         labels: [],
         base: {
@@ -228,16 +228,16 @@ test("repositories added", async function(t) {
             private: false,
             owner: {
               id: 1,
-              login: "wip"
-            }
-          }
-        }
+              login: "wip",
+            },
+          },
+        },
       },
       {
         title: "[WIP] Test",
         number: 2,
         head: {
-          sha: "sha100"
+          sha: "sha100",
         },
         labels: [],
         base: {
@@ -248,11 +248,11 @@ test("repositories added", async function(t) {
             private: false,
             owner: {
               id: 1,
-              login: "wip"
-            }
-          }
-        }
-      }
+              login: "wip",
+            },
+          },
+        },
+      },
     ]);
 
   await this.app.receive(require("./events/repositories-added.json"));
@@ -274,14 +274,14 @@ test("repositories added", async function(t) {
       title: "Ready for review",
       summary: "No match found based on configuration",
       text:
-        'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.'
+        'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.',
     },
     conclusion: "success",
     completed_at: "1970-01-01T00:00:00.000Z",
     request: {
       retries: 3,
-      retryAfter: 3
-    }
+      retryAfter: 3,
+    },
   });
 
   t.deepEqual(two.arg, {
@@ -296,12 +296,12 @@ test("repositories added", async function(t) {
       title: 'Title contains "WIP"',
       summary: 'The title "[WIP] Test" contains "WIP".',
       text:
-        'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.'
+        'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.',
     },
     request: {
       retries: 3,
-      retryAfter: 3
-    }
+      retryAfter: 3,
+    },
   });
 
   t.deepEqual(three.arg, {
@@ -316,14 +316,14 @@ test("repositories added", async function(t) {
       title: "Ready for review",
       summary: "No match found based on configuration",
       text:
-        'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.'
+        'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.',
     },
     conclusion: "success",
     completed_at: "1970-01-01T00:00:00.000Z",
     request: {
       retries: 3,
-      retryAfter: 3
-    }
+      retryAfter: 3,
+    },
   });
 
   t.deepEqual(four.arg, {
@@ -338,25 +338,25 @@ test("repositories added", async function(t) {
       title: 'Title contains "WIP"',
       summary: 'The title "[WIP] Test" contains "WIP".',
       text:
-        'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.'
+        'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.',
     },
     request: {
       retries: 3,
-      retryAfter: 3
-    }
+      retryAfter: 3,
+    },
   });
 
   t.end();
 });
 
-test("permissions accepted", async function(t) {
+test("permissions accepted", async function (t) {
   this.githubMock.paginate = simple
     .mock()
     // repos
     .resolveWith([
       {
-        name: "repo1"
-      }
+        name: "repo1",
+      },
     ])
     // pull requsets
     .resolveWith([
@@ -364,7 +364,7 @@ test("permissions accepted", async function(t) {
         title: "Test",
         number: 1,
         head: {
-          sha: "sha123"
+          sha: "sha123",
         },
         labels: [],
         base: {
@@ -375,16 +375,16 @@ test("permissions accepted", async function(t) {
             private: false,
             owner: {
               id: 1,
-              login: "wip"
-            }
-          }
-        }
+              login: "wip",
+            },
+          },
+        },
       },
       {
         title: "[WIP] Test",
         number: 2,
         head: {
-          sha: "sha456"
+          sha: "sha456",
         },
         labels: [],
         base: {
@@ -395,11 +395,11 @@ test("permissions accepted", async function(t) {
             private: false,
             owner: {
               id: 1,
-              login: "wip"
-            }
-          }
-        }
-      }
+              login: "wip",
+            },
+          },
+        },
+      },
     ]);
 
   await this.app.receive(require("./events/new-permissions-accepted.json"));
@@ -421,14 +421,14 @@ test("permissions accepted", async function(t) {
       title: "Ready for review",
       summary: "No match found based on configuration",
       text:
-        'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.'
+        'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.',
     },
     conclusion: "success",
     completed_at: "1970-01-01T00:00:00.000Z",
     request: {
       retries: 3,
-      retryAfter: 3
-    }
+      retryAfter: 3,
+    },
   });
 
   t.deepEqual(two.arg, {
@@ -443,12 +443,12 @@ test("permissions accepted", async function(t) {
       title: 'Title contains "WIP"',
       summary: 'The title "[WIP] Test" contains "WIP".',
       text:
-        'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.'
+        'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.',
     },
     request: {
       retries: 3,
-      retryAfter: 3
-    }
+      retryAfter: 3,
+    },
   });
 
   t.end();

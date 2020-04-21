@@ -1,6 +1,6 @@
 const { test } = require("tap");
 
-test("smoke test", t => {
+test("smoke test", (t) => {
   require("../../");
   t.end();
 });

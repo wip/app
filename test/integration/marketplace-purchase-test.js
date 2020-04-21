@@ -5,7 +5,7 @@ const { beforeEach, test } = require("tap");
 
 const plugin = require("../../");
 
-beforeEach(function(done) {
+beforeEach(function (done) {
   lolex.install();
   this.app = new Application();
   this.githubMock = {};
@@ -22,14 +22,14 @@ beforeEach(function(done) {
   done();
 });
 
-test("purchase free", async function(t) {
+test("purchase free", async function (t) {
   await this.app.receive(require("./events/purchase.json"));
 
   t.is(this.logMock.info.lastCall.arg, "🆕🆓 Organization wip purchased Free");
 
   t.end();
 });
-test("purchase enterprise", async function(t) {
+test("purchase enterprise", async function (t) {
   await this.app.receive(require("./events/purchase-enterprise.json"));
 
   t.is(
@@ -39,21 +39,21 @@ test("purchase enterprise", async function(t) {
 
   t.end();
 });
-test("upgrade", async function(t) {
+test("upgrade", async function (t) {
   await this.app.receive(require("./events/upgrade.json"));
 
   t.is(this.logMock.info.lastCall.arg, "⬆️💵 Organization wip changed to Pro");
 
   t.end();
 });
-test("upgrade", async function(t) {
+test("upgrade", async function (t) {
   await this.app.receive(require("./events/downgrade.json"));
 
   t.is(this.logMock.info.lastCall.arg, "⬇️💵 Organization wip changed to Pro");
 
   t.end();
 });
-test("cancellation", async function(t) {
+test("cancellation", async function (t) {
   await this.app.receive(require("./events/cancellation.json"));
 
   t.is(this.logMock.info.lastCall.arg, "🚫🆓 Organization wip cancelled Free");
@@ -61,7 +61,7 @@ test("cancellation", async function(t) {
   t.end();
 });
 
-test("pending_change", async function(t) {
+test("pending_change", async function (t) {
   await this.app.receive(require("./events/upgrade-pending.json"));
 
   t.is(this.logMock.info.callCount, 0);

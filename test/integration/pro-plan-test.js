@@ -7,10 +7,10 @@ const plugin = require("../../");
 // "code" was renamed to "status", we keep both for compatibility with probot-config
 const NOT_FOUND_ERROR = Object.assign(new Error("Not found"), {
   status: 404,
-  code: 404
+  code: 404,
 });
 
-beforeEach(function(done) {
+beforeEach(function (done) {
   lolex.install();
   this.app = new Application();
   this.githubMock = {
@@ -19,19 +19,19 @@ beforeEach(function(done) {
         data: {
           marketplace_purchase: {
             plan: {
-              price_model: "FLAT_RATE"
-            }
-          }
-        }
-      })
+              price_model: "FLAT_RATE",
+            },
+          },
+        },
+      }),
     },
     checks: {
       create: simple.mock(),
       listForRef: simple.mock().resolveWith({
         data: {
-          check_runs: []
-        }
-      })
+          check_runs: [],
+        },
+      }),
     },
     repos: {
       getContents: simple.mock().rejectWith(NOT_FOUND_ERROR),
@@ -40,11 +40,11 @@ beforeEach(function(done) {
       createStatus: simple.mock(),
       getCombinedStatusForRef: simple
         .mock()
-        .resolveWith({ data: { statuses: [] } })
+        .resolveWith({ data: { statuses: [] } }),
     },
     pullRequests: {
-      listCommits: simple.mock().resolveWith({ data: [] })
-    }
+      listCommits: simple.mock().resolveWith({ data: [] }),
+    },
   };
   this.app.auth = () => Promise.resolve(this.githubMock);
   this.logMock = simple.mock();
@@ -58,7 +58,7 @@ beforeEach(function(done) {
   done();
 });
 
-test('new pull request with "Test" title', async function(t) {
+test('new pull request with "Test" title', async function (t) {
   await this.app.receive(
     require("./events/new-pull-request-with-test-title.json")
   );
@@ -69,7 +69,7 @@ test('new pull request with "Test" title', async function(t) {
     check_name: "WIP",
     owner: "wip",
     repo: "app",
-    ref: "sha123"
+    ref: "sha123",
   });
 
   // create new check run
@@ -109,13 +109,13 @@ test('new pull request with "Test" title', async function(t) {
     override: null,
     location: null,
     match: null,
-    hasConfig: false
+    hasConfig: false,
   });
 
   t.end();
 });
 
-test('new pull request with "[WIP] Test" title', async function(t) {
+test('new pull request with "[WIP] Test" title', async function (t) {
   await this.app.receive(
     require("./events/new-pull-request-with-wip-title.json")
   );
@@ -143,16 +143,16 @@ test('new pull request with "[WIP] Test" title', async function(t) {
   t.end();
 });
 
-test('pending pull request with "Test" title', async function(t) {
+test('pending pull request with "Test" title', async function (t) {
   // simulate existing check runs
   this.githubMock.checks.listForRef = simple.mock().resolveWith({
     data: {
       check_runs: [
         {
-          status: "pending"
-        }
-      ]
-    }
+          status: "pending",
+        },
+      ],
+    },
   });
 
   await this.app.receive(
@@ -172,16 +172,16 @@ test('pending pull request with "Test" title', async function(t) {
   t.end();
 });
 
-test('ready pull request with "[WIP] Test" title', async function(t) {
+test('ready pull request with "[WIP] Test" title', async function (t) {
   // simulate existing check runs
   this.githubMock.checks.listForRef = simple.mock().resolveWith({
     data: {
       check_runs: [
         {
-          conclusion: "success"
-        }
-      ]
-    }
+          conclusion: "success",
+        },
+      ],
+    },
   });
 
   await this.app.receive(
@@ -200,16 +200,16 @@ test('ready pull request with "[WIP] Test" title', async function(t) {
   t.end();
 });
 
-test('pending pull request with "[WIP] Test" title', async function(t) {
+test('pending pull request with "[WIP] Test" title', async function (t) {
   // simulate existing check runs
   this.githubMock.checks.listForRef = simple.mock().resolveWith({
     data: {
       check_runs: [
         {
-          status: "pending"
-        }
-      ]
-    }
+          status: "pending",
+        },
+      ],
+    },
   });
 
   await this.app.receive(
@@ -227,16 +227,16 @@ test('pending pull request with "[WIP] Test" title', async function(t) {
   t.end();
 });
 
-test('ready pull request with "Test" title', async function(t) {
+test('ready pull request with "Test" title', async function (t) {
   // simulate existing check runs
   this.githubMock.checks.listForRef = simple.mock().resolveWith({
     data: {
       check_runs: [
         {
-          conclusion: "success"
-        }
-      ]
-    }
+          conclusion: "success",
+        },
+      ],
+    },
   });
 
   await this.app.receive(
@@ -254,12 +254,12 @@ test('ready pull request with "Test" title', async function(t) {
   t.end();
 });
 
-test("custom term: 🚧", { only: true }, async function(t) {
+test("custom term: 🚧", { only: true }, async function (t) {
   // custom configuration
   this.githubMock.repos.getContents = simple.mock().resolveWith({
     data: {
-      content: Buffer.from("terms: 🚧").toString("base64")
-    }
+      content: Buffer.from("terms: 🚧").toString("base64"),
+    },
   });
 
   await this.app.receive(
@@ -305,18 +305,18 @@ test("custom term: 🚧", { only: true }, async function(t) {
     override: null,
     location: "title",
     match: "🚧",
-    hasConfig: true
+    hasConfig: true,
   });
 
   t.end();
 });
 
-test("custom term: 🚧NoSpace", async function(t) {
+test("custom term: 🚧NoSpace", async function (t) {
   // custom configuration
   this.githubMock.repos.getContents = simple.mock().resolveWith({
     data: {
-      content: Buffer.from("terms: 🚧").toString("base64")
-    }
+      content: Buffer.from("terms: 🚧").toString("base64"),
+    },
   });
 
   await this.app.receive(
@@ -359,18 +359,18 @@ test("custom term: 🚧NoSpace", async function(t) {
     override: null,
     location: "title",
     match: "🚧",
-    hasConfig: true
+    hasConfig: true,
   });
 
   t.end();
 });
 
-test("custom location: label_name", async function(t) {
+test("custom location: label_name", async function (t) {
   // custom configuration
   this.githubMock.repos.getContents = simple.mock().resolveWith({
     data: {
-      content: Buffer.from("locations: label_name").toString("base64")
-    }
+      content: Buffer.from("locations: label_name").toString("base64"),
+    },
   });
 
   await this.app.receive(
@@ -396,12 +396,12 @@ test("custom location: label_name", async function(t) {
   t.end();
 });
 
-test("custom location: commits", async function(t) {
+test("custom location: commits", async function (t) {
   // custom configuration
   this.githubMock.repos.getContents = simple.mock().resolveWith({
     data: {
-      content: Buffer.from("locations: commit_subject").toString("base64")
-    }
+      content: Buffer.from("locations: commit_subject").toString("base64"),
+    },
   });
 
   // commit with "WIP: test" subject
@@ -409,10 +409,10 @@ test("custom location: commits", async function(t) {
     data: [
       {
         commit: {
-          message: "WIP: test"
-        }
-      }
-    ]
+          message: "WIP: test",
+        },
+      },
+    ],
   });
 
   await this.app.receive(
@@ -440,7 +440,7 @@ test("custom location: commits", async function(t) {
   t.end();
 });
 
-test("complex config", async function(t) {
+test("complex config", async function (t) {
   // custom configuration
   const config = `
 - terms:
@@ -455,8 +455,8 @@ test("complex config", async function(t) {
   locations: commit_subject`;
   this.githubMock.repos.getContents = simple.mock().resolveWith({
     data: {
-      content: Buffer.from(config).toString("base64")
-    }
+      content: Buffer.from(config).toString("base64"),
+    },
   });
 
   // commits
@@ -464,15 +464,15 @@ test("complex config", async function(t) {
     data: [
       {
         commit: {
-          message: "fixup! test"
-        }
+          message: "fixup! test",
+        },
       },
       {
         commit: {
-          message: "test"
-        }
-      }
-    ]
+          message: "test",
+        },
+      },
+    ],
   });
 
   await this.app.receive(
@@ -500,7 +500,7 @@ test("complex config", async function(t) {
   t.end();
 });
 
-test("loads config from .github repository", async function(t) {
+test("loads config from .github repository", async function (t) {
   await this.app.receive(
     require("./events/new-pull-request-with-emoji-title.json")
   );
@@ -509,13 +509,13 @@ test("loads config from .github repository", async function(t) {
   t.deepEqual(this.githubMock.repos.getContents.lastCall.arg, {
     owner: "wip",
     repo: ".github",
-    path: ".github/wip.yml"
+    path: ".github/wip.yml",
   });
 
   t.end();
 });
 
-test("loads commits once only", async function(t) {
+test("loads commits once only", async function (t) {
   // custom configuration
   const config = `
 - terms: 'foo'
@@ -524,8 +524,8 @@ test("loads commits once only", async function(t) {
   locations: commit_subject`;
   this.githubMock.repos.getContents = simple.mock().resolveWith({
     data: {
-      content: Buffer.from(config).toString("base64")
-    }
+      content: Buffer.from(config).toString("base64"),
+    },
   });
 
   // commits
@@ -533,10 +533,10 @@ test("loads commits once only", async function(t) {
     data: [
       {
         commit: {
-          message: "test"
-        }
-      }
-    ]
+          message: "test",
+        },
+      },
+    ],
   });
 
   await this.app.receive(
@@ -548,7 +548,7 @@ test("loads commits once only", async function(t) {
   t.end();
 });
 
-test("override", async function(t) {
+test("override", async function (t) {
   await this.app.receive(
     require("./events/new-pull-request-with-wip-title-and-override.json")
   );
@@ -573,7 +573,7 @@ test("override", async function(t) {
   t.end();
 });
 
-test("pending pull request with override", async function(t) {
+test("pending pull request with override", async function (t) {
   // no existing check runs
   this.githubMock.checks.listForRef = simple.mock().resolveWith({
     data: {
@@ -581,11 +581,11 @@ test("pending pull request with override", async function(t) {
         {
           status: "in_progress",
           output: {
-            title: "Ready for review (override)"
-          }
-        }
-      ]
-    }
+            title: "Ready for review (override)",
+          },
+        },
+      ],
+    },
   });
 
   await this.app.receive(
@@ -610,7 +610,7 @@ test("pending pull request with override", async function(t) {
   t.end();
 });
 
-test('pending pull request with override and "[WIP] test" title', async function(t) {
+test('pending pull request with override and "[WIP] test" title', async function (t) {
   // no existing check runs
   this.githubMock.checks.listForRef = simple.mock().resolveWith({
     data: {
@@ -618,11 +618,11 @@ test('pending pull request with override and "[WIP] test" title', async function
         {
           status: "in_progress",
           output: {
-            title: "Ready for review (override)"
-          }
-        }
-      ]
-    }
+            title: "Ready for review (override)",
+          },
+        },
+      ],
+    },
   });
 
   await this.app.receive(
@@ -641,7 +641,7 @@ test('pending pull request with override and "[WIP] test" title', async function
   t.end();
 });
 
-test("custom APP_NAME", async function(t) {
+test("custom APP_NAME", async function (t) {
   simple.mock(process.env, "APP_NAME", "WIP (local-dev)");
   await this.app.receive(
     require("./events/new-pull-request-with-test-title.json")
