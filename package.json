@@ -15,7 +15,7 @@
     "test": "tap --100 --coverage test/**/*-test.js",
     "posttest": "npm run lint",
     "semantic-release": "semantic-release",
-    "lint": "prettier --check '{lib,test}/**/*.{js,json,ts}' 'docs/*.{js,json}' index.js *.md package.json",
+    "lint": "prettier --check '{lib,test}/**/*.{js,json,ts}' index.js *.md package.json",
     "lint:fix": "prettier --write '{lib,test}/**/*.{js,json,ts}' index.js *.md package.json"
   },
   "repository": {
