@@ -13,6 +13,6 @@ jobs:
         id: stats
         with:
           id: 3414
-          privateKey: ${{ secrets.WIP_APP_PRIVATE_KEY }}
+          private_key: ${{ secrets.WIP_APP_PRIVATE_KEY }}
       - run: "echo installations: '${{ steps.stats.outputs.installations }}'"
       - run: "echo most popular repositories: '${{ steps.stats.outputs.popular_repositories }}'"
