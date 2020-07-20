@@ -8,6 +8,8 @@ const NOT_FOUND_ERROR = Object.assign(new Error("Not found"), { status: 404 });
 const SERVER_ERROR = Object.assign(new Error("Ooops"), { status: 500 });
 
 beforeEach(function (done) {
+  delete process.env.APP_NAME;
+
   lolex.install();
   this.app = new Application();
   this.githubMock = {

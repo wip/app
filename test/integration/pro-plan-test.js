@@ -11,6 +11,8 @@ const NOT_FOUND_ERROR = Object.assign(new Error("Not found"), {
 });
 
 beforeEach(function (done) {
+  delete process.env.APP_NAME;
+
   lolex.install();
   this.app = new Application();
   this.githubMock = {
