@@ -33,6 +33,7 @@
   },
   "homepage": "https://github.com/wip/app#readme",
   "dependencies": {
+    "@sinonjs/fake-timers": "^6.0.1",
     "gemoji": "^5.0.1",
     "logdna-bunyan": "^1.1.0",
     "pluralize": "^8.0.0",
@@ -44,7 +45,6 @@
   },
   "devDependencies": {
     "lodash.clonedeep": "^4.5.0",
-    "lolex": "^6.0.0",
     "prettier": "^2.0.5",
     "proxyquire": "^2.0.1",
     "semantic-release": "^17.0.0",
