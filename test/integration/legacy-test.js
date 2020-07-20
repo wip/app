@@ -1,4 +1,4 @@
-const lolex = require("lolex");
+FakeTimers = require("@sinonjs/fake-timers");
 const { Application } = require("probot");
 const simple = require("simple-mock");
 const { beforeEach, test } = require("tap");
@@ -8,7 +8,7 @@ const NOT_FOUND_ERROR = Object.assign(new Error("Not found"), { status: 404 });
 const SERVER_ERROR = Object.assign(new Error("Ooops"), { status: 500 });
 
 beforeEach(function (done) {
-  lolex.install();
+  FakeTimers.install();
   this.app = new Application();
   this.githubMock = {
     apps: {

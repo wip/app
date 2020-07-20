@@ -1,4 +1,4 @@
-const lolex = require("lolex");
+FakeTimers = require("@sinonjs/fake-timers");
 const { Application } = require("probot");
 const simple = require("simple-mock");
 const { beforeEach, test } = require("tap");
@@ -13,7 +13,7 @@ const NOT_FOUND_ERROR = Object.assign(new Error("Not found"), {
 beforeEach(function (done) {
   delete process.env.APP_NAME;
 
-  lolex.install();
+  FakeTimers.install();
   this.app = new Application();
   this.githubMock = {
     apps: {

@@ -1,4 +1,4 @@
-const lolex = require("lolex");
+FakeTimers = require("@sinonjs/fake-timers");
 const { Application } = require("probot");
 const simple = require("simple-mock");
 const { beforeEach, test } = require("tap");
@@ -6,7 +6,7 @@ const { beforeEach, test } = require("tap");
 const plugin = require("../../");
 
 beforeEach(function (done) {
-  lolex.install();
+  FakeTimers.install();
   this.app = new Application();
   this.githubMock = {};
   this.app.auth = () => Promise.resolve(this.githubMock);
