@@ -1,95 +1,123 @@
-FakeTimers = require("@sinonjs/fake-timers");
-const { Application } = require("probot");
-const simple = require("simple-mock");
+const FakeTimers = require("@sinonjs/fake-timers");
 const { beforeEach, test } = require("tap");
+const nock = require("nock");
+nock.disableNetConnect();
 
-const plugin = require("../../");
-const NOT_FOUND_ERROR = Object.assign(new Error("Not found"), { status: 404 });
-const SERVER_ERROR = Object.assign(new Error("Ooops"), { status: 500 });
+// disable Probot logs, bust be set before requiring probot
+process.env.LOG_LEVEL = "fatal";
+const { Probot } = require("probot");
+
+const app = require("../../");
 
 beforeEach(function (done) {
-  FakeTimers.install();
-  this.app = new Application();
-  this.githubMock = {
-    apps: {
-      checkAccountIsAssociatedWithAny: simple
-        .mock()
-        .rejectWith(NOT_FOUND_ERROR),
-    },
-    checks: {
-      listForRef: simple.mock().rejectWith(new Error('{"status": 403}')),
-    },
-    pullRequests: {
-      listCommits: simple.mock().resolveWith({ data: [] }),
-    },
-    repos: {
-      createStatus: simple.mock(),
-      getCombinedStatusForRef: simple
-        .mock()
-        .resolveWith({ data: { statuses: [] } }),
-    },
-  };
-  this.app.auth = () => Promise.resolve(this.githubMock);
-  this.logMock = simple.mock();
-  this.logMock.info = simple.mock();
-  this.logMock.trace = simple.mock();
-  this.logMock.warn = simple.mock();
-  this.logMock.error = simple.mock().callFn(console.log);
-  this.logMock.child = simple.mock().returnWith(this.logMock);
-  this.app.log = this.logMock;
-  this.app.load(plugin);
+  delete process.env.APP_NAME;
+  process.env.DISABLE_STATS = "true";
+  process.env.DISABLE_WEBHOOK_EVENT_CHECK = "true";
+  process.env.WIP_DISABLE_MEMORY_USAGE = "true";
+
+  FakeTimers.install({ toFake: ["Date"] });
+
+  this.probot = new Probot({
+    id: 1,
+    githubToken: "test",
+    throttleOptions: { enabled: false },
+  });
+  this.probot.load(app);
+
   done();
 });
 
 test('new pull request with "Test" title', async function (t) {
-  await this.app.receive(
+  const mock = nock("https://api.github.com")
+    // has no plan
+    .get("/marketplace_listing/accounts/1")
+    .reply(404)
+
+    // no access to check runs
+    .get("/repos/wip/app/commits/sha123/check-runs")
+    .query({
+      check_name: "WIP",
+    })
+    .reply(403)
+
+    // Create a commit status
+    // https://docs.github.com/en/rest/reference/repos#create-a-commit-status
+    .post("/repos/wip/app/statuses/sha123", (createStatusParams) => {
+      t.strictDeepEqual(createStatusParams, {
+        state: "error",
+        target_url:
+          "https://github.com/organizations/wip/settings/installations/1/permissions/update",
+        description: "Please accept the new permissions",
+        context: "WIP",
+      });
+
+      return true;
+    })
+    .reply(201, {});
+
+  await this.probot.receive(
     require("./events/new-pull-request-with-test-title.json")
   );
 
-  // check setting new status
-  t.is(this.githubMock.repos.createStatus.callCount, 1);
-  t.is(
-    this.githubMock.repos.createStatus.lastCall.arg.target_url,
-    "https://github.com/organizations/wip/settings/installations/1/permissions/update"
-  );
-
-  // check resulting logs
-  t.is(this.logMock.info.lastCall.arg, "⛔ wip/app#1 (legacy)");
-  t.is(this.logMock.child.lastCall.arg.legacy, true);
-
-  t.end();
+  t.deepEqual(mock.activeMocks(), []);
 });
 
 test('new pull request with "Test" title from user', async function (t) {
-  await this.app.receive(
+  const mock = nock("https://api.github.com")
+    // has no plan
+    .get("/marketplace_listing/accounts/1")
+    .reply(404)
+
+    // no access to check runs
+    .get("/repos/wip/app/commits/sha123/check-runs")
+    .query({
+      check_name: "WIP",
+    })
+    .reply(403)
+
+    // Create a commit status
+    // https://docs.github.com/en/rest/reference/repos#create-a-commit-status
+    .post("/repos/wip/app/statuses/sha123", (createStatusParams) => {
+      t.strictDeepEqual(createStatusParams, {
+        state: "error",
+        target_url:
+          "https://github.com/settings/installations/1/permissions/update",
+        description: "Please accept the new permissions",
+        context: "WIP",
+      });
+
+      return true;
+    })
+    .reply(201, {});
+
+  await this.probot.receive(
     require("./events/new-pull-request-with-test-title-from-user.json")
   );
 
-  // check setting new status
-  t.is(this.githubMock.repos.createStatus.callCount, 1);
-  t.is(
-    this.githubMock.repos.createStatus.lastCall.arg.target_url,
-    "https://github.com/settings/installations/1/permissions/update"
-  );
-
-  // check resulting logs
-  t.is(this.logMock.info.lastCall.arg, "⛔ wip/app#1 (legacy)");
-  t.is(this.logMock.child.lastCall.arg.legacy, true);
-
-  t.end();
+  t.deepEqual(mock.activeMocks(), []);
 });
 
 test("request error", async function (t) {
-  // simulate request error
-  this.githubMock.repos.createStatus = simple.mock().rejectWith(SERVER_ERROR);
-  this.logMock.error = simple.mock();
+  const mock = nock("https://api.github.com")
+    // has no plan
+    .get("/marketplace_listing/accounts/1")
+    .reply(404)
 
-  await this.app.receive(
-    require("./events/new-pull-request-with-test-title.json")
+    // no access to check runs
+    .get("/repos/wip/app/commits/sha123/check-runs")
+    .query({
+      check_name: "WIP",
+    })
+    .reply(403)
+
+    // Create a commit status
+    // https://docs.github.com/en/rest/reference/repos#create-a-commit-status
+    .post("/repos/wip/app/statuses/sha123")
+    .reply(500);
+
+  await this.probot.receive(
+    require("./events/new-pull-request-with-test-title-from-user.json")
   );
 
-  // check resulting logs
-  t.same(this.logMock.error.lastCall.arg, SERVER_ERROR);
-
-  t.end();
+  t.deepEqual(mock.activeMocks(), []);
 });
