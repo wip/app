@@ -1,70 +1,94 @@
-FakeTimers = require("@sinonjs/fake-timers");
-const { Application } = require("probot");
-const simple = require("simple-mock");
+const FakeTimers = require("@sinonjs/fake-timers");
 const { beforeEach, test } = require("tap");
+const nock = require("nock");
+const simple = require("simple-mock");
 
-const plugin = require("../../");
+nock.disableNetConnect();
+
+// disable Probot logs, bust be set before requiring probot
+process.env.LOG_LEVEL = "fatal";
+const { Probot } = require("probot");
+
+const app = require("../../");
 
 beforeEach(function (done) {
-  FakeTimers.install();
-  this.app = new Application();
-  this.githubMock = {};
-  this.app.auth = () => Promise.resolve(this.githubMock);
-  this.logMock = simple.mock();
-  this.logMock.debug = simple.mock();
-  this.logMock.trace = simple.mock();
-  this.logMock.info = simple.mock();
-  this.logMock.warn = simple.mock();
-  this.logMock.error = simple.mock().callFn(console.log);
-  this.logMock.child = simple.mock().returnWith(this.logMock);
-  this.app.log = this.logMock;
-  this.app.load(plugin);
+  delete process.env.APP_NAME;
+  process.env.DISABLE_STATS = "true";
+  process.env.DISABLE_WEBHOOK_EVENT_CHECK = "true";
+  process.env.WIP_DISABLE_MEMORY_USAGE = "true";
+
+  FakeTimers.install({ toFake: ["Date"] });
+
+  this.probot = new Probot({
+    id: 1,
+    githubToken: "test",
+    throttleOptions: { enabled: false },
+  });
+
+  this.probot.logger.info = simple.mock();
+  this.probot.logger.child = simple.mock().returnWith(this.probot.logger);
+
+  this.probot.load(app);
+
   done();
 });
 
 test("purchase free", async function (t) {
-  await this.app.receive(require("./events/purchase.json"));
+  await this.probot.receive(require("./events/purchase.json"));
 
-  t.is(this.logMock.info.lastCall.arg, "🆕🆓 Organization wip purchased Free");
+  t.is(
+    this.probot.logger.info.lastCall.arg,
+    "🆕🆓 Organization wip purchased Free"
+  );
 
   t.end();
 });
+
 test("purchase enterprise", async function (t) {
-  await this.app.receive(require("./events/purchase-enterprise.json"));
+  await this.probot.receive(require("./events/purchase-enterprise.json"));
 
   t.is(
-    this.logMock.info.lastCall.arg,
+    this.probot.logger.info.lastCall.arg,
     "🆕💰 Organization wip purchased Enterprise"
   );
 
   t.end();
 });
 test("upgrade", async function (t) {
-  await this.app.receive(require("./events/upgrade.json"));
+  await this.probot.receive(require("./events/upgrade.json"));
 
-  t.is(this.logMock.info.lastCall.arg, "⬆️💵 Organization wip changed to Pro");
+  t.is(
+    this.probot.logger.info.lastCall.arg,
+    "⬆️💵 Organization wip changed to Pro"
+  );
 
   t.end();
 });
 test("upgrade", async function (t) {
-  await this.app.receive(require("./events/downgrade.json"));
+  await this.probot.receive(require("./events/downgrade.json"));
 
-  t.is(this.logMock.info.lastCall.arg, "⬇️💵 Organization wip changed to Pro");
+  t.is(
+    this.probot.logger.info.lastCall.arg,
+    "⬇️💵 Organization wip changed to Pro"
+  );
 
   t.end();
 });
 test("cancellation", async function (t) {
-  await this.app.receive(require("./events/cancellation.json"));
+  await this.probot.receive(require("./events/cancellation.json"));
 
-  t.is(this.logMock.info.lastCall.arg, "🚫🆓 Organization wip cancelled Free");
+  t.is(
+    this.probot.logger.info.lastCall.arg,
+    "🚫🆓 Organization wip cancelled Free"
+  );
 
   t.end();
 });
 
 test("pending_change", async function (t) {
-  await this.app.receive(require("./events/upgrade-pending.json"));
+  await this.probot.receive(require("./events/upgrade-pending.json"));
 
-  t.is(this.logMock.info.callCount, 0);
+  t.is(this.probot.logger.info.callCount, 0);
 
   t.end();
 });
