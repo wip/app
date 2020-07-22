@@ -6,7 +6,7 @@ nock.disableNetConnect();
 
 // disable Probot logs, bust be set before requiring probot
 process.env.LOG_LEVEL = "fatal";
-const { Probot } = require("probot");
+const { Probot, ProbotOctokitCore } = require("probot");
 
 const app = require("../../");
 
@@ -21,7 +21,7 @@ beforeEach(function (done) {
   this.probot = new Probot({
     id: 1,
     githubToken: "test",
-    throttleOptions: { enabled: false },
+    Octokit: ProbotOctokitCore,
   });
 
   this.probot.logger.info = simple.mock();
@@ -45,9 +45,9 @@ test('new pull request with "Test" title', async function (t) {
     })
 
     // has no config
-    .get("/repos/wip/app/contents/.github/wip.yml")
+    .get("/repos/wip/app/contents/.github%2Fwip.yml")
     .reply(404)
-    .get("/repos/wip/.github/contents/.github/wip.yml")
+    .get("/repos/wip/.github/contents/.github%2Fwip.yml")
     .reply(404)
 
     // List commits on a pull request
@@ -128,9 +128,9 @@ test('new pull request with "[WIP] Test" title', async function (t) {
     })
 
     // has no config
-    .get("/repos/wip/app/contents/.github/wip.yml")
+    .get("/repos/wip/app/contents/.github%2Fwip.yml")
     .reply(404)
-    .get("/repos/wip/.github/contents/.github/wip.yml")
+    .get("/repos/wip/.github/contents/.github%2Fwip.yml")
     .reply(404)
 
     // List commits on a pull request
@@ -194,9 +194,9 @@ test('pending pull request with "Test" title', async function (t) {
     })
 
     // has no config
-    .get("/repos/wip/app/contents/.github/wip.yml")
+    .get("/repos/wip/app/contents/.github%2Fwip.yml")
     .reply(404)
-    .get("/repos/wip/.github/contents/.github/wip.yml")
+    .get("/repos/wip/.github/contents/.github%2Fwip.yml")
     .reply(404)
 
     // List commits on a pull request
@@ -256,9 +256,9 @@ test('ready pull request with "[WIP] Test" title', async function (t) {
     })
 
     // has no config
-    .get("/repos/wip/app/contents/.github/wip.yml")
+    .get("/repos/wip/app/contents/.github%2Fwip.yml")
     .reply(404)
-    .get("/repos/wip/.github/contents/.github/wip.yml")
+    .get("/repos/wip/.github/contents/.github%2Fwip.yml")
     .reply(404)
 
     // List commits on a pull request
@@ -317,9 +317,9 @@ test('pending pull request with "[WIP] Test" title', async function (t) {
     })
 
     // has no config
-    .get("/repos/wip/app/contents/.github/wip.yml")
+    .get("/repos/wip/app/contents/.github%2Fwip.yml")
     .reply(404)
-    .get("/repos/wip/.github/contents/.github/wip.yml")
+    .get("/repos/wip/.github/contents/.github%2Fwip.yml")
     .reply(404)
 
     // List commits on a pull request
@@ -370,9 +370,9 @@ test('ready pull request with "Test" title', async function (t) {
     })
 
     // has no config
-    .get("/repos/wip/app/contents/.github/wip.yml")
+    .get("/repos/wip/app/contents/.github%2Fwip.yml")
     .reply(404)
-    .get("/repos/wip/.github/contents/.github/wip.yml")
+    .get("/repos/wip/.github/contents/.github%2Fwip.yml")
     .reply(404)
 
     // List commits on a pull request
@@ -423,7 +423,7 @@ test("custom term: 🚧", { only: true }, async function (t) {
     })
 
     // has config
-    .get("/repos/wip/app/contents/.github/wip.yml")
+    .get("/repos/wip/app/contents/.github%2Fwip.yml")
     .reply(200, {
       content: Buffer.from("terms: 🚧").toString("base64"),
     })
@@ -517,7 +517,7 @@ test("custom term: 🚧NoSpace", async function (t) {
     })
 
     // has config
-    .get("/repos/wip/app/contents/.github/wip.yml")
+    .get("/repos/wip/app/contents/.github%2Fwip.yml")
     .reply(200, {
       content: Buffer.from("terms: 🚧").toString("base64"),
     })
@@ -610,7 +610,7 @@ test("custom location: label_name", async function (t) {
     })
 
     // has config
-    .get("/repos/wip/app/contents/.github/wip.yml")
+    .get("/repos/wip/app/contents/.github%2Fwip.yml")
     .reply(200, {
       content: Buffer.from("locations: label_name").toString("base64"),
     })
@@ -681,7 +681,7 @@ test("custom location: commits", async function (t) {
     })
 
     // has config
-    .get("/repos/wip/app/contents/.github/wip.yml")
+    .get("/repos/wip/app/contents/.github%2Fwip.yml")
     .reply(200, {
       content: Buffer.from("locations: commit_subject").toString("base64"),
     })
@@ -757,7 +757,7 @@ test("complex config", async function (t) {
     })
 
     // has config
-    .get("/repos/wip/app/contents/.github/wip.yml")
+    .get("/repos/wip/app/contents/.github%2Fwip.yml")
     .reply(200, {
       content: Buffer.from(
         `
@@ -850,9 +850,9 @@ test("loads config from .github repository", async function (t) {
     })
 
     // has config in .github repository
-    .get("/repos/wip/app/contents/.github/wip.yml")
+    .get("/repos/wip/app/contents/.github%2Fwip.yml")
     .reply(404)
-    .get("/repos/wip/.github/contents/.github/wip.yml")
+    .get("/repos/wip/.github/contents/.github%2Fwip.yml")
     .reply(200, {
       content: Buffer.from("terms: 🚧").toString("base64"),
     })
@@ -900,9 +900,9 @@ test("loads commits once only", async function (t) {
     })
 
     // has config in .github repository
-    .get("/repos/wip/app/contents/.github/wip.yml")
+    .get("/repos/wip/app/contents/.github%2Fwip.yml")
     .reply(404)
-    .get("/repos/wip/.github/contents/.github/wip.yml")
+    .get("/repos/wip/.github/contents/.github%2Fwip.yml")
     .reply(200, {
       content: Buffer.from(
         `
@@ -1014,9 +1014,9 @@ test("pending pull request with override", async function (t) {
     })
 
     // has no config
-    .get("/repos/wip/app/contents/.github/wip.yml")
+    .get("/repos/wip/app/contents/.github%2Fwip.yml")
     .reply(404)
-    .get("/repos/wip/.github/contents/.github/wip.yml")
+    .get("/repos/wip/.github/contents/.github%2Fwip.yml")
     .reply(404)
 
     // List commits on a pull request
@@ -1084,9 +1084,9 @@ test('pending pull request with override and "[WIP] test" title', async function
     })
 
     // has no config
-    .get("/repos/wip/app/contents/.github/wip.yml")
+    .get("/repos/wip/app/contents/.github%2Fwip.yml")
     .reply(404)
-    .get("/repos/wip/.github/contents/.github/wip.yml")
+    .get("/repos/wip/.github/contents/.github%2Fwip.yml")
     .reply(404)
 
     // List commits on a pull request
@@ -1151,9 +1151,9 @@ test("custom APP_NAME", async function (t) {
     })
 
     // has no config
-    .get("/repos/wip/app/contents/.github/wip.yml")
+    .get("/repos/wip/app/contents/.github%2Fwip.yml")
     .reply(404)
-    .get("/repos/wip/.github/contents/.github/wip.yml")
+    .get("/repos/wip/.github/contents/.github%2Fwip.yml")
     .reply(404)
 
     // List commits on a pull request
