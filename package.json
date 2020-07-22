@@ -37,7 +37,7 @@
     "gemoji": "^5.0.1",
     "logdna-bunyan": "^1.1.0",
     "pluralize": "^8.0.0",
-    "probot": "^9.13.0",
+    "probot": "github:probot/probot#upgrade-to-octokit-rest-17",
     "probot-config": "^1.0.1"
   },
   "jest": {
