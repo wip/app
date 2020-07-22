@@ -33,10 +33,11 @@
   },
   "homepage": "https://github.com/wip/app#readme",
   "dependencies": {
+    "@sinonjs/fake-timers": "^6.0.1",
     "gemoji": "^5.0.1",
     "logdna-bunyan": "^1.1.0",
     "pluralize": "^8.0.0",
-    "probot": "^9.9.1",
+    "probot": "^9.13.0",
     "probot-config": "^1.0.1"
   },
   "jest": {
@@ -44,13 +45,13 @@
   },
   "devDependencies": {
     "lodash.clonedeep": "^4.5.0",
-    "lolex": "^6.0.0",
+    "nock": "^13.0.2",
     "prettier": "^2.0.5",
     "proxyquire": "^2.0.1",
     "semantic-release": "^17.0.0",
     "simple-mock": "^0.8.0",
     "smee-client": "^1.1.0",
-    "tap": "^14.0.0"
+    "tap": "^14.10.7"
   },
   "engines": {
     "node": ">=10.7.0",

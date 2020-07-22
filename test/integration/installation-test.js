@@ -1,176 +1,70 @@
-const lolex = require("lolex");
-const { Application } = require("probot");
-const simple = require("simple-mock");
+const FakeTimers = require("@sinonjs/fake-timers");
 const { beforeEach, test } = require("tap");
+const nock = require("nock");
+const simple = require("simple-mock");
 
-const plugin = require("../../");
+nock.disableNetConnect();
 
-const NOT_FOUND_ERROR = Object.assign(new Error("Not found"), { status: 404 });
+// disable Probot logs, bust be set before requiring probot
+process.env.LOG_LEVEL = "fatal";
+const { Probot } = require("probot");
+
+const app = require("../../");
 
 beforeEach(function (done) {
-  lolex.install();
-  this.app = new Application();
-  this.githubMock = {
-    paginate: simple.mock().returnWith([]),
-    apps: {
-      checkAccountIsAssociatedWithAny: simple
-        .mock()
-        .rejectWith(NOT_FOUND_ERROR),
-      listRepos: {
-        endpoint: { merge: simple.mock() },
-      },
-    },
-    pulls: {
-      list: {
-        endpoint: { merge: simple.mock() },
-      },
-    },
-    checks: {
-      create: simple.mock(),
-      listForRef: simple.mock().resolveWith({
-        data: {
-          check_runs: [],
-        },
-      }),
-    },
-    repos: {
-      getCombinedStatusForRef: simple
-        .mock()
-        .resolveWith({ data: { statuses: [] } }),
-    },
-  };
-  this.app.auth = () => Promise.resolve(this.githubMock);
-  this.logMock = simple.mock();
-  this.logMock.debug = simple.mock();
-  this.logMock.trace = simple.mock();
-  this.logMock.info = simple.mock();
-  this.logMock.warn = simple.mock();
-  this.logMock.error = simple.mock().callFn(console.log);
-  this.logMock.child = simple.mock().returnWith(this.logMock);
-  this.app.log = this.logMock;
-  this.app.load(plugin);
+  delete process.env.APP_NAME;
+  process.env.DISABLE_STATS = "true";
+  process.env.DISABLE_WEBHOOK_EVENT_CHECK = "true";
+  process.env.WIP_DISABLE_MEMORY_USAGE = "true";
+
+  FakeTimers.install({ toFake: ["Date"] });
+
+  this.probot = new Probot({
+    id: 1,
+    githubToken: "test",
+    throttleOptions: { enabled: false },
+  });
+
+  this.probot.logger.info = simple.mock();
+  this.probot.logger.child = simple.mock().returnWith(this.probot.logger);
+
+  this.probot.load(app);
+
   done();
 });
 
-test("cancellation", async function (t) {
-  await this.app.receive(require("./events/uninstall.json"));
+test('new pull request with "Test" title', async function (t) {
+  await this.probot.receive(require("./events/uninstall.json"));
 
-  t.is(this.logMock.info.lastCall.arg, "😭 Organization wip uninstalled");
-
-  t.end();
+  t.is(this.probot.logger.info.lastCall.arg, "😭 Organization wip uninstalled");
 });
 
 test("repositories removed", async function (t) {
-  await this.app.receive(require("./events/repositories-removed.json"));
+  await this.probot.receive(require("./events/repositories-removed.json"));
 
   t.is(
-    this.logMock.info.lastCall.arg,
+    this.probot.logger.info.lastCall.arg,
     "➖ Organization wip removed 2 repositories"
   );
-
-  t.end();
 });
 
 test("installation", async function (t) {
-  this.githubMock.paginate = simple.mock().resolveWith([
-    {
-      title: "Test",
-      number: 1,
-      head: {
-        sha: "sha123",
-      },
-      labels: [],
-      base: {
-        repo: {
-          id: 1,
-          name: "repo1",
-          full_name: "wip/repo1",
-          private: false,
-          owner: {
-            id: 1,
-            login: "wip",
-          },
-        },
-      },
-    },
-    {
-      title: "[WIP] Test",
-      number: 2,
-      head: {
-        sha: "sha456",
-      },
-      labels: [],
-      base: {
-        repo: {
-          id: 1,
-          name: "repo1",
-          full_name: "wip/repo1",
-          private: false,
-          owner: {
-            id: 1,
-            login: "wip",
-          },
-        },
-      },
-    },
-  ]);
+  const mock = nock("https://api.github.com")
+    // has no plan
+    // https://docs.github.com/en/rest/reference/apps#get-a-subscription-plan-for-an-account
+    .get("/marketplace_listing/accounts/1")
+    .reply(404)
 
-  await this.app.receive(require("./events/install.json"));
-
-  // one repository × two pull requests
-  t.is(this.githubMock.checks.create.callCount, 2);
-
-  const [one, two] = this.githubMock.checks.create.calls;
-
-  t.deepEqual(one.arg, {
-    owner: "wip",
-    repo: "repo1",
-    name: "WIP",
-    head_branch: "",
-    head_sha: "sha123",
-    status: "completed",
-    started_at: "1970-01-01T00:00:00.000Z",
-    output: {
-      title: "Ready for review",
-      summary: "No match found based on configuration",
-      text:
-        'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.',
-    },
-    conclusion: "success",
-    completed_at: "1970-01-01T00:00:00.000Z",
-    request: {
-      retries: 3,
-      retryAfter: 3,
-    },
-  });
-
-  t.deepEqual(two.arg, {
-    owner: "wip",
-    repo: "repo1",
-    name: "WIP",
-    head_branch: "",
-    head_sha: "sha456",
-    status: "in_progress",
-    started_at: "1970-01-01T00:00:00.000Z",
-    output: {
-      title: 'Title contains "WIP"',
-      summary: 'The title "[WIP] Test" contains "WIP".',
-      text:
-        'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.',
-    },
-    request: {
-      retries: 3,
-      retryAfter: 3,
-    },
-  });
-
-  t.end();
-});
-
-test("repositories added", async function (t) {
-  this.githubMock.paginate = simple
-    .mock()
-    .resolveWith([
+    // List pull requests
+    // https://docs.github.com/en/rest/reference/pulls#list-pull-requests
+    .get("/repos/wip/repo1/pulls")
+    .query({
+      state: "open",
+      sort: "updated",
+      direction: "desc",
+      per_page: 100,
+    })
+    .reply(200, [
       {
         title: "Test",
         number: 1,
@@ -212,7 +106,148 @@ test("repositories added", async function (t) {
         },
       },
     ])
-    .resolveWith([
+
+    // check for current status
+    // https://docs.github.com/en/rest/reference/checks#list-check-runs-for-a-git-reference
+    .get("/repos/wip/repo1/commits/sha123/check-runs")
+    .query({
+      check_name: "WIP",
+    })
+    .reply(200, { check_runs: [] })
+
+    // get combined status
+    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
+    .get("/repos/wip/repo1/commits/sha123/status")
+    .reply(200, { statuses: [] })
+
+    // check for current status
+    // https://docs.github.com/en/rest/reference/checks#list-check-runs-for-a-git-reference
+    .get("/repos/wip/repo1/commits/sha456/check-runs")
+    .query({
+      check_name: "WIP",
+    })
+    .reply(200, { check_runs: [] })
+
+    // get combined status
+    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
+    .get("/repos/wip/repo1/commits/sha456/status")
+    .reply(200, { statuses: [] })
+
+    // Create 1st check run
+    // https://docs.github.com/en/rest/reference/checks#create-a-check-run
+    .post("/repos/wip/repo1/check-runs", (createCheckParams) => {
+      t.strictDeepEqual(createCheckParams, {
+        name: "WIP",
+        head_branch: "",
+        head_sha: "sha123",
+        status: "completed",
+        started_at: "1970-01-01T00:00:00.000Z",
+        output: {
+          title: "Ready for review",
+          summary: "No match found based on configuration",
+          text:
+            'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.',
+        },
+        conclusion: "success",
+        completed_at: "1970-01-01T00:00:00.000Z",
+      });
+
+      return true;
+    })
+    .reply(201, {})
+
+    // create 2nd check run
+    .post("/repos/wip/repo1/check-runs", (createCheckParams) => {
+      t.strictDeepEqual(createCheckParams, {
+        name: "WIP",
+        head_branch: "",
+        head_sha: "sha456",
+        status: "in_progress",
+        started_at: "1970-01-01T00:00:00.000Z",
+        output: {
+          title: 'Title contains "WIP"',
+          summary: 'The title "[WIP] Test" contains "WIP".',
+          text:
+            'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.',
+        },
+      });
+
+      return true;
+    })
+    .reply(201, {});
+
+  await this.probot.receive(require("./events/install.json"));
+
+  t.deepEqual(mock.activeMocks(), []);
+});
+
+test("repositories added", async function (t) {
+  const mock = nock("https://api.github.com")
+    // has no plan
+    // https://docs.github.com/en/rest/reference/apps#get-a-subscription-plan-for-an-account
+    .get("/marketplace_listing/accounts/1")
+    .reply(404)
+
+    // List pull requests
+    // https://docs.github.com/en/rest/reference/pulls#list-pull-requests
+    .get("/repos/wip/repo1/pulls")
+    .query({
+      state: "open",
+      sort: "updated",
+      direction: "desc",
+      per_page: 100,
+    })
+    .reply(200, [
+      {
+        title: "Test",
+        number: 1,
+        head: {
+          sha: "sha123",
+        },
+        labels: [],
+        base: {
+          repo: {
+            id: 1,
+            name: "repo1",
+            full_name: "wip/repo1",
+            private: false,
+            owner: {
+              id: 1,
+              login: "wip",
+            },
+          },
+        },
+      },
+      {
+        title: "[WIP] Test",
+        number: 2,
+        head: {
+          sha: "sha456",
+        },
+        labels: [],
+        base: {
+          repo: {
+            id: 1,
+            name: "repo1",
+            full_name: "wip/repo1",
+            private: false,
+            owner: {
+              id: 1,
+              login: "wip",
+            },
+          },
+        },
+      },
+    ])
+
+    .get("/repos/wip/repo2/pulls")
+    .query({
+      state: "open",
+      sort: "updated",
+      direction: "desc",
+      per_page: 100,
+    })
+    .reply(200, [
       {
         title: "Test",
         number: 1,
@@ -253,113 +288,169 @@ test("repositories added", async function (t) {
           },
         },
       },
-    ]);
+    ])
 
-  await this.app.receive(require("./events/repositories-added.json"));
+    // check for current status
+    // https://docs.github.com/en/rest/reference/checks#list-check-runs-for-a-git-reference
+    .get("/repos/wip/repo1/commits/sha123/check-runs")
+    .query({
+      check_name: "WIP",
+    })
+    .reply(200, { check_runs: [] })
 
-  // two repositories × two pull requests
-  t.is(this.githubMock.checks.create.callCount, 4);
+    // get combined status
+    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
+    .get("/repos/wip/repo1/commits/sha123/status")
+    .reply(200, { statuses: [] })
 
-  const [one, two, three, four] = this.githubMock.checks.create.calls;
+    // check for current check status & combined status (2nd pr)
+    .get("/repos/wip/repo1/commits/sha456/check-runs")
+    .query({
+      check_name: "WIP",
+    })
+    .reply(200, { check_runs: [] })
+    .get("/repos/wip/repo1/commits/sha456/status")
+    .reply(200, { statuses: [] })
 
-  t.deepEqual(one.arg, {
-    owner: "wip",
-    repo: "repo1",
-    name: "WIP",
-    head_branch: "",
-    head_sha: "sha123",
-    status: "completed",
-    started_at: "1970-01-01T00:00:00.000Z",
-    output: {
-      title: "Ready for review",
-      summary: "No match found based on configuration",
-      text:
-        'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.',
-    },
-    conclusion: "success",
-    completed_at: "1970-01-01T00:00:00.000Z",
-    request: {
-      retries: 3,
-      retryAfter: 3,
-    },
-  });
+    // check for current check status & combined status (3rd pr)
+    .get("/repos/wip/repo2/commits/sha789/check-runs")
+    .query({
+      check_name: "WIP",
+    })
+    .reply(200, { check_runs: [] })
+    .get("/repos/wip/repo2/commits/sha789/status")
+    .reply(200, { statuses: [] })
 
-  t.deepEqual(two.arg, {
-    owner: "wip",
-    repo: "repo1",
-    name: "WIP",
-    head_branch: "",
-    head_sha: "sha456",
-    status: "in_progress",
-    started_at: "1970-01-01T00:00:00.000Z",
-    output: {
-      title: 'Title contains "WIP"',
-      summary: 'The title "[WIP] Test" contains "WIP".',
-      text:
-        'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.',
-    },
-    request: {
-      retries: 3,
-      retryAfter: 3,
-    },
-  });
+    // check for current check status & combined status (4th pr)
+    .get("/repos/wip/repo2/commits/sha100/check-runs")
+    .query({
+      check_name: "WIP",
+    })
+    .reply(200, { check_runs: [] })
+    .get("/repos/wip/repo2/commits/sha100/status")
+    .reply(200, { statuses: [] })
 
-  t.deepEqual(three.arg, {
-    owner: "wip",
-    repo: "repo2",
-    name: "WIP",
-    head_branch: "",
-    head_sha: "sha789",
-    status: "completed",
-    started_at: "1970-01-01T00:00:00.000Z",
-    output: {
-      title: "Ready for review",
-      summary: "No match found based on configuration",
-      text:
-        'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.',
-    },
-    conclusion: "success",
-    completed_at: "1970-01-01T00:00:00.000Z",
-    request: {
-      retries: 3,
-      retryAfter: 3,
-    },
-  });
+    // Create 1st check run
+    // https://docs.github.com/en/rest/reference/checks#create-a-check-run
+    .post("/repos/wip/repo1/check-runs", (createCheckParams) => {
+      t.strictDeepEqual(createCheckParams, {
+        name: "WIP",
+        head_branch: "",
+        head_sha: "sha123",
+        status: "completed",
+        started_at: "1970-01-01T00:00:00.000Z",
+        output: {
+          title: "Ready for review",
+          summary: "No match found based on configuration",
+          text:
+            'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.',
+        },
+        conclusion: "success",
+        completed_at: "1970-01-01T00:00:00.000Z",
+      });
 
-  t.deepEqual(four.arg, {
-    owner: "wip",
-    repo: "repo2",
-    name: "WIP",
-    head_branch: "",
-    head_sha: "sha100",
-    status: "in_progress",
-    started_at: "1970-01-01T00:00:00.000Z",
-    output: {
-      title: 'Title contains "WIP"',
-      summary: 'The title "[WIP] Test" contains "WIP".',
-      text:
-        'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.',
-    },
-    request: {
-      retries: 3,
-      retryAfter: 3,
-    },
-  });
+      return true;
+    })
+    .reply(201, {})
 
-  t.end();
+    // create 2nd check run
+    .post("/repos/wip/repo1/check-runs", (createCheckParams) => {
+      t.strictDeepEqual(createCheckParams, {
+        name: "WIP",
+        head_branch: "",
+        head_sha: "sha456",
+        status: "in_progress",
+        started_at: "1970-01-01T00:00:00.000Z",
+        output: {
+          title: 'Title contains "WIP"',
+          summary: 'The title "[WIP] Test" contains "WIP".',
+          text:
+            'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.',
+        },
+      });
+
+      return true;
+    })
+    .reply(201, {})
+
+    // create 3rd check run
+    .post("/repos/wip/repo2/check-runs", (createCheckParams) => {
+      t.strictDeepEqual(createCheckParams, {
+        name: "WIP",
+        head_branch: "",
+        head_sha: "sha789",
+        status: "completed",
+        started_at: "1970-01-01T00:00:00.000Z",
+        output: {
+          title: "Ready for review",
+          summary: "No match found based on configuration",
+          text:
+            'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.',
+        },
+        conclusion: "success",
+        completed_at: "1970-01-01T00:00:00.000Z",
+      });
+
+      return true;
+    })
+    .reply(201, {})
+
+    // create 4th check run
+    .post("/repos/wip/repo2/check-runs", (createCheckParams) => {
+      t.strictDeepEqual(createCheckParams, {
+        name: "WIP",
+        head_branch: "",
+        head_sha: "sha100",
+        status: "in_progress",
+        started_at: "1970-01-01T00:00:00.000Z",
+        output: {
+          title: 'Title contains "WIP"',
+          summary: 'The title "[WIP] Test" contains "WIP".',
+          text:
+            'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.',
+        },
+      });
+
+      return true;
+    })
+    .reply(201, {});
+
+  await this.probot
+    .receive(require("./events/repositories-added.json"))
+    .catch(t.error);
+
+  t.deepEqual(mock.activeMocks(), []);
 });
 
 test("permissions accepted", async function (t) {
-  this.githubMock.paginate = simple
-    .mock()
-    // repos
-    .resolveWith([
+  const mock = nock("https://api.github.com")
+    // has no plan
+    // https://docs.github.com/en/rest/reference/apps#get-a-subscription-plan-for-an-account
+    .get("/marketplace_listing/accounts/1")
+    .reply(404)
+
+    // List repositories accessible to the app installation
+    // https://docs.github.com/en/rest/reference/apps#list-repositories-accessible-to-the-app-installation
+    .get("/installation/repositories")
+    .query({
+      per_page: 100,
+    })
+    .reply(200, [
       {
         name: "repo1",
       },
     ])
-    // pull requsets
-    .resolveWith([
+
+    // List pull requests
+    // https://docs.github.com/en/rest/reference/pulls#list-pull-requests
+    .get("/repos/wip/repo1/pulls")
+    .query({
+      state: "open",
+      sort: "updated",
+      direction: "desc",
+      per_page: 100,
+    })
+    .reply(200, [
       {
         title: "Test",
         number: 1,
@@ -400,56 +491,76 @@ test("permissions accepted", async function (t) {
           },
         },
       },
-    ]);
+    ])
 
-  await this.app.receive(require("./events/new-permissions-accepted.json"));
+    // check for current status
+    // https://docs.github.com/en/rest/reference/checks#list-check-runs-for-a-git-reference
+    .get("/repos/wip/repo1/commits/sha123/check-runs")
+    .query({
+      check_name: "WIP",
+    })
+    .reply(200, { check_runs: [] })
 
-  // one repository × two pull requests
-  t.is(this.githubMock.checks.create.callCount, 2);
+    // get combined status
+    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
+    .get("/repos/wip/repo1/commits/sha123/status")
+    .reply(200, { statuses: [] })
 
-  const [one, two] = this.githubMock.checks.create.calls;
+    // 2nd pr
+    .get("/repos/wip/repo1/commits/sha456/check-runs")
+    .query({
+      check_name: "WIP",
+    })
+    .reply(200, { check_runs: [] })
+    .get("/repos/wip/repo1/commits/sha456/status")
+    .reply(200, { statuses: [] })
 
-  t.deepEqual(one.arg, {
-    owner: "wip",
-    repo: "repo1",
-    name: "WIP",
-    head_branch: "",
-    head_sha: "sha123",
-    status: "completed",
-    started_at: "1970-01-01T00:00:00.000Z",
-    output: {
-      title: "Ready for review",
-      summary: "No match found based on configuration",
-      text:
-        'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.',
-    },
-    conclusion: "success",
-    completed_at: "1970-01-01T00:00:00.000Z",
-    request: {
-      retries: 3,
-      retryAfter: 3,
-    },
-  });
+    // Create 1st check run
+    // https://docs.github.com/en/rest/reference/checks#create-a-check-run
+    .post("/repos/wip/repo1/check-runs", (createCheckParams) => {
+      t.strictDeepEqual(createCheckParams, {
+        name: "WIP",
+        head_branch: "",
+        head_sha: "sha123",
+        status: "completed",
+        started_at: "1970-01-01T00:00:00.000Z",
+        output: {
+          title: "Ready for review",
+          summary: "No match found based on configuration",
+          text:
+            'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.',
+        },
+        conclusion: "success",
+        completed_at: "1970-01-01T00:00:00.000Z",
+      });
 
-  t.deepEqual(two.arg, {
-    owner: "wip",
-    repo: "repo1",
-    name: "WIP",
-    head_branch: "",
-    head_sha: "sha456",
-    status: "in_progress",
-    started_at: "1970-01-01T00:00:00.000Z",
-    output: {
-      title: 'Title contains "WIP"',
-      summary: 'The title "[WIP] Test" contains "WIP".',
-      text:
-        'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.',
-    },
-    request: {
-      retries: 3,
-      retryAfter: 3,
-    },
-  });
+      return true;
+    })
+    .reply(201, {})
 
-  t.end();
+    // create 2nd check run
+    .post("/repos/wip/repo1/check-runs", (createCheckParams) => {
+      t.strictDeepEqual(createCheckParams, {
+        name: "WIP",
+        head_branch: "",
+        head_sha: "sha456",
+        status: "in_progress",
+        started_at: "1970-01-01T00:00:00.000Z",
+        output: {
+          title: 'Title contains "WIP"',
+          summary: 'The title "[WIP] Test" contains "WIP".',
+          text:
+            'By default, WIP only checks the pull request title for the terms "WIP", "Work in progress" and "🚧".\n\nYou can configure both the terms and the location that the WIP app will look for by signing up for the pro plan: https://github.com/marketplace/wip. All revenue will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is.',
+        },
+      });
+
+      return true;
+    })
+    .reply(201, {});
+
+  await this.probot
+    .receive(require("./events/new-permissions-accepted.json"))
+    .catch(t.error);
+
+  t.deepEqual(mock.activeMocks(), []);
 });
