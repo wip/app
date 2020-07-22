@@ -555,8 +555,8 @@ test("Legacy commit status override (#124)", async function (t) {
 
     // Create a commit status
     // https://docs.github.com/en/rest/reference/repos#create-a-commit-status
-    .post("/repos/wip/app/statuses/sha123", (createStatusParams) => {
-      t.strictDeepEqual(createStatusParams, {
+    .post("/repos/wip/app/statuses/sha123", (createCommitStatusParams) => {
+      t.strictDeepEqual(createCommitStatusParams, {
         state: "success",
         target_url: "https://github.com/wip/app/issues/124",
         description: "Legacy commit status override — see details",

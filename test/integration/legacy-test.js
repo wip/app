@@ -42,8 +42,8 @@ test('new pull request with "Test" title', async function (t) {
 
     // Create a commit status
     // https://docs.github.com/en/rest/reference/repos#create-a-commit-status
-    .post("/repos/wip/app/statuses/sha123", (createStatusParams) => {
-      t.strictDeepEqual(createStatusParams, {
+    .post("/repos/wip/app/statuses/sha123", (createCommitStatusParams) => {
+      t.strictDeepEqual(createCommitStatusParams, {
         state: "error",
         target_url:
           "https://github.com/organizations/wip/settings/installations/1/permissions/update",
@@ -77,8 +77,8 @@ test('new pull request with "Test" title from user', async function (t) {
 
     // Create a commit status
     // https://docs.github.com/en/rest/reference/repos#create-a-commit-status
-    .post("/repos/wip/app/statuses/sha123", (createStatusParams) => {
-      t.strictDeepEqual(createStatusParams, {
+    .post("/repos/wip/app/statuses/sha123", (createCommitStatusParams) => {
+      t.strictDeepEqual(createCommitStatusParams, {
         state: "error",
         target_url:
           "https://github.com/settings/installations/1/permissions/update",
