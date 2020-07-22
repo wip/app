@@ -5,15 +5,8 @@ const getConfig = require("../../lib/pro/get-config");
 test("throws error if getting config fails with error other than 404", async function (t) {
   try {
     await getConfig({
-      github: {
-        repos: {
-          getContents() {
-            throw new Error("oops");
-          },
-        },
-      },
-      repo() {
-        return {};
+      config() {
+        throw new Error("oops");
       },
     });
     t.fail("should throw error");
