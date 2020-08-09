@@ -44,7 +44,7 @@ test("throws error if getting current plan fails with error other than 404", asy
     auth() {
       return {
         apps: {
-          checkAccountIsAssociatedWithAny() {
+          getSubscriptionPlanForAccount() {
             throw new Error("oops");
           },
         },

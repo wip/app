@@ -5,7 +5,7 @@ nock.disableNetConnect();
 
 // disable Probot logs, bust be set before requiring probot
 process.env.LOG_LEVEL = "fatal";
-const { Probot } = require("probot");
+const { Probot, ProbotOctokitCore } = require("probot");
 
 const app = require("../../");
 
@@ -20,7 +20,7 @@ beforeEach(function (done) {
   this.probot = new Probot({
     id: 1,
     githubToken: "test",
-    throttleOptions: { enabled: false },
+    Octokit: ProbotOctokitCore,
   });
   this.probot.load(app);
 
@@ -555,8 +555,8 @@ test("Legacy commit status override (#124)", async function (t) {
 
     // Create a commit status
     // https://docs.github.com/en/rest/reference/repos#create-a-commit-status
-    .post("/repos/wip/app/statuses/sha123", (createStatusParams) => {
-      t.strictDeepEqual(createStatusParams, {
+    .post("/repos/wip/app/statuses/sha123", (createCommitStatusParams) => {
+      t.strictDeepEqual(createCommitStatusParams, {
         state: "success",
         target_url: "https://github.com/wip/app/issues/124",
         description: "Legacy commit status override — see details",
