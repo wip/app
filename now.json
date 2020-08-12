@@ -12,7 +12,7 @@
     "APP_NAME": "WIP",
     "DISABLE_STATS": "true",
     "LOG_LEVEL": "fatal",
-    "LOGDNA_API_KEY": "@logdna-api-key",
+    "LOGDNA_KEY": "@logdna-key",
     "NODE_ENV": "production",
     "PRIVATE_KEY": "@private-key",
     "REDIS_URL": "@redis-url",

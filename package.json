@@ -11,7 +11,6 @@
   ],
   "scripts": {
     "start": "probot run ./index.js",
-    "now-start": "PRIVATE_KEY=$(echo $PRIVATE_KEY | base64 -d) npm start",
     "test": "tap --100 --coverage test/**/*-test.js",
     "posttest": "npm run lint",
     "semantic-release": "semantic-release",
@@ -36,8 +35,10 @@
     "@sinonjs/fake-timers": "^6.0.1",
     "gemoji": "^5.0.1",
     "logdna-bunyan": "^1.1.0",
+    "pino-logdna": "^1.0.5",
+    "pino-sentry": "^0.3.0",
     "pluralize": "^8.0.0",
-    "probot": "^10.0.0-beta.22"
+    "probot": "^10.0.0-beta.23"
   },
   "jest": {
     "testURL": "http://localhost/"
