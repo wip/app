@@ -5,7 +5,7 @@ nock.disableNetConnect();
 
 // disable Probot logs, bust be set before requiring probot
 process.env.LOG_LEVEL = "fatal";
-const { Probot, ProbotOctokitCore } = require("probot");
+const { Probot, ProbotOctokit } = require("probot");
 
 const app = require("../../");
 
@@ -20,7 +20,10 @@ beforeEach(function (done) {
   this.probot = new Probot({
     id: 1,
     githubToken: "test",
-    Octokit: ProbotOctokitCore,
+    Octokit: ProbotOctokit.defaults({
+      throttle: { enabled: false },
+      retry: { enabled: false },
+    }),
   });
   this.probot.load(app);
 
