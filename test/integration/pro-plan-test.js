@@ -97,7 +97,7 @@ test('new pull request with "Test" title', async function (t) {
   t.is(this.probot.logger.info.callCount, 1);
 
   t.deepEqual(this.probot.logger.child.lastCall.arg, {
-    // name: "WIP", ¯\_(ツ)_/¯ no idea why that's not set. It is in the code
+    name: "WIP",
     account: 1,
     plan: "pro",
     repo: 1,
@@ -486,7 +486,7 @@ test("custom term: 🚧", { only: true }, async function (t) {
   );
   t.is(this.probot.logger.info.callCount, 1);
   t.deepEqual(this.probot.logger.child.lastCall.arg, {
-    // name: "WIP",
+    name: "WIP",
     account: 1,
     repo: 1,
     private: false,
@@ -579,7 +579,7 @@ test("custom term: 🚧NoSpace", async function (t) {
   );
   t.is(this.probot.logger.info.callCount, 1);
   t.deepEqual(this.probot.logger.child.lastCall.arg, {
-    // name: "WIP",
+    name: "WIP",
     account: 1,
     repo: 1,
     private: false,

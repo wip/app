@@ -1,6 +1,5 @@
 module.exports = wip;
 
-const sendLogs = require("./lib/logs/send");
 const logMemoryUsage = require("./lib/logs/memory-usage.js");
 const handlePullRequestChange = require("./lib/handle-pull-request-change");
 const handleMarketplacePurchase = require("./lib/handle-marketplace-purchase");
@@ -35,6 +34,5 @@ function wip(app) {
     handleInstallation.bind(null, app)
   );
 
-  sendLogs(app);
   logMemoryUsage(app);
 }

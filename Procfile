@@ -1,0 +1,1 @@
+web: ./node_modules/.bin/probot run ./index.js | ./node_modules/.bin/pino-sentry | ./node_modules/.bin/pino-logdna 
