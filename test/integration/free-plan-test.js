@@ -441,6 +441,8 @@ test('active marketplace "free" plan', async function (t) {
 });
 
 test("request error", async function (t) {
+  t.plan(4);
+
   const mock = nock("https://api.github.com")
     // has no plan
     .get("/marketplace_listing/accounts/1")
@@ -453,14 +455,22 @@ test("request error", async function (t) {
     })
     .reply(500);
 
-  await this.probot.receive(
-    require("./events/new-pull-request-with-test-title.json")
-  );
+  await this.probot
+    .receive(require("./events/new-pull-request-with-test-title.json"))
+    .catch((error) => {
+      t.is(error.name, "AggregateError");
+
+      const errors = Array.from(error);
+      t.is(errors.length, 1);
+      t.is(errors[0].status, 500);
+    });
 
   t.deepEqual(mock.activeMocks(), []);
 });
 
 test("Create check error", async function (t) {
+  t.plan(4);
+
   const mock = nock("https://api.github.com")
     // has no plan
     .get("/marketplace_listing/accounts/1")
@@ -484,9 +494,15 @@ test("Create check error", async function (t) {
     .post("/repos/wip/app/check-runs")
     .reply(500);
 
-  await this.probot.receive(
-    require("./events/new-pull-request-with-test-title.json")
-  );
+  await this.probot
+    .receive(require("./events/new-pull-request-with-test-title.json"))
+    .catch((error) => {
+      t.is(error.name, "AggregateError");
+
+      const errors = Array.from(error);
+      t.is(errors.length, 1);
+      t.is(errors[0].status, 500);
+    });
 
   t.deepEqual(mock.activeMocks(), []);
 });
@@ -611,7 +627,14 @@ test("Legacy commit status override - has overide (#124)", async function (t) {
           description: "Legacy Commit Status Override — see details",
         },
       ],
-    });
+    })
+
+    .post("/repos/wip/app/check-runs", (createCheckParams) => {
+      t.is(createCheckParams.status, "completed");
+
+      return true;
+    })
+    .reply(201, {});
 
   await this.probot.receive(
     require("./events/new-pull-request-with-test-title.json")
