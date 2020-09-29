@@ -413,7 +413,7 @@ test('ready pull request with "Test" title', async function (t) {
   t.deepEqual(mock.activeMocks(), []);
 });
 
-test("custom term: 🚧", { only: true }, async function (t) {
+test("custom term: 🚧", async function (t) {
   const mock = nock("https://api.github.com")
     // has pro plan
     .get("/marketplace_listing/accounts/1")
@@ -427,9 +427,7 @@ test("custom term: 🚧", { only: true }, async function (t) {
 
     // has config
     .get("/repos/wip/app/contents/.github%2Fwip.yml")
-    .reply(200, {
-      content: Buffer.from("terms: 🚧").toString("base64"),
-    })
+    .reply(200, "terms: 🚧")
 
     // List commits on a pull request
     // https://docs.github.com/en/rest/reference/pulls#list-commits-on-a-pull-request
@@ -521,9 +519,7 @@ test("custom term: 🚧NoSpace", async function (t) {
 
     // has config
     .get("/repos/wip/app/contents/.github%2Fwip.yml")
-    .reply(200, {
-      content: Buffer.from("terms: 🚧").toString("base64"),
-    })
+    .reply(200, "terms: 🚧")
 
     // List commits on a pull request
     // https://docs.github.com/en/rest/reference/pulls#list-commits-on-a-pull-request
@@ -614,9 +610,7 @@ test("custom location: label_name", async function (t) {
 
     // has config
     .get("/repos/wip/app/contents/.github%2Fwip.yml")
-    .reply(200, {
-      content: Buffer.from("locations: label_name").toString("base64"),
-    })
+    .reply(200, "locations: label_name")
 
     // List commits on a pull request
     // https://docs.github.com/en/rest/reference/pulls#list-commits-on-a-pull-request
@@ -685,9 +679,7 @@ test("custom location: commits", async function (t) {
 
     // has config
     .get("/repos/wip/app/contents/.github%2Fwip.yml")
-    .reply(200, {
-      content: Buffer.from("locations: commit_subject").toString("base64"),
-    })
+    .reply(200, "locations: commit_subject")
 
     // List commits on a pull request
     // https://docs.github.com/en/rest/reference/pulls#list-commits-on-a-pull-request
@@ -761,9 +753,9 @@ test("complex config", async function (t) {
 
     // has config
     .get("/repos/wip/app/contents/.github%2Fwip.yml")
-    .reply(200, {
-      content: Buffer.from(
-        `
+    .reply(
+      200,
+      `
 - terms:
   - 🚧
   - WIP
@@ -774,8 +766,7 @@ test("complex config", async function (t) {
   - fixup!
   - squash!
   locations: commit_subject`
-      ).toString("base64"),
-    })
+    )
 
     // List commits on a pull request
     // https://docs.github.com/en/rest/reference/pulls#list-commits-on-a-pull-request
@@ -856,9 +847,7 @@ test("loads config from .github repository", async function (t) {
     .get("/repos/wip/app/contents/.github%2Fwip.yml")
     .reply(404)
     .get("/repos/wip/.github/contents/.github%2Fwip.yml")
-    .reply(200, {
-      content: Buffer.from("terms: 🚧").toString("base64"),
-    })
+    .reply(200, "terms: 🚧")
 
     // List commits on a pull request
     // https://docs.github.com/en/rest/reference/pulls#list-commits-on-a-pull-request
@@ -906,15 +895,14 @@ test("loads commits once only", async function (t) {
     .get("/repos/wip/app/contents/.github%2Fwip.yml")
     .reply(404)
     .get("/repos/wip/.github/contents/.github%2Fwip.yml")
-    .reply(200, {
-      content: Buffer.from(
-        `
+    .reply(
+      200,
+      `
 - terms: 'foo'
   locations: commit_subject
 - terms: 'bar'
   locations: commit_subject`
-      ).toString("base64"),
-    })
+    )
 
     // List commits on a pull request
     // https://docs.github.com/en/rest/reference/pulls#list-commits-on-a-pull-request
