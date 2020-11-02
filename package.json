@@ -22,7 +22,7 @@
     "gemoji": "^6.1.0",
     "pino-logdna": "^1.0.5",
     "pluralize": "^8.0.0",
-    "probot": "^10.10.0"
+    "probot": "^10.10.1"
   },
   "devDependencies": {
     "@sinonjs/fake-timers": "^6.0.1",
