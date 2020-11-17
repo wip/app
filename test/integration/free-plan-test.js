@@ -642,3 +642,56 @@ test("Legacy commit status override - has overide (#124)", async function (t) {
 
   t.deepEqual(mock.activeMocks(), []);
 });
+
+test("404 from hasStatusChange check (spam)", async function (t) {
+  const apiMock = nock("https://api.github.com")
+    // has no plan
+    .get("/marketplace_listing/accounts/1")
+    .reply(404)
+
+    // check for current status
+    .get("/repos/wip/app/commits/sha123/check-runs")
+    .query({
+      check_name: "WIP",
+    })
+    .reply(404);
+
+  const dotcomMock = nock("https://github.com").head("/wip").reply(404);
+
+  await this.probot.receive(
+    require("./events/new-pull-request-with-wip-title.json")
+  );
+
+  t.deepEqual(apiMock.activeMocks(), []);
+  t.deepEqual(dotcomMock.activeMocks(), []);
+});
+
+test("404 from hasStatusChange check (not spam)", async function (t) {
+  const apiMock = nock("https://api.github.com")
+    // has no plan
+    .get("/marketplace_listing/accounts/1")
+    .reply(404)
+
+    // check for current status
+    .get("/repos/wip/app/commits/sha123/check-runs")
+    .query({
+      check_name: "WIP",
+    })
+    .reply(404);
+
+  const dotcomMock = nock("https://github.com").head("/wip").reply(200);
+
+  try {
+    await this.probot.receive(
+      require("./events/new-pull-request-with-wip-title.json")
+    );
+    throw new Error("Should not resolve");
+  } catch (error) {
+    const errors = Array.from(error);
+    t.equal(errors.length, 1);
+    t.equal(errors[0].status, 404);
+  }
+
+  t.deepEqual(apiMock.activeMocks(), []);
+  t.deepEqual(dotcomMock.activeMocks(), []);
+});
