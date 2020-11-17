@@ -33,7 +33,7 @@
     "semantic-release": "^17.2.3",
     "simple-mock": "^0.8.0",
     "smee-client": "^1.1.0",
-    "tap": "^14.10.7"
+    "tap": "^14.11.0"
   },
   "engines": {
     "node": ">=10.7.0",
