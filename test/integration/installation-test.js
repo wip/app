@@ -42,6 +42,12 @@ test("uninstall", async function (t) {
   t.is(this.probot.logger.info.lastCall.arg, "😭 Organization wip uninstalled");
 });
 
+test("suspend", async function (t) {
+  await this.probot.receive(require("./events/suspend.json"));
+
+  t.is(this.probot.logger.info.lastCall.arg, "ℹ️ installation.suspend by wip");
+});
+
 test("repositories removed", async function (t) {
   await this.probot.receive(require("./events/repositories-removed.json"));
 
