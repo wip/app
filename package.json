@@ -20,9 +20,8 @@
   "license": "Apache-2.0",
   "dependencies": {
     "gemoji": "^6.1.0",
-    "pino-logdna": "^1.0.5",
     "pluralize": "^8.0.0",
-    "probot": "^10.17.2"
+    "probot": "^10.18.0-beta.1"
   },
   "devDependencies": {
     "@sinonjs/fake-timers": "^6.0.1",
