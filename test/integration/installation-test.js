@@ -125,11 +125,6 @@ test("installation", async function (t) {
     })
     .reply(200, { check_runs: [] })
 
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/repo1/commits/sha123/status")
-    .reply(200, { statuses: [] })
-
     // check for current status
     // https://docs.github.com/en/rest/reference/checks#list-check-runs-for-a-git-reference
     .get("/repos/wip/repo1/commits/sha456/check-runs")
@@ -137,11 +132,6 @@ test("installation", async function (t) {
       check_name: "WIP",
     })
     .reply(200, { check_runs: [] })
-
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/repo1/commits/sha456/status")
-    .reply(200, { statuses: [] })
 
     // Create 1st check run
     // https://docs.github.com/en/rest/reference/checks#create-a-check-run
@@ -308,19 +298,12 @@ test("repositories added", async function (t) {
     })
     .reply(200, { check_runs: [] })
 
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/repo1/commits/sha123/status")
-    .reply(200, { statuses: [] })
-
     // check for current check status & combined status (2nd pr)
     .get("/repos/wip/repo1/commits/sha456/check-runs")
     .query({
       check_name: "WIP",
     })
     .reply(200, { check_runs: [] })
-    .get("/repos/wip/repo1/commits/sha456/status")
-    .reply(200, { statuses: [] })
 
     // check for current check status & combined status (3rd pr)
     .get("/repos/wip/repo2/commits/sha789/check-runs")
@@ -328,8 +311,6 @@ test("repositories added", async function (t) {
       check_name: "WIP",
     })
     .reply(200, { check_runs: [] })
-    .get("/repos/wip/repo2/commits/sha789/status")
-    .reply(200, { statuses: [] })
 
     // check for current check status & combined status (4th pr)
     .get("/repos/wip/repo2/commits/sha100/check-runs")
@@ -337,8 +318,6 @@ test("repositories added", async function (t) {
       check_name: "WIP",
     })
     .reply(200, { check_runs: [] })
-    .get("/repos/wip/repo2/commits/sha100/status")
-    .reply(200, { statuses: [] })
 
     // Create 1st check run
     // https://docs.github.com/en/rest/reference/checks#create-a-check-run
@@ -511,19 +490,12 @@ test("permissions accepted", async function (t) {
     })
     .reply(200, { check_runs: [] })
 
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/repo1/commits/sha123/status")
-    .reply(200, { statuses: [] })
-
     // 2nd pr
     .get("/repos/wip/repo1/commits/sha456/check-runs")
     .query({
       check_name: "WIP",
     })
     .reply(200, { check_runs: [] })
-    .get("/repos/wip/repo1/commits/sha456/status")
-    .reply(200, { statuses: [] })
 
     // Create 1st check run
     // https://docs.github.com/en/rest/reference/checks#create-a-check-run
@@ -653,11 +625,6 @@ test("installation for pro plan", async function (t) {
     })
     .reply(200, { check_runs: [] })
 
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/repo1/commits/sha123/status")
-    .reply(200, { statuses: [] })
-
     // check for current status
     // https://docs.github.com/en/rest/reference/checks#list-check-runs-for-a-git-reference
     .get("/repos/wip/repo1/commits/sha456/check-runs")
@@ -665,11 +632,6 @@ test("installation for pro plan", async function (t) {
       check_name: "WIP",
     })
     .reply(200, { check_runs: [] })
-
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/repo1/commits/sha456/status")
-    .reply(200, { statuses: [] })
 
     // Create 1st check run
     // https://docs.github.com/en/rest/reference/checks#create-a-check-run
