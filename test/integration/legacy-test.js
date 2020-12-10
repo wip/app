@@ -1,19 +1,26 @@
+const Stream = require("stream");
+
 const FakeTimers = require("@sinonjs/fake-timers");
 const { beforeEach, test } = require("tap");
 const nock = require("nock");
+const pino = require("pino");
+
 nock.disableNetConnect();
 
-// disable Probot logs, bust be set before requiring probot
-process.env.LOG_LEVEL = "fatal";
 const { Probot, ProbotOctokit } = require("probot");
 
 const app = require("../../");
 
+let output;
+const streamLogsToOutput = new Stream.Writable({ objectMode: true });
+streamLogsToOutput._write = (object, encoding, done) => {
+  output.push(JSON.parse(object));
+  done();
+};
+
 beforeEach(function (done) {
+  output = [];
   delete process.env.APP_NAME;
-  process.env.DISABLE_STATS = "true";
-  process.env.DISABLE_WEBHOOK_EVENT_CHECK = "true";
-  process.env.WIP_DISABLE_MEMORY_USAGE = "true";
 
   FakeTimers.install({ toFake: ["Date"] });
 
@@ -23,8 +30,11 @@ beforeEach(function (done) {
     Octokit: ProbotOctokit.defaults({
       throttle: { enabled: false },
       retry: { enabled: false },
+      log: pino(streamLogsToOutput),
     }),
+    log: pino(streamLogsToOutput),
   });
+
   this.probot.load(app);
 
   done();
