@@ -1,20 +1,26 @@
+const Stream = require("stream");
+
 const FakeTimers = require("@sinonjs/fake-timers");
 const { beforeEach, test } = require("tap");
-const simple = require("simple-mock");
 const nock = require("nock");
+const pino = require("pino");
+
 nock.disableNetConnect();
 
-// disable Probot logs, bust be set before requiring probot
-process.env.LOG_LEVEL = "fatal";
 const { Probot, ProbotOctokit } = require("probot");
 
 const app = require("../../");
 
+let output;
+const streamLogsToOutput = new Stream.Writable({ objectMode: true });
+streamLogsToOutput._write = (object, encoding, done) => {
+  output.push(JSON.parse(object));
+  done();
+};
+
 beforeEach(function (done) {
+  output = [];
   delete process.env.APP_NAME;
-  process.env.DISABLE_STATS = "true";
-  process.env.DISABLE_WEBHOOK_EVENT_CHECK = "true";
-  process.env.WIP_DISABLE_MEMORY_USAGE = "true";
 
   FakeTimers.install({ toFake: ["Date"] });
 
@@ -24,11 +30,10 @@ beforeEach(function (done) {
     Octokit: ProbotOctokit.defaults({
       throttle: { enabled: false },
       retry: { enabled: false },
+      log: pino(streamLogsToOutput),
     }),
+    log: pino(streamLogsToOutput),
   });
-
-  this.probot.logger.info = simple.mock();
-  this.probot.logger.child = simple.mock().returnWith(this.probot.logger);
 
   this.probot.load(app);
 
@@ -65,11 +70,6 @@ test('new pull request with "Test" title', async function (t) {
     })
     .reply(200, { check_runs: [] })
 
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/app/commits/sha123/status")
-    .reply(200, { statuses: [] })
-
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
       t.is(createCheckParams.name, "WIP");
@@ -96,23 +96,26 @@ test('new pull request with "Test" title', async function (t) {
     .receive(require("./events/new-pull-request-with-test-title.json"))
     .catch(t.error);
 
-  t.is(this.probot.logger.info.lastCall.args[1], "✅ wip/app#1");
-  t.is(this.probot.logger.info.callCount, 1);
+  t.is(output[0].msg, "✅ wip/app#1");
+  t.is(output.length, 1);
 
-  t.deepEqual(this.probot.logger.child.lastCall.arg, {
+  delete output[0].pid;
+  delete output[0].hostname;
+  t.deepEqual(output[0], {
+    level: 30,
+    time: 0,
     name: "WIP",
+    event: "pull_request",
+    action: "opened",
     account: 1,
     plan: "pro",
     repo: 1,
     private: false,
-    event: "pull_request",
-    action: "opened",
-    wip: false,
     change: true,
-    override: null,
-    location: null,
-    match: null,
+    wip: false,
     hasConfig: false,
+    duration: 0,
+    msg: "✅ wip/app#1",
   });
 
   t.deepEqual(mock.activeMocks(), []);
@@ -148,11 +151,6 @@ test('new pull request with "[WIP] Test" title', async function (t) {
     })
     .reply(200, { check_runs: [] })
 
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/app/commits/sha123/status")
-    .reply(200, { statuses: [] })
-
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
       t.is(createCheckParams.status, "in_progress");
@@ -175,7 +173,7 @@ test('new pull request with "[WIP] Test" title', async function (t) {
   );
 
   // check resulting logs
-  const logParams = this.probot.logger.child.lastCall.arg;
+  const logParams = output[0];
   t.is(logParams.wip, true);
   t.is(logParams.change, true);
   t.is(logParams.location, "title");
@@ -220,11 +218,6 @@ test('pending pull request with "Test" title', async function (t) {
       ],
     })
 
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/app/commits/sha123/status")
-    .reply(200, { statuses: [] })
-
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
       t.is(createCheckParams.status, "completed");
@@ -239,7 +232,7 @@ test('pending pull request with "Test" title', async function (t) {
   );
 
   // check resulting logs
-  const logParams = this.probot.logger.child.lastCall.arg;
+  const logParams = output[0];
   t.is(logParams.wip, false);
   t.is(logParams.change, true);
 
@@ -282,11 +275,6 @@ test('ready pull request with "[WIP] Test" title', async function (t) {
       ],
     })
 
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/app/commits/sha123/status")
-    .reply(200, { statuses: [] })
-
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
       t.is(createCheckParams.status, "in_progress");
@@ -300,7 +288,7 @@ test('ready pull request with "[WIP] Test" title', async function (t) {
   );
 
   // check resulting logs
-  const logParams = this.probot.logger.child.lastCall.arg;
+  const logParams = output[0];
   t.is(logParams.wip, true);
   t.is(logParams.change, true);
 
@@ -341,19 +329,14 @@ test('pending pull request with "[WIP] Test" title', async function (t) {
           status: "pending",
         },
       ],
-    })
-
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/app/commits/sha123/status")
-    .reply(200, { statuses: [] });
+    });
 
   await this.probot.receive(
     require("./events/new-pull-request-with-wip-title.json")
   );
 
   // check resulting logs
-  const logParams = this.probot.logger.child.lastCall.arg;
+  const logParams = output[0];
   t.is(logParams.wip, true);
   t.is(logParams.change, false);
 
@@ -394,19 +377,14 @@ test('ready pull request with "Test" title', async function (t) {
           conclusion: "success",
         },
       ],
-    })
-
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/app/commits/sha123/status")
-    .reply(200, { statuses: [] });
+    });
 
   await this.probot.receive(
     require("./events/new-pull-request-with-test-title.json")
   );
 
   // check resulting logs
-  const logParams = this.probot.logger.child.lastCall.arg;
+  const logParams = output[0];
   t.is(logParams.wip, false);
   t.is(logParams.change, false);
 
@@ -447,11 +425,6 @@ test("custom term: 🚧", async function (t) {
       ],
     })
 
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/app/commits/sha123/status")
-    .reply(200, { statuses: [] })
-
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
       t.is(createCheckParams.name, "WIP");
@@ -481,25 +454,28 @@ test("custom term: 🚧", async function (t) {
   );
 
   // check resulting logs
-  t.is(
-    this.probot.logger.info.lastCall.args[1],
-    '⏳ wip/app#1 - "🚧" found in title'
-  );
-  t.is(this.probot.logger.info.callCount, 1);
-  t.deepEqual(this.probot.logger.child.lastCall.arg, {
+  t.is(output[0].msg, '⏳ wip/app#1 - "🚧" found in title');
+  t.is(output.length, 1);
+
+  delete output[0].pid;
+  delete output[0].hostname;
+  t.deepEqual(output[0], {
+    level: 30,
+    time: 0,
     name: "WIP",
-    account: 1,
-    repo: 1,
-    private: false,
-    plan: "pro",
     event: "pull_request",
     action: "opened",
-    wip: true,
+    account: 1,
+    plan: "pro",
+    repo: 1,
+    private: false,
     change: true,
-    override: null,
+    wip: true,
     location: "title",
     match: "🚧",
     hasConfig: true,
+    duration: 0,
+    msg: '⏳ wip/app#1 - "🚧" found in title',
   });
 
   t.deepEqual(mock.activeMocks(), []);
@@ -539,11 +515,6 @@ test("custom term: 🚧NoSpace", async function (t) {
       ],
     })
 
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/app/commits/sha123/status")
-    .reply(200, { statuses: [] })
-
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
       t.is(createCheckParams.name, "WIP");
@@ -572,25 +543,28 @@ test("custom term: 🚧NoSpace", async function (t) {
   );
 
   // check resulting logs
-  t.is(
-    this.probot.logger.info.lastCall.args[1],
-    '⏳ wip/app#1 - "🚧" found in title'
-  );
-  t.is(this.probot.logger.info.callCount, 1);
-  t.deepEqual(this.probot.logger.child.lastCall.arg, {
+  t.is(output[0].msg, '⏳ wip/app#1 - "🚧" found in title');
+  t.is(output.length, 1);
+
+  delete output[0].pid;
+  delete output[0].hostname;
+  t.deepEqual(output[0], {
+    level: 30,
+    time: 0,
     name: "WIP",
-    account: 1,
-    repo: 1,
-    private: false,
-    plan: "pro",
     event: "pull_request",
     action: "opened",
-    wip: true,
+    account: 1,
+    plan: "pro",
+    repo: 1,
+    private: false,
     change: true,
-    override: null,
+    wip: true,
     location: "title",
     match: "🚧",
     hasConfig: true,
+    duration: 0,
+    msg: '⏳ wip/app#1 - "🚧" found in title',
   });
 
   t.deepEqual(mock.activeMocks(), []);
@@ -630,11 +604,6 @@ test("custom location: label_name", async function (t) {
       ],
     })
 
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/app/commits/sha123/status")
-    .reply(200, { statuses: [] })
-
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
       t.is(createCheckParams.status, "in_progress");
@@ -658,7 +627,7 @@ test("custom location: label_name", async function (t) {
   );
 
   // check resulting logs
-  const logParams = this.probot.logger.child.lastCall.arg;
+  const logParams = output[0];
   t.is(logParams.location, "label_name");
   t.is(logParams.match, "WIP");
 
@@ -705,11 +674,6 @@ test("custom location: commits", async function (t) {
       ],
     })
 
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/app/commits/sha123/status")
-    .reply(200, { statuses: [] })
-
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
       t.is(createCheckParams.status, "in_progress");
@@ -732,7 +696,7 @@ test("custom location: commits", async function (t) {
   );
 
   // check resulting logs
-  const logParams = this.probot.logger.child.lastCall.arg;
+  const logParams = output[0];
   t.is(logParams.location, "commit_subject");
   t.is(logParams.match, "WIP");
 
@@ -797,11 +761,6 @@ test("complex config", async function (t) {
       ],
     })
 
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/app/commits/sha123/status")
-    .reply(200, { statuses: [] })
-
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
       t.is(createCheckParams.status, "in_progress");
@@ -824,7 +783,7 @@ test("complex config", async function (t) {
   );
 
   // check resulting logs
-  const logParams = this.probot.logger.child.lastCall.arg;
+  const logParams = output[0];
   t.is(logParams.location, "commit_subject");
   t.is(logParams.match, "fixup!");
 
@@ -862,11 +821,6 @@ test("loads config from .github repository", async function (t) {
     .reply(200, {
       check_runs: [],
     })
-
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/app/commits/sha123/status")
-    .reply(200, { statuses: [] })
 
     // create new check run
     .post("/repos/wip/app/check-runs")
@@ -924,11 +878,6 @@ test("loads commits once only", async function (t) {
       check_runs: [],
     })
 
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/app/commits/sha123/status")
-    .reply(200, { statuses: [] })
-
     // create new check run
     .post("/repos/wip/app/check-runs")
     .reply(201, {});
@@ -959,11 +908,6 @@ test("override", async function (t) {
     })
     .reply(200, { check_runs: [] })
 
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/app/commits/sha123/status")
-    .reply(200, { statuses: [] })
-
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
       t.is(createCheckParams.status, "completed");
@@ -983,8 +927,8 @@ test("override", async function (t) {
   );
 
   // check resulting logs
-  t.is(this.probot.logger.info.lastCall.args[1], "❗️ wip/app#1");
-  const logParams = this.probot.logger.child.lastCall.arg;
+  t.is(output[0].msg, "❗️ wip/app#1");
+  const logParams = output[0];
   t.is(logParams.wip, false);
   t.is(logParams.override, true);
   t.is(logParams.change, true);
@@ -1031,11 +975,6 @@ test("pending pull request with override", async function (t) {
       ],
     })
 
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/app/commits/sha123/status")
-    .reply(200, { statuses: [] })
-
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
       t.is(createCheckParams.status, "completed");
@@ -1055,7 +994,7 @@ test("pending pull request with override", async function (t) {
   );
 
   // check resulting logs
-  const logParams = this.probot.logger.child.lastCall.arg;
+  const logParams = output[0];
   t.is(logParams.wip, false);
   t.is(logParams.change, true);
 
@@ -1101,11 +1040,6 @@ test('pending pull request with override and "[WIP] test" title', async function
       ],
     })
 
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/app/commits/sha123/status")
-    .reply(200, { statuses: [] })
-
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
       t.is(createCheckParams.status, "in_progress");
@@ -1119,7 +1053,7 @@ test('pending pull request with override and "[WIP] test" title', async function
   );
 
   // check resulting logs
-  const logParams = this.probot.logger.child.lastCall.arg;
+  const logParams = output[0];
 
   t.is(logParams.wip, true);
   t.is(logParams.change, true);
@@ -1128,7 +1062,7 @@ test('pending pull request with override and "[WIP] test" title', async function
 });
 
 test("custom APP_NAME", async function (t) {
-  simple.mock(process.env, "APP_NAME", "WIP (local-dev)");
+  process.env.APP_NAME = "WIP (local-dev)";
 
   const mock = nock("https://api.github.com")
     // has pro plan
@@ -1159,11 +1093,6 @@ test("custom APP_NAME", async function (t) {
     })
     .reply(200, { check_runs: [] })
 
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/app/commits/sha123/status")
-    .reply(200, { statuses: [] })
-
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
       t.is(createCheckParams.name, "WIP (local-dev)");
@@ -1175,9 +1104,8 @@ test("custom APP_NAME", async function (t) {
   await this.probot.receive(
     require("./events/new-pull-request-with-test-title.json")
   );
-  simple.restore();
 
-  // t.is(this.probot.logger.child.lastCall.arg.name, "WIP (local-dev)");
+  t.is(output[0].name, "WIP (local-dev)");
 
   t.deepEqual(mock.activeMocks(), []);
 });

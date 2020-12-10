@@ -1,21 +1,26 @@
+const Stream = require("stream");
+
 const FakeTimers = require("@sinonjs/fake-timers");
 const { beforeEach, test } = require("tap");
 const nock = require("nock");
-const simple = require("simple-mock");
+const pino = require("pino");
 
 nock.disableNetConnect();
 
-// disable Probot logs, bust be set before requiring probot
-process.env.LOG_LEVEL = "fatal";
 const { Probot, ProbotOctokit } = require("probot");
 
 const app = require("../../");
 
+let output;
+const streamLogsToOutput = new Stream.Writable({ objectMode: true });
+streamLogsToOutput._write = (object, encoding, done) => {
+  output.push(JSON.parse(object));
+  done();
+};
+
 beforeEach(function (done) {
+  output = [];
   delete process.env.APP_NAME;
-  process.env.DISABLE_STATS = "true";
-  process.env.DISABLE_WEBHOOK_EVENT_CHECK = "true";
-  process.env.WIP_DISABLE_MEMORY_USAGE = "true";
 
   FakeTimers.install({ toFake: ["Date"] });
 
@@ -25,11 +30,10 @@ beforeEach(function (done) {
     Octokit: ProbotOctokit.defaults({
       throttle: { enabled: false },
       retry: { enabled: false },
+      log: pino(streamLogsToOutput),
     }),
+    log: pino(streamLogsToOutput),
   });
-
-  this.probot.logger.info = simple.mock();
-  this.probot.logger.child = simple.mock().returnWith(this.probot.logger);
 
   this.probot.load(app);
 
@@ -39,22 +43,19 @@ beforeEach(function (done) {
 test("uninstall", async function (t) {
   await this.probot.receive(require("./events/uninstall.json"));
 
-  t.is(this.probot.logger.info.lastCall.arg, "😭 Organization wip uninstalled");
+  t.is(output[0].msg, "😭 Organization wip uninstalled");
 });
 
 test("suspend", async function (t) {
   await this.probot.receive(require("./events/suspend.json"));
 
-  t.is(this.probot.logger.info.lastCall.arg, "ℹ️ installation.suspend by wip");
+  t.is(output[0].msg, "ℹ️ installation.suspend by wip");
 });
 
 test("repositories removed", async function (t) {
   await this.probot.receive(require("./events/repositories-removed.json"));
 
-  t.is(
-    this.probot.logger.info.lastCall.arg,
-    "➖ Organization wip removed 2 repositories"
-  );
+  t.is(output[0].msg, "➖ Organization wip removed 2 repositories");
 });
 
 test("installation", async function (t) {
@@ -124,11 +125,6 @@ test("installation", async function (t) {
     })
     .reply(200, { check_runs: [] })
 
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/repo1/commits/sha123/status")
-    .reply(200, { statuses: [] })
-
     // check for current status
     // https://docs.github.com/en/rest/reference/checks#list-check-runs-for-a-git-reference
     .get("/repos/wip/repo1/commits/sha456/check-runs")
@@ -136,11 +132,6 @@ test("installation", async function (t) {
       check_name: "WIP",
     })
     .reply(200, { check_runs: [] })
-
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/repo1/commits/sha456/status")
-    .reply(200, { statuses: [] })
 
     // Create 1st check run
     // https://docs.github.com/en/rest/reference/checks#create-a-check-run
@@ -307,19 +298,12 @@ test("repositories added", async function (t) {
     })
     .reply(200, { check_runs: [] })
 
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/repo1/commits/sha123/status")
-    .reply(200, { statuses: [] })
-
     // check for current check status & combined status (2nd pr)
     .get("/repos/wip/repo1/commits/sha456/check-runs")
     .query({
       check_name: "WIP",
     })
     .reply(200, { check_runs: [] })
-    .get("/repos/wip/repo1/commits/sha456/status")
-    .reply(200, { statuses: [] })
 
     // check for current check status & combined status (3rd pr)
     .get("/repos/wip/repo2/commits/sha789/check-runs")
@@ -327,8 +311,6 @@ test("repositories added", async function (t) {
       check_name: "WIP",
     })
     .reply(200, { check_runs: [] })
-    .get("/repos/wip/repo2/commits/sha789/status")
-    .reply(200, { statuses: [] })
 
     // check for current check status & combined status (4th pr)
     .get("/repos/wip/repo2/commits/sha100/check-runs")
@@ -336,8 +318,6 @@ test("repositories added", async function (t) {
       check_name: "WIP",
     })
     .reply(200, { check_runs: [] })
-    .get("/repos/wip/repo2/commits/sha100/status")
-    .reply(200, { statuses: [] })
 
     // Create 1st check run
     // https://docs.github.com/en/rest/reference/checks#create-a-check-run
@@ -510,19 +490,12 @@ test("permissions accepted", async function (t) {
     })
     .reply(200, { check_runs: [] })
 
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/repo1/commits/sha123/status")
-    .reply(200, { statuses: [] })
-
     // 2nd pr
     .get("/repos/wip/repo1/commits/sha456/check-runs")
     .query({
       check_name: "WIP",
     })
     .reply(200, { check_runs: [] })
-    .get("/repos/wip/repo1/commits/sha456/status")
-    .reply(200, { statuses: [] })
 
     // Create 1st check run
     // https://docs.github.com/en/rest/reference/checks#create-a-check-run
@@ -652,11 +625,6 @@ test("installation for pro plan", async function (t) {
     })
     .reply(200, { check_runs: [] })
 
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/repo1/commits/sha123/status")
-    .reply(200, { statuses: [] })
-
     // check for current status
     // https://docs.github.com/en/rest/reference/checks#list-check-runs-for-a-git-reference
     .get("/repos/wip/repo1/commits/sha456/check-runs")
@@ -664,11 +632,6 @@ test("installation for pro plan", async function (t) {
       check_name: "WIP",
     })
     .reply(200, { check_runs: [] })
-
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/repo1/commits/sha456/status")
-    .reply(200, { statuses: [] })
 
     // Create 1st check run
     // https://docs.github.com/en/rest/reference/checks#create-a-check-run

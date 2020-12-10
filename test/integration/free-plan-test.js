@@ -1,19 +1,27 @@
+const Stream = require("stream");
+
 const FakeTimers = require("@sinonjs/fake-timers");
 const { beforeEach, test } = require("tap");
 const nock = require("nock");
+const pino = require("pino");
+
 nock.disableNetConnect();
 
-// disable Probot logs, bust be set before requiring probot
-process.env.LOG_LEVEL = "fatal";
 const { Probot, ProbotOctokit } = require("probot");
 
 const app = require("../../");
 
+let output;
+const streamLogsToOutput = new Stream.Writable({ objectMode: true });
+streamLogsToOutput._write = (object, encoding, done) => {
+  output.push(JSON.parse(object));
+  done();
+};
+
 beforeEach(function (done) {
+  // Clear log output
+  output = [];
   delete process.env.APP_NAME;
-  process.env.DISABLE_STATS = "true";
-  process.env.DISABLE_WEBHOOK_EVENT_CHECK = "true";
-  process.env.WIP_DISABLE_MEMORY_USAGE = "true";
 
   FakeTimers.install({ toFake: ["Date"] });
 
@@ -23,7 +31,9 @@ beforeEach(function (done) {
     Octokit: ProbotOctokit.defaults({
       throttle: { enabled: false },
       retry: { enabled: false },
+      log: pino(streamLogsToOutput),
     }),
+    log: pino(streamLogsToOutput),
   });
   this.probot.load(app);
 
@@ -42,11 +52,6 @@ test('new pull request with "Test" title', async function (t) {
       check_name: "WIP",
     })
     .reply(200, { check_runs: [] })
-
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/app/commits/sha123/status")
-    .reply(200, { statuses: [] })
 
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
@@ -96,11 +101,6 @@ test('new pull request with "[WIP] Test" title', async function (t) {
     })
     .reply(200, { check_runs: [] })
 
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/app/commits/sha123/status")
-    .reply(200, { statuses: [] })
-
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
       t.is(createCheckParams.status, "in_progress");
@@ -138,11 +138,6 @@ test('new pull request with "[Work in Progress] Test" title', async function (t)
     })
     .reply(200, { check_runs: [] })
 
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/app/commits/sha123/status")
-    .reply(200, { statuses: [] })
-
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
       t.is(createCheckParams.status, "in_progress");
@@ -179,11 +174,6 @@ test('new pull request with "🚧 Test" title', async function (t) {
       check_name: "WIP",
     })
     .reply(200, { check_runs: [] })
-
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/app/commits/sha123/status")
-    .reply(200, { statuses: [] })
 
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
@@ -224,11 +214,6 @@ test('new pull request with "🚧Test" title', async function (t) {
       check_name: "WIP",
     })
     .reply(200, { check_runs: [] })
-
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/app/commits/sha123/status")
-    .reply(200, { statuses: [] })
 
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
@@ -276,11 +261,6 @@ test('pending pull request with "Test" title', async function (t) {
       ],
     })
 
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/app/commits/sha123/status")
-    .reply(200, { statuses: [] })
-
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
       t.is(createCheckParams.status, "completed");
@@ -316,11 +296,6 @@ test('ready pull request with "[WIP] Test" title', async function (t) {
       ],
     })
 
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/app/commits/sha123/status")
-    .reply(200, { statuses: [] })
-
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
       t.is(createCheckParams.status, "in_progress");
@@ -353,12 +328,7 @@ test('pending pull request with "[WIP] Test" title', async function (t) {
           status: "pending",
         },
       ],
-    })
-
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/app/commits/sha123/status")
-    .reply(200, { statuses: [] });
+    });
 
   await this.probot.receive(
     require("./events/new-pull-request-with-wip-title.json")
@@ -384,12 +354,7 @@ test('ready pull request with "Test" title', async function (t) {
           conclusion: "success",
         },
       ],
-    })
-
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/app/commits/sha123/status")
-    .reply(200, { statuses: [] });
+    });
 
   await this.probot.receive(
     require("./events/new-pull-request-with-test-title.json")
@@ -418,11 +383,6 @@ test('active marketplace "free" plan', async function (t) {
     .reply(200, {
       check_runs: [],
     })
-
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/app/commits/sha123/status")
-    .reply(200, { statuses: [] })
 
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
@@ -485,11 +445,6 @@ test("Create check error", async function (t) {
       check_runs: [],
     })
 
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/app/commits/sha123/status")
-    .reply(200, { statuses: [] })
-
     // create new check run
     .post("/repos/wip/app/check-runs")
     .reply(500);
@@ -524,113 +479,9 @@ test("custom APP_NAME", async function (t) {
       check_runs: [],
     })
 
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/app/commits/sha123/status")
-    .reply(200, { statuses: [] })
-
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
       t.is(createCheckParams.name, "WIP (local-dev)");
-
-      return true;
-    })
-    .reply(201, {});
-
-  await this.probot.receive(
-    require("./events/new-pull-request-with-test-title.json")
-  );
-
-  t.deepEqual(mock.activeMocks(), []);
-});
-
-test("Legacy commit status override (#124)", async function (t) {
-  const mock = nock("https://api.github.com")
-    // has no plan
-    .get("/marketplace_listing/accounts/1")
-    .reply(404)
-
-    // check for current status
-    .get("/repos/wip/app/commits/sha123/check-runs")
-    .query({
-      check_name: "WIP",
-    })
-    .reply(200, {
-      check_runs: [],
-    })
-
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/app/commits/sha123/status")
-    .reply(200, {
-      statuses: [
-        {
-          context: "WIP",
-          state: "pending",
-          description: "Pending — work in progress",
-        },
-      ],
-    })
-
-    // Create a commit status
-    // https://docs.github.com/en/rest/reference/repos#create-a-commit-status
-    .post("/repos/wip/app/statuses/sha123", (createCommitStatusParams) => {
-      t.strictDeepEqual(createCommitStatusParams, {
-        state: "success",
-        target_url: "https://github.com/wip/app/issues/124",
-        description: "Legacy commit status override — see details",
-        context: "WIP",
-      });
-
-      return true;
-    })
-    .reply(201, {})
-
-    // create new check run
-    .post("/repos/wip/app/check-runs", (createCheckParams) => {
-      t.is(createCheckParams.status, "completed");
-
-      return true;
-    })
-    .reply(201, {});
-
-  await this.probot.receive(
-    require("./events/new-pull-request-with-test-title.json")
-  );
-
-  t.deepEqual(mock.activeMocks(), []);
-});
-
-test("Legacy commit status override - has overide (#124)", async function (t) {
-  const mock = nock("https://api.github.com")
-    // has no plan
-    .get("/marketplace_listing/accounts/1")
-    .reply(404)
-
-    // check for current status
-    .get("/repos/wip/app/commits/sha123/check-runs")
-    .query({
-      check_name: "WIP",
-    })
-    .reply(200, {
-      check_runs: [],
-    })
-
-    // get combined status
-    // https://docs.github.com/en/rest/reference/repos#get-the-combined-status-for-a-specific-reference
-    .get("/repos/wip/app/commits/sha123/status")
-    .reply(200, {
-      statuses: [
-        {
-          context: "WIP",
-          state: "success",
-          description: "Legacy Commit Status Override — see details",
-        },
-      ],
-    })
-
-    .post("/repos/wip/app/check-runs", (createCheckParams) => {
-      t.is(createCheckParams.status, "completed");
 
       return true;
     })
