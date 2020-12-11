@@ -4,8 +4,7 @@
 
 <p align="center">
   <a href="https://stats.uptimerobot.com/Dq46zf6PY" rel="nofollow"><img src="https://img.shields.io/uptimerobot/status/m779429441-a6394a1f5546b634ac6b52f8.svg" alt="Uptime Robot status"></a>
-  <a href="https://travis-ci.com/wip/app" rel="nofollow"><img alt="Build Status" src="https://travis-ci.com/wip/app.svg?branch=master"></a>
-  <a href="https://greenkeeper.io/" rel="nofollow"><img src="https://badges.greenkeeper.io/wip/app.svg" alt="Greenkeeper badge"></a>
+  <a href="https://github.com/octokit/app.js/actions?workflow=Test" rel="nofollow"><img alt="Build Status" src="https://github.com/octokit/app.js/workflows/Test/badge.svg"></a>
 </p>
 
 ![WIP bot screencast](https://github.com/wip/app/raw/master/assets/wip.gif)
