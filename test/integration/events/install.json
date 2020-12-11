@@ -13,7 +13,12 @@
     },
     "repositories": [
       {
-        "name": "repo1"
+        "name": "repo1",
+        "owner": {
+          "id": 1,
+          "login": "wip",
+          "type": "Organization"
+        }
       }
     ]
   }
