@@ -108,6 +108,8 @@ test('new pull request with "Test" title', async function (t) {
     event: "pull_request",
     action: "opened",
     account: 1,
+    accountName: "wip",
+    accountType: "organization",
     plan: "pro",
     repo: 1,
     private: false,
@@ -116,6 +118,7 @@ test('new pull request with "Test" title', async function (t) {
     hasConfig: false,
     duration: 0,
     msg: "✅ wip/app#1",
+    pr: 1,
   });
 
   t.deepEqual(mock.activeMocks(), []);
@@ -466,6 +469,8 @@ test("custom term: 🚧", async function (t) {
     event: "pull_request",
     action: "opened",
     account: 1,
+    accountName: "wip",
+    accountType: "organization",
     plan: "pro",
     repo: 1,
     private: false,
@@ -476,6 +481,7 @@ test("custom term: 🚧", async function (t) {
     hasConfig: true,
     duration: 0,
     msg: '⏳ wip/app#1 - "🚧" found in title',
+    pr: 1,
   });
 
   t.deepEqual(mock.activeMocks(), []);
@@ -555,6 +561,8 @@ test("custom term: 🚧NoSpace", async function (t) {
     event: "pull_request",
     action: "opened",
     account: 1,
+    accountName: "wip",
+    accountType: "organization",
     plan: "pro",
     repo: 1,
     private: false,
@@ -565,6 +573,7 @@ test("custom term: 🚧NoSpace", async function (t) {
     hasConfig: true,
     duration: 0,
     msg: '⏳ wip/app#1 - "🚧" found in title',
+    pr: 1,
   });
 
   t.deepEqual(mock.activeMocks(), []);

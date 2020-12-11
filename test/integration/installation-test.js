@@ -91,6 +91,7 @@ test("installation", async function (t) {
             owner: {
               id: 1,
               login: "wip",
+              type: "Organization",
             },
           },
         },
@@ -111,6 +112,7 @@ test("installation", async function (t) {
             owner: {
               id: 1,
               login: "wip",
+              type: "Organization",
             },
           },
         },
@@ -214,6 +216,7 @@ test("repositories added", async function (t) {
             owner: {
               id: 1,
               login: "wip",
+              type: "Organization",
             },
           },
         },
@@ -234,6 +237,7 @@ test("repositories added", async function (t) {
             owner: {
               id: 1,
               login: "wip",
+              type: "Organization",
             },
           },
         },
@@ -264,6 +268,7 @@ test("repositories added", async function (t) {
             owner: {
               id: 1,
               login: "wip",
+              type: "Organization",
             },
           },
         },
@@ -284,6 +289,7 @@ test("repositories added", async function (t) {
             owner: {
               id: 1,
               login: "wip",
+              type: "Organization",
             },
           },
         },
@@ -456,6 +462,7 @@ test("permissions accepted", async function (t) {
             owner: {
               id: 1,
               login: "wip",
+              type: "Organization",
             },
           },
         },
@@ -476,6 +483,7 @@ test("permissions accepted", async function (t) {
             owner: {
               id: 1,
               login: "wip",
+              type: "Organization",
             },
           },
         },
@@ -586,6 +594,7 @@ test("installation for pro plan", async function (t) {
             owner: {
               id: 1,
               login: "wip",
+              type: "Organization",
             },
           },
         },
@@ -606,6 +615,7 @@ test("installation for pro plan", async function (t) {
             owner: {
               id: 1,
               login: "wip",
+              type: "Organization",
             },
           },
         },

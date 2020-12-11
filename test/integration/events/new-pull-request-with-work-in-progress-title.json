@@ -17,7 +17,8 @@
       "private": false,
       "owner": {
         "id": 1,
-        "login": "wip"
+        "login": "wip",
+        "type": "Organization"
       }
     },
     "organization": {

@@ -13,10 +13,20 @@
     },
     "repositories_removed": [
       {
-        "name": "repo1"
+        "name": "repo1",
+        "owner": {
+          "id": 1,
+          "login": "wip",
+          "type": "Organization"
+        }
       },
       {
-        "name": "repo2"
+        "name": "repo2",
+        "owner": {
+          "id": 1,
+          "login": "wip",
+          "type": "Organization"
+        }
       }
     ]
   }
