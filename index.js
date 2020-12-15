@@ -5,9 +5,9 @@ const handleMarketplacePurchase = require("./lib/handle-marketplace-purchase");
 const handleInstallation = require("./lib/handle-installation");
 
 /**
- * @param { {app: import('probot').Probot } } app
+ * @param {import('probot').Probot} app
  */
-function wip({ app }) {
+function wip(app) {
   // listen to all relevant pull request event actions
   app.on(
     [
