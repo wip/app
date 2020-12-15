@@ -16,7 +16,7 @@ jobs:
           private_key: ${{ secrets.WIP_APP_PRIVATE_KEY }}
       - run: "echo installations: '${{ steps.stats.outputs.installations }}'"
       - run: "echo most popular repositories: '${{ steps.stats.outputs.popular_repositories }}'"
-      - uses: gr2m/logflare-log-action@v1
+      - uses: logflare/action@v1
         with:
           api_key: ${{ secrets.LOGFLARE_API_KEY }}
           source_id: ${{ secrets.LOGFLARE_SOURCE_ID }}
