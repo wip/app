@@ -3,9 +3,10 @@
 <h1 align="center">DO NOT MERGE – as a service.</h1>
 
 <p align="center">
+  <a href="https://vercel.com/?utm_source=wip&utm_campaign=oss" rel="nofollow"><img src="https://github.com/wip/app/raw/master/assets/powered-by-vercel.svg" alt="Powered by Vercel"></a>
+  <br>
   <a href="https://stats.uptimerobot.com/Dq46zf6PY" rel="nofollow"><img src="https://img.shields.io/uptimerobot/status/m779429441-a6394a1f5546b634ac6b52f8.svg" alt="Uptime Robot status"></a>
-  <a href="https://travis-ci.com/wip/app" rel="nofollow"><img alt="Build Status" src="https://travis-ci.com/wip/app.svg?branch=master"></a>
-  <a href="https://greenkeeper.io/" rel="nofollow"><img src="https://badges.greenkeeper.io/wip/app.svg" alt="Greenkeeper badge"></a>
+  <a href="https://github.com/octokit/app.js/actions?workflow=Test" rel="nofollow"><img alt="Build Status" src="https://github.com/octokit/app.js/workflows/Test/badge.svg"></a>
 </p>
 
 ![WIP bot screencast](https://github.com/wip/app/raw/master/assets/wip.gif)
@@ -66,9 +67,11 @@ Terms which contain only non-word characters as defined by JS RegExp [^a-za-z0-9
 
 ## About WIP
 
-Besides being a hopefully useful GitHub application, the WIP app is also meant as a reference implementation ([source code](https://github.com/wip/app)). I try to keep the complexity low and the code easy to follow. If you are thinking of creating your own GitHub app, the WIP might be a good starting point for you.
+Besides being a hopefully useful GitHub application, the WIP app is also meant as a reference implementation of a GitHub app built with [Probot](https://probot.github.io/) ([source code](https://github.com/wip/app)). I try to keep the complexity low and the code easy to follow. If you are thinking of creating your own GitHub app, the WIP might be a good starting point for you.
 
 Besides the code, I also made our [policies](https://github.com/wip/policies) good templates for your app.
+
+The WIP is deployed as serverless application to [Vercel](https://vercel.com/?utm_source=wip&utm_campaign=oss). The logs are drained to [Logflare](https://logflare.app/), which also provides the data source for the dashboard you see on [wip.vercel.app](https://wip.vercel.app).
 
 All revenue from the "pro" plan will be donated to [Processing | p5.js](https://donorbox.org/supportpf2019-fundraising-campaign) – one of the most diverse and impactful Open Source community there is. I only added the paid plan to make the WIP a real-life GitHub App example. If you cannot pay but depend on the pro features you can add your account with an explanation to the [`pro-plan-for-free.js` file](pro-plan-for-free.js).
 

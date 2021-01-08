@@ -1,7 +1,7 @@
 on:
   schedule:
-   # https://crontab.guru/once-a-day
-   - cron: 0 0 * * *
+    # https://crontab.guru/once-a-day
+    - cron: 0 0 * * *
   workflow_dispatch: {}
 
 name: Stats
@@ -16,3 +16,14 @@ jobs:
           private_key: ${{ secrets.WIP_APP_PRIVATE_KEY }}
       - run: "echo installations: '${{ steps.stats.outputs.installations }}'"
       - run: "echo most popular repositories: '${{ steps.stats.outputs.popular_repositories }}'"
+      - uses: logflare/action@v1
+        with:
+          api_key: ${{ secrets.LOGFLARE_API_KEY }}
+          source_id: ${{ secrets.LOGFLARE_SOURCE_ID }}
+          message: "stats: ${{ steps.stats.outputs.installations }} / ${{ steps.stats.outputs.repositories }}"
+          metadata: |
+            {
+              "num_installations": ${{ steps.stats.outputs.installations }},
+              "num_repositories": ${{ steps.stats.outputs.repositories }},
+              "num_suspended_installations": ${{ steps.stats.outputs.suspended_installations }}
+            }

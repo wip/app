@@ -4,11 +4,6 @@
   "private": true,
   "description": "DO NOT MERGE – as a service.",
   "main": "index.js",
-  "files": [
-    "index.js",
-    "pro-plan-for-free.js",
-    "lib"
-  ],
   "scripts": {
     "start": "probot run ./index.js",
     "test": "tap --100 --coverage test/**/*-test.js",
@@ -17,44 +12,34 @@
     "lint": "prettier --check '{lib,test}/**/*.{js,json,ts}' index.js *.md package.json",
     "lint:fix": "prettier --write '{lib,test}/**/*.{js,json,ts}' index.js *.md package.json"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/wip/app.git"
-  },
+  "repository": "https://github.com/wip/app",
   "keywords": [
-    "probot",
-    "probot-plugin"
+    "probot"
   ],
   "author": "Gregor Martynus (https://github.com/gr2m)",
   "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://github.com/wip/app/issues"
-  },
-  "homepage": "https://github.com/wip/app#readme",
   "dependencies": {
-    "@sinonjs/fake-timers": "^6.0.1",
-    "gemoji": "^5.0.1",
-    "logdna-bunyan": "^1.1.0",
-    "pino-logdna": "^1.0.5",
-    "pino-sentry": "^0.3.0",
+    "gemoji": "^6.1.0",
     "pluralize": "^8.0.0",
-    "probot": "^10.0.0-beta.23"
-  },
-  "jest": {
-    "testURL": "http://localhost/"
+    "probot": "^11.0.1"
   },
   "devDependencies": {
+    "@sinonjs/fake-timers": "^6.0.1",
+    "@vercel/node": "^1.8.5",
     "lodash.clonedeep": "^4.5.0",
-    "nock": "^13.0.2",
-    "prettier": "^2.0.5",
+    "nock": "^13.0.5",
+    "prettier": "^2.2.1",
     "proxyquire": "^2.0.1",
-    "semantic-release": "^17.0.0",
+    "semantic-release": "^17.3.1",
     "simple-mock": "^0.8.0",
     "smee-client": "^1.1.0",
-    "tap": "^14.10.7"
+    "tap": "^14.11.0"
   },
   "engines": {
     "node": ">=10.7.0",
     "npm": ">=5.3.0"
+  },
+  "jest": {
+    "testURL": "http://localhost/"
   }
 }

@@ -1,6 +1,7 @@
 .env
 .npmrc
 .nyc_output
+.vercel
 coverage
 node_modules
 private-key.pem
