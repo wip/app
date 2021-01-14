@@ -44,6 +44,8 @@ function wip(app) {
         id,
         event: name,
         action: payload.action,
+        installation: payload.installation.id,
+        owner: payload.repository.owner.login,
       },
       `${name}${action} event received (id: ${id})`
     );
