@@ -96,12 +96,12 @@ test('new pull request with "Test" title', async function (t) {
     .receive(require("./events/new-pull-request-with-test-title.json"))
     .catch(t.error);
 
-  t.is(output[0].msg, "✅ wip/app#1");
-  t.is(output.length, 1);
+  t.is(output.length, 2);
+  t.is(output[1].msg, "✅ wip/app#1");
 
-  delete output[0].pid;
-  delete output[0].hostname;
-  t.deepEqual(output[0], {
+  delete output[1].pid;
+  delete output[1].hostname;
+  t.deepEqual(output[1], {
     level: 30,
     time: 0,
     name: "WIP",
@@ -176,7 +176,7 @@ test('new pull request with "[WIP] Test" title', async function (t) {
   );
 
   // check resulting logs
-  const logParams = output[0];
+  const logParams = output[1];
   t.is(logParams.wip, true);
   t.is(logParams.change, true);
   t.is(logParams.location, "title");
@@ -235,7 +235,7 @@ test('pending pull request with "Test" title', async function (t) {
   );
 
   // check resulting logs
-  const logParams = output[0];
+  const logParams = output[1];
   t.is(logParams.wip, false);
   t.is(logParams.change, true);
 
@@ -291,7 +291,7 @@ test('ready pull request with "[WIP] Test" title', async function (t) {
   );
 
   // check resulting logs
-  const logParams = output[0];
+  const logParams = output[1];
   t.is(logParams.wip, true);
   t.is(logParams.change, true);
 
@@ -339,7 +339,7 @@ test('pending pull request with "[WIP] Test" title', async function (t) {
   );
 
   // check resulting logs
-  const logParams = output[0];
+  const logParams = output[1];
   t.is(logParams.wip, true);
   t.is(logParams.change, false);
 
@@ -387,7 +387,7 @@ test('ready pull request with "Test" title', async function (t) {
   );
 
   // check resulting logs
-  const logParams = output[0];
+  const logParams = output[1];
   t.is(logParams.wip, false);
   t.is(logParams.change, false);
 
@@ -457,12 +457,12 @@ test("custom term: 🚧", async function (t) {
   );
 
   // check resulting logs
-  t.is(output[0].msg, '⏳ wip/app#1 - "🚧" found in title');
-  t.is(output.length, 1);
+  t.is(output[1].msg, '⏳ wip/app#1 - "🚧" found in title');
+  t.is(output.length, 2);
 
-  delete output[0].pid;
-  delete output[0].hostname;
-  t.deepEqual(output[0], {
+  delete output[1].pid;
+  delete output[1].hostname;
+  t.deepEqual(output[1], {
     level: 30,
     time: 0,
     name: "WIP",
@@ -549,12 +549,12 @@ test("custom term: 🚧NoSpace", async function (t) {
   );
 
   // check resulting logs
-  t.is(output[0].msg, '⏳ wip/app#1 - "🚧" found in title');
-  t.is(output.length, 1);
+  t.is(output[1].msg, '⏳ wip/app#1 - "🚧" found in title');
+  t.is(output.length, 2);
 
-  delete output[0].pid;
-  delete output[0].hostname;
-  t.deepEqual(output[0], {
+  delete output[1].pid;
+  delete output[1].hostname;
+  t.deepEqual(output[1], {
     level: 30,
     time: 0,
     name: "WIP",
@@ -636,7 +636,7 @@ test("custom location: label_name", async function (t) {
   );
 
   // check resulting logs
-  const logParams = output[0];
+  const logParams = output[1];
   t.is(logParams.location, "label_name");
   t.is(logParams.match, "WIP");
 
@@ -705,7 +705,7 @@ test("custom location: commits", async function (t) {
   );
 
   // check resulting logs
-  const logParams = output[0];
+  const logParams = output[1];
   t.is(logParams.location, "commit_subject");
   t.is(logParams.match, "WIP");
 
@@ -792,7 +792,7 @@ test("complex config", async function (t) {
   );
 
   // check resulting logs
-  const logParams = output[0];
+  const logParams = output[1];
   t.is(logParams.location, "commit_subject");
   t.is(logParams.match, "fixup!");
 
@@ -936,8 +936,8 @@ test("override", async function (t) {
   );
 
   // check resulting logs
-  t.is(output[0].msg, "❗️ wip/app#1");
-  const logParams = output[0];
+  t.is(output[1].msg, "❗️ wip/app#1");
+  const logParams = output[1];
   t.is(logParams.wip, false);
   t.is(logParams.override, true);
   t.is(logParams.change, true);
@@ -1003,7 +1003,7 @@ test("pending pull request with override", async function (t) {
   );
 
   // check resulting logs
-  const logParams = output[0];
+  const logParams = output[1];
   t.is(logParams.wip, false);
   t.is(logParams.change, true);
 
@@ -1062,7 +1062,7 @@ test('pending pull request with override and "[WIP] test" title', async function
   );
 
   // check resulting logs
-  const logParams = output[0];
+  const logParams = output[1];
 
   t.is(logParams.wip, true);
   t.is(logParams.change, true);
@@ -1114,7 +1114,7 @@ test("custom APP_NAME", async function (t) {
     require("./events/new-pull-request-with-test-title.json")
   );
 
-  t.is(output[0].name, "WIP (local-dev)");
+  t.is(output[1].name, "WIP (local-dev)");
 
   t.deepEqual(mock.activeMocks(), []);
 });
