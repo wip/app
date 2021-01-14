@@ -35,4 +35,17 @@ function wip(app) {
     ["installation", "installation_repositories"],
     handleInstallation.bind(null, app)
   );
+
+  // temporary log all events for debug purposes
+  app.on("*", ({ id, name, payload, log }) => {
+    const action = payload.action ? `.${payload.action}` : "";
+    log.info(
+      {
+        id,
+        name,
+        action,
+      },
+      `${name}${action} event received (id: ${id})`
+    );
+  });
 }
