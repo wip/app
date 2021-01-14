@@ -22,7 +22,10 @@
       }
     },
     "installation": {
-      "id": 1
+      "id": 1,
+      "account": {
+        "login": "wip"
+      }
     }
   }
 }
