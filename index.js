@@ -42,8 +42,8 @@ function wip(app) {
     log.info(
       {
         id,
-        name,
-        action,
+        event: name,
+        action: payload.action,
       },
       `${name}${action} event received (id: ${id})`
     );
