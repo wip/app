@@ -2,7 +2,6 @@ module.exports = wip;
 
 const handlePullRequestChange = require("./lib/handle-pull-request-change");
 const handleInstallation = require("./lib/handle-installation");
-const logEvent = require("./lib/log-event");
 
 /**
  * @param {import('probot').Probot} app
@@ -25,7 +24,4 @@ function wip(app) {
     ["installation", "installation_repositories"],
     handleInstallation.bind(null, app)
   );
-
-  // Log all events
-  app.on("*", logEvent);
 }
