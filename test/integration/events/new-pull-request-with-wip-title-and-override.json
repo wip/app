@@ -26,10 +26,7 @@
       "login": "wip"
     },
     "installation": {
-      "id": 1,
-      "account": {
-        "login": "wip"
-      }
+      "id": 1
     }
   }
 }
