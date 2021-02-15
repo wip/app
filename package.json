@@ -30,7 +30,7 @@
     "nock": "^13.0.7",
     "prettier": "^2.2.1",
     "proxyquire": "^2.0.1",
-    "semantic-release": "^17.3.8",
+    "semantic-release": "^17.3.9",
     "simple-mock": "^0.8.0",
     "smee-client": "^1.1.0",
     "tap": "^14.11.0"
