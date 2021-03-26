@@ -1,17 +1,15 @@
 const proxyquire = require("proxyquire").noCallThru();
 const { beforeEach, afterEach, test } = require("tap");
 
-beforeEach((done, t) => {
+beforeEach((t) => {
   // Preserve GHE_HOST value before removal
   t.context.GHE_HOST = process.env.GHE_HOST;
   delete process.env.GHE_HOST;
-  done();
 });
 
-afterEach((done, t) => {
+afterEach((t) => {
   // Restore initial GHE_HOST value
   process.env.GHE_HOST = t.context.GHE_HOST;
-  done();
 });
 
 test('returns "pro" if account is enabled manually', async function (t) {
@@ -22,7 +20,7 @@ test('returns "pro" if account is enabled manually', async function (t) {
   const owner = { login: "foo" };
   const plan = await getPlan(app, owner);
 
-  t.is(plan, "pro");
+  t.equal(plan, "pro");
   t.end();
 });
 
@@ -34,7 +32,7 @@ test('returns "pro" for GitHub Enterprise Server installations', async function 
   process.env.GHE_HOST = true;
   const plan = await getPlan(app, owner);
 
-  t.is(plan, "pro");
+  t.equal(plan, "pro");
   t.end();
 });
 
@@ -56,7 +54,7 @@ test("throws error if getting current plan fails with error other than 404", asy
     await getPlan(app, owner);
     t.fail("should throw error");
   } catch (error) {
-    t.is(error.message, "oops");
+    t.equal(error.message, "oops");
   }
 
   t.end();

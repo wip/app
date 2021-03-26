@@ -18,7 +18,7 @@ streamLogsToOutput._write = (object, encoding, done) => {
   done();
 };
 
-beforeEach(function (done) {
+beforeEach(function () {
   // Clear log output
   output = [];
   delete process.env.APP_NAME;
@@ -36,8 +36,6 @@ beforeEach(function (done) {
     log: pino(streamLogsToOutput),
   });
   this.probot.load(app);
-
-  done();
 });
 
 test('new pull request with "Test" title', async function (t) {
@@ -55,13 +53,13 @@ test('new pull request with "Test" title', async function (t) {
 
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
-      t.is(createCheckParams.name, "WIP");
-      t.is(createCheckParams.status, "completed");
-      t.is(createCheckParams.started_at, "1970-01-01T00:00:00.000Z");
-      t.is(createCheckParams.completed_at, "1970-01-01T00:00:00.000Z");
-      t.is(createCheckParams.status, "completed");
-      t.is(createCheckParams.conclusion, "success");
-      t.is(createCheckParams.output.title, "Ready for review");
+      t.equal(createCheckParams.name, "WIP");
+      t.equal(createCheckParams.status, "completed");
+      t.equal(createCheckParams.started_at, "1970-01-01T00:00:00.000Z");
+      t.equal(createCheckParams.completed_at, "1970-01-01T00:00:00.000Z");
+      t.equal(createCheckParams.status, "completed");
+      t.equal(createCheckParams.conclusion, "success");
+      t.equal(createCheckParams.output.title, "Ready for review");
       t.match(
         createCheckParams.output.summary,
         /No match found based on configuration/
@@ -75,7 +73,7 @@ test('new pull request with "Test" title', async function (t) {
         /You can configure both the terms and the location that the WIP app will look for by signing up for the pro plan/
       );
       t.match(createCheckParams.output.text, /All revenue will be donated/i);
-      t.is(createCheckParams.actions, undefined);
+      t.equal(createCheckParams.actions, undefined);
 
       return true;
     })
@@ -85,7 +83,7 @@ test('new pull request with "Test" title', async function (t) {
     require("./events/new-pull-request-with-test-title.json")
   );
 
-  t.deepEqual(mock.activeMocks(), []);
+  t.same(mock.activeMocks(), []);
 });
 
 test('new pull request with "[WIP] Test" title', async function (t) {
@@ -103,8 +101,8 @@ test('new pull request with "[WIP] Test" title', async function (t) {
 
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
-      t.is(createCheckParams.status, "in_progress");
-      t.is(createCheckParams.output.title, 'Title contains "WIP"');
+      t.equal(createCheckParams.status, "in_progress");
+      t.equal(createCheckParams.output.title, 'Title contains "WIP"');
       t.match(
         createCheckParams.output.summary,
         /The title "\[WIP\] Test" contains "WIP"/
@@ -122,7 +120,7 @@ test('new pull request with "[WIP] Test" title', async function (t) {
     require("./events/new-pull-request-with-wip-title.json")
   );
 
-  t.deepEqual(mock.activeMocks(), []);
+  t.same(mock.activeMocks(), []);
 });
 
 test('new pull request with "[Work in Progress] Test" title', async function (t) {
@@ -140,8 +138,11 @@ test('new pull request with "[Work in Progress] Test" title', async function (t)
 
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
-      t.is(createCheckParams.status, "in_progress");
-      t.is(createCheckParams.output.title, 'Title contains "Work in Progress"');
+      t.equal(createCheckParams.status, "in_progress");
+      t.equal(
+        createCheckParams.output.title,
+        'Title contains "Work in Progress"'
+      );
       t.match(
         createCheckParams.output.summary,
         /The title "\[Work in Progress\] Test" contains "Work in Progress"/
@@ -159,7 +160,7 @@ test('new pull request with "[Work in Progress] Test" title', async function (t)
     require("./events/new-pull-request-with-work-in-progress-title.json")
   );
 
-  t.deepEqual(mock.activeMocks(), []);
+  t.same(mock.activeMocks(), []);
 });
 
 test('new pull request with "🚧 Test" title', async function (t) {
@@ -177,8 +178,8 @@ test('new pull request with "🚧 Test" title', async function (t) {
 
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
-      t.is(createCheckParams.status, "in_progress");
-      t.is(
+      t.equal(createCheckParams.status, "in_progress");
+      t.equal(
         createCheckParams.output.title,
         "Title contains a construction emoji"
       );
@@ -199,7 +200,7 @@ test('new pull request with "🚧 Test" title', async function (t) {
     require("./events/new-pull-request-with-emoji-title.json")
   );
 
-  t.deepEqual(mock.activeMocks(), []);
+  t.same(mock.activeMocks(), []);
 });
 
 test('new pull request with "🚧Test" title', async function (t) {
@@ -217,8 +218,8 @@ test('new pull request with "🚧Test" title', async function (t) {
 
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
-      t.is(createCheckParams.status, "in_progress");
-      t.is(
+      t.equal(createCheckParams.status, "in_progress");
+      t.equal(
         createCheckParams.output.title,
         "Title contains a construction emoji"
       );
@@ -239,7 +240,7 @@ test('new pull request with "🚧Test" title', async function (t) {
     require("./events/new-pull-request-with-emoji-no-space-title.json")
   );
 
-  t.deepEqual(mock.activeMocks(), []);
+  t.same(mock.activeMocks(), []);
 });
 
 test('pending pull request with "Test" title', async function (t) {
@@ -263,8 +264,8 @@ test('pending pull request with "Test" title', async function (t) {
 
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
-      t.is(createCheckParams.status, "completed");
-      t.is(createCheckParams.conclusion, "success");
+      t.equal(createCheckParams.status, "completed");
+      t.equal(createCheckParams.conclusion, "success");
 
       return true;
     })
@@ -274,7 +275,7 @@ test('pending pull request with "Test" title', async function (t) {
     require("./events/new-pull-request-with-test-title.json")
   );
 
-  t.deepEqual(mock.activeMocks(), []);
+  t.same(mock.activeMocks(), []);
 });
 
 test('ready pull request with "[WIP] Test" title', async function (t) {
@@ -298,7 +299,7 @@ test('ready pull request with "[WIP] Test" title', async function (t) {
 
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
-      t.is(createCheckParams.status, "in_progress");
+      t.equal(createCheckParams.status, "in_progress");
 
       return true;
     })
@@ -308,7 +309,7 @@ test('ready pull request with "[WIP] Test" title', async function (t) {
     require("./events/new-pull-request-with-wip-title.json")
   );
 
-  t.deepEqual(mock.activeMocks(), []);
+  t.same(mock.activeMocks(), []);
 });
 
 test('pending pull request with "[WIP] Test" title', async function (t) {
@@ -334,7 +335,7 @@ test('pending pull request with "[WIP] Test" title', async function (t) {
     require("./events/new-pull-request-with-wip-title.json")
   );
 
-  t.deepEqual(mock.activeMocks(), []);
+  t.same(mock.activeMocks(), []);
 });
 
 test('ready pull request with "Test" title', async function (t) {
@@ -360,7 +361,7 @@ test('ready pull request with "Test" title', async function (t) {
     require("./events/new-pull-request-with-test-title.json")
   );
 
-  t.deepEqual(mock.activeMocks(), []);
+  t.same(mock.activeMocks(), []);
 });
 
 test('active marketplace "free" plan', async function (t) {
@@ -386,8 +387,8 @@ test('active marketplace "free" plan', async function (t) {
 
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
-      t.is(createCheckParams.status, "completed");
-      t.is(createCheckParams.conclusion, "success");
+      t.equal(createCheckParams.status, "completed");
+      t.equal(createCheckParams.conclusion, "success");
 
       return true;
     })
@@ -397,7 +398,7 @@ test('active marketplace "free" plan', async function (t) {
     require("./events/new-pull-request-with-test-title.json")
   );
 
-  t.deepEqual(mock.activeMocks(), []);
+  t.same(mock.activeMocks(), []);
 });
 
 test("request error", async function (t) {
@@ -418,14 +419,14 @@ test("request error", async function (t) {
   await this.probot
     .receive(require("./events/new-pull-request-with-test-title.json"))
     .catch((error) => {
-      t.is(error.name, "AggregateError");
+      t.equal(error.name, "AggregateError");
 
       const errors = Array.from(error);
-      t.is(errors.length, 1);
-      t.is(errors[0].status, 500);
+      t.equal(errors.length, 1);
+      t.equal(errors[0].status, 500);
     });
 
-  t.deepEqual(mock.activeMocks(), []);
+  t.same(mock.activeMocks(), []);
 });
 
 test("Create check error", async function (t) {
@@ -452,14 +453,14 @@ test("Create check error", async function (t) {
   await this.probot
     .receive(require("./events/new-pull-request-with-test-title.json"))
     .catch((error) => {
-      t.is(error.name, "AggregateError");
+      t.equal(error.name, "AggregateError");
 
       const errors = Array.from(error);
-      t.is(errors.length, 1);
-      t.is(errors[0].status, 500);
+      t.equal(errors.length, 1);
+      t.equal(errors[0].status, 500);
     });
 
-  t.deepEqual(mock.activeMocks(), []);
+  t.same(mock.activeMocks(), []);
 });
 
 test("custom APP_NAME", async function (t) {
@@ -481,7 +482,7 @@ test("custom APP_NAME", async function (t) {
 
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
-      t.is(createCheckParams.name, "WIP (local-dev)");
+      t.equal(createCheckParams.name, "WIP (local-dev)");
 
       return true;
     })
@@ -491,7 +492,7 @@ test("custom APP_NAME", async function (t) {
     require("./events/new-pull-request-with-test-title.json")
   );
 
-  t.deepEqual(mock.activeMocks(), []);
+  t.same(mock.activeMocks(), []);
 });
 
 test("404 from hasStatusChange check (spam)", async function (t) {
@@ -513,8 +514,8 @@ test("404 from hasStatusChange check (spam)", async function (t) {
     require("./events/new-pull-request-with-wip-title.json")
   );
 
-  t.deepEqual(apiMock.activeMocks(), []);
-  t.deepEqual(dotcomMock.activeMocks(), []);
+  t.same(apiMock.activeMocks(), []);
+  t.same(dotcomMock.activeMocks(), []);
 });
 
 test("404 from hasStatusChange check (not spam)", async function (t) {
@@ -543,6 +544,6 @@ test("404 from hasStatusChange check (not spam)", async function (t) {
     t.equal(errors[0].status, 404);
   }
 
-  t.deepEqual(apiMock.activeMocks(), []);
-  t.deepEqual(dotcomMock.activeMocks(), []);
+  t.same(apiMock.activeMocks(), []);
+  t.same(dotcomMock.activeMocks(), []);
 });

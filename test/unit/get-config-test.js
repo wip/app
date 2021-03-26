@@ -11,7 +11,7 @@ test("throws error if getting config fails with error other than 404", async fun
     });
     t.fail("should throw error");
   } catch (error) {
-    t.is(error.message, "oops");
+    t.equal(error.message, "oops");
   }
 
   t.end();
