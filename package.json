@@ -35,10 +35,6 @@
     "smee-client": "^1.1.0",
     "tap": "^15.0.0-3"
   },
-  "engines": {
-    "node": ">=12.21.0",
-    "npm": ">=5.3.0"
-  },
   "jest": {
     "testURL": "http://localhost/"
   }
