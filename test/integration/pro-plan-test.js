@@ -18,7 +18,7 @@ streamLogsToOutput._write = (object, encoding, done) => {
   done();
 };
 
-beforeEach(function (done) {
+beforeEach(function () {
   output = [];
   delete process.env.APP_NAME;
 
@@ -36,8 +36,6 @@ beforeEach(function (done) {
   });
 
   this.probot.load(app);
-
-  done();
 });
 
 test('new pull request with "Test" title', async function (t) {
@@ -72,13 +70,13 @@ test('new pull request with "Test" title', async function (t) {
 
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
-      t.is(createCheckParams.name, "WIP");
-      t.is(createCheckParams.status, "completed");
-      t.is(createCheckParams.started_at, "1970-01-01T00:00:00.000Z");
-      t.is(createCheckParams.completed_at, "1970-01-01T00:00:00.000Z");
-      t.is(createCheckParams.status, "completed");
-      t.is(createCheckParams.conclusion, "success");
-      t.is(createCheckParams.output.title, "Ready for review");
+      t.equal(createCheckParams.name, "WIP");
+      t.equal(createCheckParams.status, "completed");
+      t.equal(createCheckParams.started_at, "1970-01-01T00:00:00.000Z");
+      t.equal(createCheckParams.completed_at, "1970-01-01T00:00:00.000Z");
+      t.equal(createCheckParams.status, "completed");
+      t.equal(createCheckParams.conclusion, "success");
+      t.equal(createCheckParams.output.title, "Ready for review");
       t.match(
         createCheckParams.output.summary,
         /No match found based on configuration/
@@ -96,12 +94,12 @@ test('new pull request with "Test" title', async function (t) {
     .receive(require("./events/new-pull-request-with-test-title.json"))
     .catch(t.error);
 
-  t.is(output[0].msg, "✅ wip/app#1");
-  t.is(output.length, 1);
+  t.equal(output[0].msg, "✅ wip/app#1");
+  t.equal(output.length, 1);
 
   delete output[0].pid;
   delete output[0].hostname;
-  t.deepEqual(output[0], {
+  t.same(output[0], {
     level: 30,
     time: 0,
     name: "WIP",
@@ -121,7 +119,7 @@ test('new pull request with "Test" title', async function (t) {
     pr: 1,
   });
 
-  t.deepEqual(mock.activeMocks(), []);
+  t.same(mock.activeMocks(), []);
 });
 
 test('new pull request with "[WIP] Test" title', async function (t) {
@@ -156,8 +154,8 @@ test('new pull request with "[WIP] Test" title', async function (t) {
 
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
-      t.is(createCheckParams.status, "in_progress");
-      t.is(createCheckParams.output.title, 'Title contains "WIP"');
+      t.equal(createCheckParams.status, "in_progress");
+      t.equal(createCheckParams.output.title, 'Title contains "WIP"');
       t.match(
         createCheckParams.output.summary,
         /The title "\[WIP\] Test" contains "WIP"/
@@ -177,12 +175,12 @@ test('new pull request with "[WIP] Test" title', async function (t) {
 
   // check resulting logs
   const logParams = output[0];
-  t.is(logParams.wip, true);
-  t.is(logParams.change, true);
-  t.is(logParams.location, "title");
-  t.is(logParams.match, "WIP");
+  t.equal(logParams.wip, true);
+  t.equal(logParams.change, true);
+  t.equal(logParams.location, "title");
+  t.equal(logParams.match, "WIP");
 
-  t.deepEqual(mock.activeMocks(), []);
+  t.same(mock.activeMocks(), []);
 });
 
 test('pending pull request with "Test" title', async function (t) {
@@ -223,8 +221,8 @@ test('pending pull request with "Test" title', async function (t) {
 
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
-      t.is(createCheckParams.status, "completed");
-      t.is(createCheckParams.conclusion, "success");
+      t.equal(createCheckParams.status, "completed");
+      t.equal(createCheckParams.conclusion, "success");
 
       return true;
     })
@@ -236,10 +234,10 @@ test('pending pull request with "Test" title', async function (t) {
 
   // check resulting logs
   const logParams = output[0];
-  t.is(logParams.wip, false);
-  t.is(logParams.change, true);
+  t.equal(logParams.wip, false);
+  t.equal(logParams.change, true);
 
-  t.deepEqual(mock.activeMocks(), []);
+  t.same(mock.activeMocks(), []);
 });
 
 test('ready pull request with "[WIP] Test" title', async function (t) {
@@ -280,7 +278,7 @@ test('ready pull request with "[WIP] Test" title', async function (t) {
 
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
-      t.is(createCheckParams.status, "in_progress");
+      t.equal(createCheckParams.status, "in_progress");
 
       return true;
     })
@@ -292,10 +290,10 @@ test('ready pull request with "[WIP] Test" title', async function (t) {
 
   // check resulting logs
   const logParams = output[0];
-  t.is(logParams.wip, true);
-  t.is(logParams.change, true);
+  t.equal(logParams.wip, true);
+  t.equal(logParams.change, true);
 
-  t.deepEqual(mock.activeMocks(), []);
+  t.same(mock.activeMocks(), []);
 });
 
 test('pending pull request with "[WIP] Test" title', async function (t) {
@@ -340,10 +338,10 @@ test('pending pull request with "[WIP] Test" title', async function (t) {
 
   // check resulting logs
   const logParams = output[0];
-  t.is(logParams.wip, true);
-  t.is(logParams.change, false);
+  t.equal(logParams.wip, true);
+  t.equal(logParams.change, false);
 
-  t.deepEqual(mock.activeMocks(), []);
+  t.same(mock.activeMocks(), []);
 });
 
 test('ready pull request with "Test" title', async function (t) {
@@ -388,10 +386,10 @@ test('ready pull request with "Test" title', async function (t) {
 
   // check resulting logs
   const logParams = output[0];
-  t.is(logParams.wip, false);
-  t.is(logParams.change, false);
+  t.equal(logParams.wip, false);
+  t.equal(logParams.change, false);
 
-  t.deepEqual(mock.activeMocks(), []);
+  t.same(mock.activeMocks(), []);
 });
 
 test("custom term: 🚧", async function (t) {
@@ -430,11 +428,11 @@ test("custom term: 🚧", async function (t) {
 
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
-      t.is(createCheckParams.name, "WIP");
-      t.is(createCheckParams.status, "in_progress");
-      t.is(createCheckParams.completed_at, undefined);
-      t.is(createCheckParams.status, "in_progress");
-      t.is(
+      t.equal(createCheckParams.name, "WIP");
+      t.equal(createCheckParams.status, "in_progress");
+      t.equal(createCheckParams.completed_at, undefined);
+      t.equal(createCheckParams.status, "in_progress");
+      t.equal(
         createCheckParams.output.title,
         "Title contains a construction emoji"
       );
@@ -457,12 +455,12 @@ test("custom term: 🚧", async function (t) {
   );
 
   // check resulting logs
-  t.is(output[0].msg, '⏳ wip/app#1 - "🚧" found in title');
-  t.is(output.length, 1);
+  t.equal(output[0].msg, '⏳ wip/app#1 - "🚧" found in title');
+  t.equal(output.length, 1);
 
   delete output[0].pid;
   delete output[0].hostname;
-  t.deepEqual(output[0], {
+  t.same(output[0], {
     level: 30,
     time: 0,
     name: "WIP",
@@ -484,7 +482,7 @@ test("custom term: 🚧", async function (t) {
     pr: 1,
   });
 
-  t.deepEqual(mock.activeMocks(), []);
+  t.same(mock.activeMocks(), []);
 });
 
 test("custom term: 🚧NoSpace", async function (t) {
@@ -523,11 +521,11 @@ test("custom term: 🚧NoSpace", async function (t) {
 
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
-      t.is(createCheckParams.name, "WIP");
-      t.is(createCheckParams.status, "in_progress");
-      t.is(createCheckParams.completed_at, undefined);
-      t.is(createCheckParams.status, "in_progress");
-      t.is(
+      t.equal(createCheckParams.name, "WIP");
+      t.equal(createCheckParams.status, "in_progress");
+      t.equal(createCheckParams.completed_at, undefined);
+      t.equal(createCheckParams.status, "in_progress");
+      t.equal(
         createCheckParams.output.title,
         "Title contains a construction emoji"
       );
@@ -549,12 +547,12 @@ test("custom term: 🚧NoSpace", async function (t) {
   );
 
   // check resulting logs
-  t.is(output[0].msg, '⏳ wip/app#1 - "🚧" found in title');
-  t.is(output.length, 1);
+  t.equal(output[0].msg, '⏳ wip/app#1 - "🚧" found in title');
+  t.equal(output.length, 1);
 
   delete output[0].pid;
   delete output[0].hostname;
-  t.deepEqual(output[0], {
+  t.same(output[0], {
     level: 30,
     time: 0,
     name: "WIP",
@@ -576,7 +574,7 @@ test("custom term: 🚧NoSpace", async function (t) {
     pr: 1,
   });
 
-  t.deepEqual(mock.activeMocks(), []);
+  t.same(mock.activeMocks(), []);
 });
 
 test("custom location: label_name", async function (t) {
@@ -615,7 +613,7 @@ test("custom location: label_name", async function (t) {
 
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
-      t.is(createCheckParams.status, "in_progress");
+      t.equal(createCheckParams.status, "in_progress");
       t.match(
         createCheckParams.output.summary,
         /The label "WIP" contains "WIP"/
@@ -624,7 +622,7 @@ test("custom location: label_name", async function (t) {
         createCheckParams.output.summary,
         /You can override the status by adding "@wip ready for review"/
       );
-      t.is(createCheckParams.output.title, 'Label contains "WIP"');
+      t.equal(createCheckParams.output.title, 'Label contains "WIP"');
       t.match(createCheckParams.output.text, /<td>label_name<\/td>/);
 
       return true;
@@ -637,10 +635,10 @@ test("custom location: label_name", async function (t) {
 
   // check resulting logs
   const logParams = output[0];
-  t.is(logParams.location, "label_name");
-  t.is(logParams.match, "WIP");
+  t.equal(logParams.location, "label_name");
+  t.equal(logParams.match, "WIP");
 
-  t.deepEqual(mock.activeMocks(), []);
+  t.same(mock.activeMocks(), []);
 });
 
 test("custom location: commits", async function (t) {
@@ -685,7 +683,7 @@ test("custom location: commits", async function (t) {
 
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
-      t.is(createCheckParams.status, "in_progress");
+      t.equal(createCheckParams.status, "in_progress");
       t.match(
         createCheckParams.output.summary,
         /The commit subject "WIP: test" contains "WIP"/
@@ -706,10 +704,10 @@ test("custom location: commits", async function (t) {
 
   // check resulting logs
   const logParams = output[0];
-  t.is(logParams.location, "commit_subject");
-  t.is(logParams.match, "WIP");
+  t.equal(logParams.location, "commit_subject");
+  t.equal(logParams.match, "WIP");
 
-  t.deepEqual(mock.activeMocks(), []);
+  t.same(mock.activeMocks(), []);
 });
 
 test("complex config", async function (t) {
@@ -772,7 +770,7 @@ test("complex config", async function (t) {
 
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
-      t.is(createCheckParams.status, "in_progress");
+      t.equal(createCheckParams.status, "in_progress");
       t.match(
         createCheckParams.output.summary,
         /The commit subject "fixup! test" contains "fixup!"/
@@ -793,10 +791,10 @@ test("complex config", async function (t) {
 
   // check resulting logs
   const logParams = output[0];
-  t.is(logParams.location, "commit_subject");
-  t.is(logParams.match, "fixup!");
+  t.equal(logParams.location, "commit_subject");
+  t.equal(logParams.match, "fixup!");
 
-  t.deepEqual(mock.activeMocks(), []);
+  t.same(mock.activeMocks(), []);
 });
 
 test("loads config from .github repository", async function (t) {
@@ -839,7 +837,7 @@ test("loads config from .github repository", async function (t) {
     require("./events/new-pull-request-with-emoji-title.json")
   );
 
-  t.deepEqual(mock.activeMocks(), []);
+  t.same(mock.activeMocks(), []);
 });
 
 test("loads commits once only", async function (t) {
@@ -895,7 +893,7 @@ test("loads commits once only", async function (t) {
     require("./events/new-pull-request-with-test-title.json")
   );
 
-  t.deepEqual(mock.activeMocks(), []);
+  t.same(mock.activeMocks(), []);
 });
 
 test("override", async function (t) {
@@ -919,9 +917,9 @@ test("override", async function (t) {
 
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
-      t.is(createCheckParams.status, "completed");
-      t.is(createCheckParams.conclusion, "success");
-      t.is(createCheckParams.output.title, "Ready for review (override)");
+      t.equal(createCheckParams.status, "completed");
+      t.equal(createCheckParams.conclusion, "success");
+      t.equal(createCheckParams.output.title, "Ready for review (override)");
       t.match(
         createCheckParams.output.summary,
         /The status has been set to success by adding `@wip ready for review` to the pull request comment/
@@ -936,13 +934,13 @@ test("override", async function (t) {
   );
 
   // check resulting logs
-  t.is(output[0].msg, "❗️ wip/app#1");
+  t.equal(output[0].msg, "❗️ wip/app#1");
   const logParams = output[0];
-  t.is(logParams.wip, false);
-  t.is(logParams.override, true);
-  t.is(logParams.change, true);
+  t.equal(logParams.wip, false);
+  t.equal(logParams.override, true);
+  t.equal(logParams.change, true);
 
-  t.deepEqual(mock.activeMocks(), []);
+  t.same(mock.activeMocks(), []);
 });
 
 test("pending pull request with override", async function (t) {
@@ -986,9 +984,9 @@ test("pending pull request with override", async function (t) {
 
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
-      t.is(createCheckParams.status, "completed");
-      t.is(createCheckParams.conclusion, "success");
-      t.is(createCheckParams.output.title, "Ready for review");
+      t.equal(createCheckParams.status, "completed");
+      t.equal(createCheckParams.conclusion, "success");
+      t.equal(createCheckParams.output.title, "Ready for review");
       t.match(
         createCheckParams.output.summary,
         /No match found based on configuration/
@@ -1004,10 +1002,10 @@ test("pending pull request with override", async function (t) {
 
   // check resulting logs
   const logParams = output[0];
-  t.is(logParams.wip, false);
-  t.is(logParams.change, true);
+  t.equal(logParams.wip, false);
+  t.equal(logParams.change, true);
 
-  t.deepEqual(mock.activeMocks(), []);
+  t.same(mock.activeMocks(), []);
 });
 
 test('pending pull request with override and "[WIP] test" title', async function (t) {
@@ -1051,7 +1049,7 @@ test('pending pull request with override and "[WIP] test" title', async function
 
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
-      t.is(createCheckParams.status, "in_progress");
+      t.equal(createCheckParams.status, "in_progress");
 
       return true;
     })
@@ -1064,10 +1062,10 @@ test('pending pull request with override and "[WIP] test" title', async function
   // check resulting logs
   const logParams = output[0];
 
-  t.is(logParams.wip, true);
-  t.is(logParams.change, true);
+  t.equal(logParams.wip, true);
+  t.equal(logParams.change, true);
 
-  t.deepEqual(mock.activeMocks(), []);
+  t.same(mock.activeMocks(), []);
 });
 
 test("custom APP_NAME", async function (t) {
@@ -1104,7 +1102,7 @@ test("custom APP_NAME", async function (t) {
 
     // create new check run
     .post("/repos/wip/app/check-runs", (createCheckParams) => {
-      t.is(createCheckParams.name, "WIP (local-dev)");
+      t.equal(createCheckParams.name, "WIP (local-dev)");
 
       return true;
     })
@@ -1114,7 +1112,7 @@ test("custom APP_NAME", async function (t) {
     require("./events/new-pull-request-with-test-title.json")
   );
 
-  t.is(output[0].name, "WIP (local-dev)");
+  t.equal(output[0].name, "WIP (local-dev)");
 
-  t.deepEqual(mock.activeMocks(), []);
+  t.same(mock.activeMocks(), []);
 });

@@ -18,7 +18,7 @@ streamLogsToOutput._write = (object, encoding, done) => {
   done();
 };
 
-beforeEach(function (done) {
+beforeEach(function () {
   output = [];
   delete process.env.APP_NAME;
 
@@ -36,26 +36,24 @@ beforeEach(function (done) {
   });
 
   this.probot.load(app);
-
-  done();
 });
 
 test("uninstall", async function (t) {
   await this.probot.receive(require("./events/uninstall.json"));
 
-  t.is(output[0].msg, "😭 Organization wip uninstalled");
+  t.equal(output[0].msg, "😭 Organization wip uninstalled");
 });
 
 test("suspend", async function (t) {
   await this.probot.receive(require("./events/suspend.json"));
 
-  t.is(output[0].msg, "ℹ️ installation.suspend by wip");
+  t.equal(output[0].msg, "ℹ️ installation.suspend by wip");
 });
 
 test("repositories removed", async function (t) {
   await this.probot.receive(require("./events/repositories-removed.json"));
 
-  t.is(output[0].msg, "➖ Organization wip removed 2 repositories");
+  t.equal(output[0].msg, "➖ Organization wip removed 2 repositories");
 });
 
 test("installation", async function (t) {
@@ -138,7 +136,7 @@ test("installation", async function (t) {
     // Create 1st check run
     // https://docs.github.com/en/rest/reference/checks#create-a-check-run
     .post("/repos/wip/repo1/check-runs", (createCheckParams) => {
-      t.strictDeepEqual(createCheckParams, {
+      t.strictSame(createCheckParams, {
         name: "WIP",
         head_branch: "",
         head_sha: "sha123",
@@ -160,7 +158,7 @@ test("installation", async function (t) {
 
     // create 2nd check run
     .post("/repos/wip/repo1/check-runs", (createCheckParams) => {
-      t.strictDeepEqual(createCheckParams, {
+      t.strictSame(createCheckParams, {
         name: "WIP",
         head_branch: "",
         head_sha: "sha456",
@@ -180,7 +178,7 @@ test("installation", async function (t) {
 
   await this.probot.receive(require("./events/install.json"));
 
-  t.deepEqual(mock.activeMocks(), []);
+  t.same(mock.activeMocks(), []);
 });
 
 test("repositories added", async function (t) {
@@ -328,7 +326,7 @@ test("repositories added", async function (t) {
     // Create 1st check run
     // https://docs.github.com/en/rest/reference/checks#create-a-check-run
     .post("/repos/wip/repo1/check-runs", (createCheckParams) => {
-      t.strictDeepEqual(createCheckParams, {
+      t.strictSame(createCheckParams, {
         name: "WIP",
         head_branch: "",
         head_sha: "sha123",
@@ -350,7 +348,7 @@ test("repositories added", async function (t) {
 
     // create 2nd check run
     .post("/repos/wip/repo1/check-runs", (createCheckParams) => {
-      t.strictDeepEqual(createCheckParams, {
+      t.strictSame(createCheckParams, {
         name: "WIP",
         head_branch: "",
         head_sha: "sha456",
@@ -370,7 +368,7 @@ test("repositories added", async function (t) {
 
     // create 3rd check run
     .post("/repos/wip/repo2/check-runs", (createCheckParams) => {
-      t.strictDeepEqual(createCheckParams, {
+      t.strictSame(createCheckParams, {
         name: "WIP",
         head_branch: "",
         head_sha: "sha789",
@@ -392,7 +390,7 @@ test("repositories added", async function (t) {
 
     // create 4th check run
     .post("/repos/wip/repo2/check-runs", (createCheckParams) => {
-      t.strictDeepEqual(createCheckParams, {
+      t.strictSame(createCheckParams, {
         name: "WIP",
         head_branch: "",
         head_sha: "sha100",
@@ -414,7 +412,7 @@ test("repositories added", async function (t) {
     .receive(require("./events/repositories-added.json"))
     .catch(t.error);
 
-  t.deepEqual(mock.activeMocks(), []);
+  t.same(mock.activeMocks(), []);
 });
 
 test("permissions accepted", async function (t) {
@@ -508,7 +506,7 @@ test("permissions accepted", async function (t) {
     // Create 1st check run
     // https://docs.github.com/en/rest/reference/checks#create-a-check-run
     .post("/repos/wip/repo1/check-runs", (createCheckParams) => {
-      t.strictDeepEqual(createCheckParams, {
+      t.strictSame(createCheckParams, {
         name: "WIP",
         head_branch: "",
         head_sha: "sha123",
@@ -530,7 +528,7 @@ test("permissions accepted", async function (t) {
 
     // create 2nd check run
     .post("/repos/wip/repo1/check-runs", (createCheckParams) => {
-      t.strictDeepEqual(createCheckParams, {
+      t.strictSame(createCheckParams, {
         name: "WIP",
         head_branch: "",
         head_sha: "sha456",
@@ -552,7 +550,7 @@ test("permissions accepted", async function (t) {
     .receive(require("./events/new-permissions-accepted.json"))
     .catch(t.error);
 
-  t.deepEqual(mock.activeMocks(), []);
+  t.same(mock.activeMocks(), []);
 });
 
 test("installation for pro plan", async function (t) {
@@ -646,7 +644,7 @@ test("installation for pro plan", async function (t) {
     // Create 1st check run
     // https://docs.github.com/en/rest/reference/checks#create-a-check-run
     .post("/repos/wip/repo1/check-runs", (createCheckParams) => {
-      t.strictDeepEqual(createCheckParams, {
+      t.strictSame(createCheckParams, {
         name: "WIP",
         head_branch: "",
         head_sha: "sha123",
@@ -673,7 +671,7 @@ test("installation for pro plan", async function (t) {
 
     // create 2nd check run
     .post("/repos/wip/repo1/check-runs", (createCheckParams) => {
-      t.strictDeepEqual(createCheckParams, {
+      t.strictSame(createCheckParams, {
         name: "WIP",
         head_branch: "",
         head_sha: "sha456",
@@ -694,5 +692,5 @@ test("installation for pro plan", async function (t) {
 
   await this.probot.receive(require("./events/install.json")).catch(t.error);
 
-  t.deepEqual(mock.activeMocks(), []);
+  t.same(mock.activeMocks(), []);
 });

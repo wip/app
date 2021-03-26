@@ -18,7 +18,7 @@ streamLogsToOutput._write = (object, encoding, done) => {
   done();
 };
 
-beforeEach(function (done) {
+beforeEach(function () {
   output = [];
   delete process.env.APP_NAME;
 
@@ -36,14 +36,12 @@ beforeEach(function (done) {
   });
 
   this.probot.load(app);
-
-  done();
 });
 
 test("purchase free", async function (t) {
   await this.probot.receive(require("./events/purchase.json"));
 
-  t.is(output[0].msg, "🆕🆓 Organization wip purchased Free");
+  t.equal(output[0].msg, "🆕🆓 Organization wip purchased Free");
 
   t.end();
 });
@@ -51,28 +49,28 @@ test("purchase free", async function (t) {
 test("purchase enterprise", async function (t) {
   await this.probot.receive(require("./events/purchase-enterprise.json"));
 
-  t.is(output[0].msg, "🆕💰 Organization wip purchased Enterprise");
+  t.equal(output[0].msg, "🆕💰 Organization wip purchased Enterprise");
 
   t.end();
 });
 test("upgrade", async function (t) {
   await this.probot.receive(require("./events/upgrade.json"));
 
-  t.is(output[0].msg, "⬆️💵 Organization wip changed to Pro");
+  t.equal(output[0].msg, "⬆️💵 Organization wip changed to Pro");
 
   t.end();
 });
 test("upgrade", async function (t) {
   await this.probot.receive(require("./events/downgrade.json"));
 
-  t.is(output[0].msg, "⬇️💵 Organization wip changed to Pro");
+  t.equal(output[0].msg, "⬇️💵 Organization wip changed to Pro");
 
   t.end();
 });
 test("cancellation", async function (t) {
   await this.probot.receive(require("./events/cancellation.json"));
 
-  t.is(output[0].msg, "🚫🆓 Organization wip cancelled Free");
+  t.equal(output[0].msg, "🚫🆓 Organization wip cancelled Free");
 
   t.end();
 });
@@ -80,7 +78,7 @@ test("cancellation", async function (t) {
 test("pending_change", async function (t) {
   await this.probot.receive(require("./events/upgrade-pending.json"));
 
-  t.is(output.length, 0);
+  t.equal(output.length, 0);
 
   t.end();
 });
