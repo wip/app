@@ -10,5 +10,7 @@ module.exports = [
   'moonsmile', // 2019-9-1: Student writing tools to learn, I promise i will pay when I finish my project.
   'apache', // 2020-01-01: non-profit corporation to support Apache software projects
   'acts-project', // 2020-03-30: Generic track reconstruction framework for high energy physics
-  'caremessageplatform' // 2020-11-17: non-profit org, see https://git.io/Jk8Uw
+  'caremessageplatform', // 2020-11-17: non-profit org, see https://git.io/Jk8Uw
+  'AraHaan', // 2021-04-23: I am a student and would like to use WIP in my Open Source projects.
+  'Elskom' // 2021-04-23: an org account of open source projects by @AraHaan with outside collaborators.
 ]
