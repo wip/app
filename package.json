@@ -33,7 +33,7 @@
     "semantic-release": "^19.0.2",
     "simple-mock": "^0.8.0",
     "smee-client": "^1.1.0",
-    "tap": "^16.1.0"
+    "tap": "^16.2.0"
   },
   "jest": {
     "testURL": "http://localhost/"
