@@ -27,7 +27,7 @@
     "@sinonjs/fake-timers": "^9.1.1",
     "@vercel/node": "^2.1.0",
     "lodash.clonedeep": "^4.5.0",
-    "nock": "^13.2.6",
+    "nock": "^13.2.7",
     "prettier": "^2.7.0",
     "proxyquire": "^2.0.1",
     "semantic-release": "^19.0.3",
