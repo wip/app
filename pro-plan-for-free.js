@@ -14,3 +14,4 @@ module.exports = [
   'AraHaan', // 2021-04-23: I am a student and would like to use WIP in my Open Source projects.
   'Elskom' // 2021-04-23: an org account of open source projects by @AraHaan with outside collaborators.
 ]
+https://github.com/wip/app.git
