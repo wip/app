@@ -19,7 +19,7 @@
   "author": "Gregor Martynus (https://github.com/gr2m)",
   "license": "Apache-2.0",
   "dependencies": {
-    "gemoji": "^7.0.0",
+    "gemoji": "^8.0.0",
     "pluralize": "^8.0.0",
     "probot": "^12.2.8"
   },
