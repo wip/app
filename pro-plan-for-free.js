@@ -12,5 +12,6 @@ module.exports = [
   'acts-project', // 2020-03-30: Generic track reconstruction framework for high energy physics
   'caremessageplatform', // 2020-11-17: non-profit org, see https://git.io/Jk8Uw
   'AraHaan', // 2021-04-23: I am a student and would like to use WIP in my Open Source projects.
-  'Elskom' // 2021-04-23: an org account of open source projects by @AraHaan with outside collaborators.
+  'Elskom', // 2021-04-23: an org account of open source projects by @AraHaan with outside collaborators.
+  'puppetlabs' // 2022-11-30: was a paying customer but now GH says we can't buy due to being invoiced. See https://github.com/wip/app/issues/498
 ]
