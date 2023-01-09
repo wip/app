@@ -8,7 +8,6 @@
     "start": "probot run ./index.js",
     "test": "tap --100 --coverage test/**/*-test.js",
     "posttest": "npm run lint",
-    "semantic-release": "semantic-release",
     "lint": "prettier --check '{lib,test}/**/*.{js,json,ts}' index.js *.md package.json",
     "lint:fix": "prettier --write '{lib,test}/**/*.{js,json,ts}' index.js *.md package.json"
   },
@@ -30,7 +29,6 @@
     "nock": "^13.2.9",
     "prettier": "^2.8.1",
     "proxyquire": "^2.0.1",
-    "semantic-release": "^19.0.5",
     "simple-mock": "^0.8.0",
     "smee-client": "^1.2.3",
     "tap": "^16.3.2"
