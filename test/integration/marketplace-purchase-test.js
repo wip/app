@@ -1,7 +1,7 @@
 const Stream = require("stream");
 
 const FakeTimers = require("@sinonjs/fake-timers");
-const { beforeEach, test } = require("tap");
+const { before, beforeEach, test } = require("tap");
 const nock = require("nock");
 const pino = require("pino");
 
@@ -18,11 +18,13 @@ streamLogsToOutput._write = (object, encoding, done) => {
   done();
 };
 
+before(function () {
+  FakeTimers.install({ toFake: ["Date"] });
+});
+
 beforeEach(function () {
   output = [];
   delete process.env.APP_NAME;
-
-  FakeTimers.install({ toFake: ["Date"] });
 
   this.probot = new Probot({
     id: 1,
