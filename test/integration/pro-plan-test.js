@@ -81,11 +81,11 @@ test('new pull request with "Test" title', async function (t) {
       t.equal(createCheckParams.output.title, "Ready for review");
       t.match(
         createCheckParams.output.summary,
-        /No match found based on configuration/
+        /No match found based on configuration/,
       );
       t.match(
         createCheckParams.output.text,
-        /the default configuration is applied/
+        /the default configuration is applied/,
       );
 
       return true;
@@ -160,11 +160,11 @@ test('new pull request with "[WIP] Test" title', async function (t) {
       t.equal(createCheckParams.output.title, 'Title contains "WIP"');
       t.match(
         createCheckParams.output.summary,
-        /The title "\[WIP\] Test" contains "WIP"/
+        /The title "\[WIP\] Test" contains "WIP"/,
       );
       t.match(
         createCheckParams.output.summary,
-        /You can override the status by adding "@wip ready for review"/
+        /You can override the status by adding "@wip ready for review"/,
       );
 
       return true;
@@ -172,7 +172,7 @@ test('new pull request with "[WIP] Test" title', async function (t) {
     .reply(201, {});
 
   await this.probot.receive(
-    require("./events/new-pull-request-with-wip-title.json")
+    require("./events/new-pull-request-with-wip-title.json"),
   );
 
   // check resulting logs
@@ -231,7 +231,7 @@ test('pending pull request with "Test" title', async function (t) {
     .reply(201, {});
 
   await this.probot.receive(
-    require("./events/new-pull-request-with-test-title.json")
+    require("./events/new-pull-request-with-test-title.json"),
   );
 
   // check resulting logs
@@ -287,7 +287,7 @@ test('ready pull request with "[WIP] Test" title', async function (t) {
     .reply(201, {});
 
   await this.probot.receive(
-    require("./events/new-pull-request-with-wip-title.json")
+    require("./events/new-pull-request-with-wip-title.json"),
   );
 
   // check resulting logs
@@ -335,7 +335,7 @@ test('pending pull request with "[WIP] Test" title', async function (t) {
     });
 
   await this.probot.receive(
-    require("./events/new-pull-request-with-wip-title.json")
+    require("./events/new-pull-request-with-wip-title.json"),
   );
 
   // check resulting logs
@@ -383,7 +383,7 @@ test('ready pull request with "Test" title', async function (t) {
     });
 
   await this.probot.receive(
-    require("./events/new-pull-request-with-test-title.json")
+    require("./events/new-pull-request-with-test-title.json"),
   );
 
   // check resulting logs
@@ -436,15 +436,15 @@ test("custom term: 🚧", async function (t) {
       t.equal(createCheckParams.status, "in_progress");
       t.equal(
         createCheckParams.output.title,
-        "Title contains a construction emoji"
+        "Title contains a construction emoji",
       );
       t.match(
         createCheckParams.output.summary,
-        /The title "🚧 Test" contains "🚧"/
+        /The title "🚧 Test" contains "🚧"/,
       );
       t.match(
         createCheckParams.output.summary,
-        /You can override the status by adding "@wip ready for review"/
+        /You can override the status by adding "@wip ready for review"/,
       );
       t.match(createCheckParams.output.text, /<td>🚧<\/td>/);
 
@@ -453,7 +453,7 @@ test("custom term: 🚧", async function (t) {
     .reply(201, {});
 
   await this.probot.receive(
-    require("./events/new-pull-request-with-emoji-title.json")
+    require("./events/new-pull-request-with-emoji-title.json"),
   );
 
   // check resulting logs
@@ -529,15 +529,15 @@ test("custom term: 🚧NoSpace", async function (t) {
       t.equal(createCheckParams.status, "in_progress");
       t.equal(
         createCheckParams.output.title,
-        "Title contains a construction emoji"
+        "Title contains a construction emoji",
       );
       t.match(
         createCheckParams.output.summary,
-        /The title "🚧Test" contains "🚧"/
+        /The title "🚧Test" contains "🚧"/,
       );
       t.match(
         createCheckParams.output.summary,
-        /You can override the status by adding "@wip ready for review"/
+        /You can override the status by adding "@wip ready for review"/,
       );
       t.match(createCheckParams.output.text, /<td>🚧<\/td>/);
       return true;
@@ -545,7 +545,7 @@ test("custom term: 🚧NoSpace", async function (t) {
     .reply(201, {});
 
   await this.probot.receive(
-    require("./events/new-pull-request-with-emoji-no-space-title.json")
+    require("./events/new-pull-request-with-emoji-no-space-title.json"),
   );
 
   // check resulting logs
@@ -618,11 +618,11 @@ test("custom location: label_name", async function (t) {
       t.equal(createCheckParams.status, "in_progress");
       t.match(
         createCheckParams.output.summary,
-        /The label "WIP" contains "WIP"/
+        /The label "WIP" contains "WIP"/,
       );
       t.match(
         createCheckParams.output.summary,
-        /You can override the status by adding "@wip ready for review"/
+        /You can override the status by adding "@wip ready for review"/,
       );
       t.equal(createCheckParams.output.title, 'Label contains "WIP"');
       t.match(createCheckParams.output.text, /<td>label_name<\/td>/);
@@ -632,7 +632,7 @@ test("custom location: label_name", async function (t) {
     .reply(201, {});
 
   await this.probot.receive(
-    require("./events/new-pull-request-with-wip-label.json")
+    require("./events/new-pull-request-with-wip-label.json"),
   );
 
   // check resulting logs
@@ -688,11 +688,11 @@ test("custom location: commits", async function (t) {
       t.equal(createCheckParams.status, "in_progress");
       t.match(
         createCheckParams.output.summary,
-        /The commit subject "WIP: test" contains "WIP"/
+        /The commit subject "WIP: test" contains "WIP"/,
       );
       t.match(
         createCheckParams.output.summary,
-        /You can override the status by adding "@wip ready for review"/
+        /You can override the status by adding "@wip ready for review"/,
       );
       t.match(createCheckParams.output.text, /<td>commit_subject<\/td>/);
 
@@ -701,7 +701,7 @@ test("custom location: commits", async function (t) {
     .reply(201, {});
 
   await this.probot.receive(
-    require("./events/new-pull-request-with-wip-label.json")
+    require("./events/new-pull-request-with-wip-label.json"),
   );
 
   // check resulting logs
@@ -738,7 +738,7 @@ test("complex config", async function (t) {
 - terms:
   - fixup!
   - squash!
-  locations: commit_subject`
+  locations: commit_subject`,
     )
 
     // List commits on a pull request
@@ -775,11 +775,11 @@ test("complex config", async function (t) {
       t.equal(createCheckParams.status, "in_progress");
       t.match(
         createCheckParams.output.summary,
-        /The commit subject "fixup! test" contains "fixup!"/
+        /The commit subject "fixup! test" contains "fixup!"/,
       );
       t.match(
         createCheckParams.output.summary,
-        /You can override the status by adding "@wip ready for review"/
+        /You can override the status by adding "@wip ready for review"/,
       );
       t.match(createCheckParams.output.text, /<td>commit_subject<\/td>/);
 
@@ -788,7 +788,7 @@ test("complex config", async function (t) {
     .reply(201, {});
 
   await this.probot.receive(
-    require("./events/new-pull-request-with-test-title.json")
+    require("./events/new-pull-request-with-test-title.json"),
   );
 
   // check resulting logs
@@ -836,7 +836,7 @@ test("loads config from .github repository", async function (t) {
     .reply(201, {});
 
   await this.probot.receive(
-    require("./events/new-pull-request-with-emoji-title.json")
+    require("./events/new-pull-request-with-emoji-title.json"),
   );
 
   t.same(mock.activeMocks(), []);
@@ -864,7 +864,7 @@ test("loads commits once only", async function (t) {
 - terms: 'foo'
   locations: commit_subject
 - terms: 'bar'
-  locations: commit_subject`
+  locations: commit_subject`,
     )
 
     // List commits on a pull request
@@ -892,7 +892,7 @@ test("loads commits once only", async function (t) {
     .reply(201, {});
 
   await this.probot.receive(
-    require("./events/new-pull-request-with-test-title.json")
+    require("./events/new-pull-request-with-test-title.json"),
   );
 
   t.same(mock.activeMocks(), []);
@@ -924,7 +924,7 @@ test("override", async function (t) {
       t.equal(createCheckParams.output.title, "Ready for review (override)");
       t.match(
         createCheckParams.output.summary,
-        /The status has been set to success by adding `@wip ready for review` to the pull request comment/
+        /The status has been set to success by adding `@wip ready for review` to the pull request comment/,
       );
 
       return true;
@@ -932,7 +932,7 @@ test("override", async function (t) {
     .reply(201, {});
 
   await this.probot.receive(
-    require("./events/new-pull-request-with-wip-title-and-override.json")
+    require("./events/new-pull-request-with-wip-title-and-override.json"),
   );
 
   // check resulting logs
@@ -991,7 +991,7 @@ test("pending pull request with override", async function (t) {
       t.equal(createCheckParams.output.title, "Ready for review");
       t.match(
         createCheckParams.output.summary,
-        /No match found based on configuration/
+        /No match found based on configuration/,
       );
 
       return true;
@@ -999,7 +999,7 @@ test("pending pull request with override", async function (t) {
     .reply(201, {});
 
   await this.probot.receive(
-    require("./events/new-pull-request-with-test-title.json")
+    require("./events/new-pull-request-with-test-title.json"),
   );
 
   // check resulting logs
@@ -1058,7 +1058,7 @@ test('pending pull request with override and "[WIP] test" title', async function
     .reply(201, {});
 
   await this.probot.receive(
-    require("./events/new-pull-request-with-wip-title.json")
+    require("./events/new-pull-request-with-wip-title.json"),
   );
 
   // check resulting logs
@@ -1111,7 +1111,7 @@ test("custom APP_NAME", async function (t) {
     .reply(201, {});
 
   await this.probot.receive(
-    require("./events/new-pull-request-with-test-title.json")
+    require("./events/new-pull-request-with-test-title.json"),
   );
 
   t.equal(output[0].name, "WIP (local-dev)");

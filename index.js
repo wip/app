@@ -17,7 +17,7 @@ function wip(app) {
       "pull_request.unlabeled",
       "pull_request.synchronize",
     ],
-    handlePullRequestChange.bind(null, app)
+    handlePullRequestChange.bind(null, app),
   );
 
   // listen to relevant marketplace purchase events
@@ -27,12 +27,12 @@ function wip(app) {
       "marketplace_purchase.changed",
       "marketplace_purchase.cancelled",
     ],
-    handleMarketplacePurchase.bind(null, app)
+    handleMarketplacePurchase.bind(null, app),
   );
 
   // listen to installation events
   app.on(
     ["installation", "installation_repositories"],
-    handleInstallation.bind(null, app)
+    handleInstallation.bind(null, app),
   );
 }
