@@ -27,7 +27,7 @@
     "@vercel/node": "^3.0.3",
     "lodash.clonedeep": "^4.5.0",
     "nock": "^13.3.3",
-    "prettier": "^3.0.2",
+    "prettier": "^3.0.3",
     "proxyquire": "^2.0.1",
     "simple-mock": "^0.8.0",
     "smee-client": "^1.2.3",
