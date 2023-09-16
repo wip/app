@@ -6,8 +6,9 @@
   "main": "index.js",
   "scripts": {
     "start": "probot run ./index.js",
-    "test": "tap --100 --coverage test/**/*-test.js",
+    "test": "tap test/**/*-test.js",
     "posttest": "npm run lint",
+    "coverage-report": "npx tap report --coverage-report lcov",
     "lint": "prettier --check '{lib,test}/**/*.{js,json,ts}' index.js *.md package.json",
     "lint:fix": "prettier --write '{lib,test}/**/*.{js,json,ts}' index.js *.md package.json"
   },
