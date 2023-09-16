@@ -22,12 +22,13 @@ before(function () {
   FakeTimers.install({ toFake: ["Date"] });
 });
 
+let probot;
 beforeEach(function () {
   // Clear log output
   output = [];
   delete process.env.APP_NAME;
 
-  this.probot = new Probot({
+  probot = new Probot({
     id: 1,
     githubToken: "test",
     Octokit: ProbotOctokit.defaults({
@@ -37,7 +38,7 @@ beforeEach(function () {
     }),
     log: pino(streamLogsToOutput),
   });
-  this.probot.load(app);
+  probot.load(app);
 });
 
 test('new pull request with "Test" title', async function (t) {
@@ -81,7 +82,7 @@ test('new pull request with "Test" title', async function (t) {
     })
     .reply(201, {});
 
-  await this.probot.receive(
+  await probot.receive(
     require("./events/new-pull-request-with-test-title.json"),
   );
 
@@ -118,7 +119,7 @@ test('new pull request with "[WIP] Test" title', async function (t) {
     })
     .reply(201, {});
 
-  await this.probot.receive(
+  await probot.receive(
     require("./events/new-pull-request-with-wip-title.json"),
   );
 
@@ -158,7 +159,7 @@ test('new pull request with "[Work in Progress] Test" title', async function (t)
     })
     .reply(201, {});
 
-  await this.probot.receive(
+  await probot.receive(
     require("./events/new-pull-request-with-work-in-progress-title.json"),
   );
 
@@ -198,7 +199,7 @@ test('new pull request with "🚧 Test" title', async function (t) {
     })
     .reply(201, {});
 
-  await this.probot.receive(
+  await probot.receive(
     require("./events/new-pull-request-with-emoji-title.json"),
   );
 
@@ -238,7 +239,7 @@ test('new pull request with "🚧Test" title', async function (t) {
     })
     .reply(201, {});
 
-  await this.probot.receive(
+  await probot.receive(
     require("./events/new-pull-request-with-emoji-no-space-title.json"),
   );
 
@@ -273,7 +274,7 @@ test('pending pull request with "Test" title', async function (t) {
     })
     .reply(201, {});
 
-  await this.probot.receive(
+  await probot.receive(
     require("./events/new-pull-request-with-test-title.json"),
   );
 
@@ -307,7 +308,7 @@ test('ready pull request with "[WIP] Test" title', async function (t) {
     })
     .reply(201, {});
 
-  await this.probot.receive(
+  await probot.receive(
     require("./events/new-pull-request-with-wip-title.json"),
   );
 
@@ -333,7 +334,7 @@ test('pending pull request with "[WIP] Test" title', async function (t) {
       ],
     });
 
-  await this.probot.receive(
+  await probot.receive(
     require("./events/new-pull-request-with-wip-title.json"),
   );
 
@@ -359,7 +360,7 @@ test('ready pull request with "Test" title', async function (t) {
       ],
     });
 
-  await this.probot.receive(
+  await probot.receive(
     require("./events/new-pull-request-with-test-title.json"),
   );
 
@@ -396,7 +397,7 @@ test('active marketplace "free" plan', async function (t) {
     })
     .reply(201, {});
 
-  await this.probot.receive(
+  await probot.receive(
     require("./events/new-pull-request-with-test-title.json"),
   );
 
@@ -418,7 +419,7 @@ test("request error", async function (t) {
     })
     .reply(500);
 
-  await this.probot
+  await probot
     .receive(require("./events/new-pull-request-with-test-title.json"))
     .catch((error) => {
       t.equal(error.name, "AggregateError");
@@ -452,7 +453,7 @@ test("Create check error", async function (t) {
     .post("/repos/wip/app/check-runs")
     .reply(500);
 
-  await this.probot
+  await probot
     .receive(require("./events/new-pull-request-with-test-title.json"))
     .catch((error) => {
       t.equal(error.name, "AggregateError");
@@ -490,7 +491,7 @@ test("custom APP_NAME", async function (t) {
     })
     .reply(201, {});
 
-  await this.probot.receive(
+  await probot.receive(
     require("./events/new-pull-request-with-test-title.json"),
   );
 
@@ -512,7 +513,7 @@ test("404 from hasStatusChange check (spam)", async function (t) {
 
   const dotcomMock = nock("https://github.com").head("/wip").reply(404);
 
-  await this.probot.receive(
+  await probot.receive(
     require("./events/new-pull-request-with-wip-title.json"),
   );
 
@@ -536,7 +537,7 @@ test("404 from hasStatusChange check (not spam)", async function (t) {
   const dotcomMock = nock("https://github.com").head("/wip").reply(200);
 
   try {
-    await this.probot.receive(
+    await probot.receive(
       require("./events/new-pull-request-with-wip-title.json"),
     );
     throw new Error("Should not resolve");
