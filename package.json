@@ -6,8 +6,9 @@
   "main": "index.js",
   "scripts": {
     "start": "probot run ./index.js",
-    "test": "tap --100 --coverage test/**/*-test.js",
+    "test": "tap test/**/*-test.js",
     "posttest": "npm run lint",
+    "coverage-report": "npx tap report --coverage-report lcov",
     "lint": "prettier --check '{lib,test}/**/*.{js,json,ts}' index.js *.md package.json",
     "lint:fix": "prettier --write '{lib,test}/**/*.{js,json,ts}' index.js *.md package.json"
   },
@@ -31,7 +32,7 @@
     "proxyquire": "^2.0.1",
     "simple-mock": "^0.8.0",
     "smee-client": "^1.2.3",
-    "tap": "^16.3.8"
+    "tap": "^18.0.1"
   },
   "jest": {
     "testURL": "http://localhost/"

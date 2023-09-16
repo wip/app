@@ -22,11 +22,12 @@ before(function () {
   FakeTimers.install({ toFake: ["Date"] });
 });
 
+let probot;
 beforeEach(function () {
   output = [];
   delete process.env.APP_NAME;
 
-  this.probot = new Probot({
+  probot = new Probot({
     id: 1,
     githubToken: "test",
     Octokit: ProbotOctokit.defaults({
@@ -37,7 +38,7 @@ beforeEach(function () {
     log: pino(streamLogsToOutput),
   });
 
-  this.probot.load(app);
+  probot.load(app);
 });
 
 test('new pull request with "Test" title', async function (t) {
@@ -92,7 +93,7 @@ test('new pull request with "Test" title', async function (t) {
     })
     .reply(201, {});
 
-  await this.probot
+  await probot
     .receive(require("./events/new-pull-request-with-test-title.json"))
     .catch(t.error);
 
@@ -171,7 +172,7 @@ test('new pull request with "[WIP] Test" title', async function (t) {
     })
     .reply(201, {});
 
-  await this.probot.receive(
+  await probot.receive(
     require("./events/new-pull-request-with-wip-title.json"),
   );
 
@@ -230,7 +231,7 @@ test('pending pull request with "Test" title', async function (t) {
     })
     .reply(201, {});
 
-  await this.probot.receive(
+  await probot.receive(
     require("./events/new-pull-request-with-test-title.json"),
   );
 
@@ -286,7 +287,7 @@ test('ready pull request with "[WIP] Test" title', async function (t) {
     })
     .reply(201, {});
 
-  await this.probot.receive(
+  await probot.receive(
     require("./events/new-pull-request-with-wip-title.json"),
   );
 
@@ -334,7 +335,7 @@ test('pending pull request with "[WIP] Test" title', async function (t) {
       ],
     });
 
-  await this.probot.receive(
+  await probot.receive(
     require("./events/new-pull-request-with-wip-title.json"),
   );
 
@@ -382,7 +383,7 @@ test('ready pull request with "Test" title', async function (t) {
       ],
     });
 
-  await this.probot.receive(
+  await probot.receive(
     require("./events/new-pull-request-with-test-title.json"),
   );
 
@@ -452,7 +453,7 @@ test("custom term: 🚧", async function (t) {
     })
     .reply(201, {});
 
-  await this.probot.receive(
+  await probot.receive(
     require("./events/new-pull-request-with-emoji-title.json"),
   );
 
@@ -544,7 +545,7 @@ test("custom term: 🚧NoSpace", async function (t) {
     })
     .reply(201, {});
 
-  await this.probot.receive(
+  await probot.receive(
     require("./events/new-pull-request-with-emoji-no-space-title.json"),
   );
 
@@ -631,7 +632,7 @@ test("custom location: label_name", async function (t) {
     })
     .reply(201, {});
 
-  await this.probot.receive(
+  await probot.receive(
     require("./events/new-pull-request-with-wip-label.json"),
   );
 
@@ -700,7 +701,7 @@ test("custom location: commits", async function (t) {
     })
     .reply(201, {});
 
-  await this.probot.receive(
+  await probot.receive(
     require("./events/new-pull-request-with-wip-label.json"),
   );
 
@@ -787,7 +788,7 @@ test("complex config", async function (t) {
     })
     .reply(201, {});
 
-  await this.probot.receive(
+  await probot.receive(
     require("./events/new-pull-request-with-test-title.json"),
   );
 
@@ -835,7 +836,7 @@ test("loads config from .github repository", async function (t) {
     .post("/repos/wip/app/check-runs")
     .reply(201, {});
 
-  await this.probot.receive(
+  await probot.receive(
     require("./events/new-pull-request-with-emoji-title.json"),
   );
 
@@ -891,7 +892,7 @@ test("loads commits once only", async function (t) {
     .post("/repos/wip/app/check-runs")
     .reply(201, {});
 
-  await this.probot.receive(
+  await probot.receive(
     require("./events/new-pull-request-with-test-title.json"),
   );
 
@@ -931,7 +932,7 @@ test("override", async function (t) {
     })
     .reply(201, {});
 
-  await this.probot.receive(
+  await probot.receive(
     require("./events/new-pull-request-with-wip-title-and-override.json"),
   );
 
@@ -998,7 +999,7 @@ test("pending pull request with override", async function (t) {
     })
     .reply(201, {});
 
-  await this.probot.receive(
+  await probot.receive(
     require("./events/new-pull-request-with-test-title.json"),
   );
 
@@ -1057,7 +1058,7 @@ test('pending pull request with override and "[WIP] test" title', async function
     })
     .reply(201, {});
 
-  await this.probot.receive(
+  await probot.receive(
     require("./events/new-pull-request-with-wip-title.json"),
   );
 
@@ -1110,7 +1111,7 @@ test("custom APP_NAME", async function (t) {
     })
     .reply(201, {});
 
-  await this.probot.receive(
+  await probot.receive(
     require("./events/new-pull-request-with-test-title.json"),
   );
 

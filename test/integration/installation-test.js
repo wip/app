@@ -22,11 +22,12 @@ before(function () {
   FakeTimers.install({ toFake: ["Date"] });
 });
 
+let probot;
 beforeEach(function () {
   output = [];
   delete process.env.APP_NAME;
 
-  this.probot = new Probot({
+  probot = new Probot({
     id: 1,
     githubToken: "test",
     Octokit: ProbotOctokit.defaults({
@@ -37,23 +38,23 @@ beforeEach(function () {
     log: pino(streamLogsToOutput),
   });
 
-  this.probot.load(app);
+  probot.load(app);
 });
 
 test("uninstall", async function (t) {
-  await this.probot.receive(require("./events/uninstall.json"));
+  await probot.receive(require("./events/uninstall.json"));
 
   t.equal(output[0].msg, "😭 Organization wip uninstalled");
 });
 
 test("suspend", async function (t) {
-  await this.probot.receive(require("./events/suspend.json"));
+  await probot.receive(require("./events/suspend.json"));
 
   t.equal(output[0].msg, "ℹ️ installation.suspend by wip");
 });
 
 test("repositories removed", async function (t) {
-  await this.probot.receive(require("./events/repositories-removed.json"));
+  await probot.receive(require("./events/repositories-removed.json"));
 
   t.equal(output[0].msg, "➖ Organization wip removed 2 repositories");
 });
@@ -176,7 +177,7 @@ test("installation", async function (t) {
     })
     .reply(201, {});
 
-  await this.probot.receive(require("./events/install.json"));
+  await probot.receive(require("./events/install.json"));
 
   t.same(mock.activeMocks(), []);
 });
@@ -404,7 +405,7 @@ test("repositories added", async function (t) {
     })
     .reply(201, {});
 
-  await this.probot
+  await probot
     .receive(require("./events/repositories-added.json"))
     .catch(t.error);
 
@@ -540,7 +541,7 @@ test("permissions accepted", async function (t) {
     })
     .reply(201, {});
 
-  await this.probot
+  await probot
     .receive(require("./events/new-permissions-accepted.json"))
     .catch(t.error);
 
@@ -682,7 +683,7 @@ test("installation for pro plan", async function (t) {
     })
     .reply(201, {});
 
-  await this.probot.receive(require("./events/install.json")).catch(t.error);
+  await probot.receive(require("./events/install.json")).catch(t.error);
 
   t.same(mock.activeMocks(), []);
 });

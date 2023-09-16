@@ -1,6 +1,6 @@
 .env
 .npmrc
-.nyc_output
+.tap
 .vercel
 coverage
 node_modules

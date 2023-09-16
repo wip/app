@@ -22,11 +22,12 @@ before(function () {
   FakeTimers.install({ toFake: ["Date"] });
 });
 
+let probot;
 beforeEach(function () {
   output = [];
   delete process.env.APP_NAME;
 
-  this.probot = new Probot({
+  probot = new Probot({
     id: 1,
     githubToken: "test",
     Octokit: ProbotOctokit.defaults({
@@ -37,11 +38,11 @@ beforeEach(function () {
     log: pino(streamLogsToOutput),
   });
 
-  this.probot.load(app);
+  probot.load(app);
 });
 
 test("purchase free", async function (t) {
-  await this.probot.receive(require("./events/purchase.json"));
+  await probot.receive(require("./events/purchase.json"));
 
   t.equal(output[0].msg, "🆕🆓 Organization wip purchased Free");
 
@@ -49,28 +50,28 @@ test("purchase free", async function (t) {
 });
 
 test("purchase enterprise", async function (t) {
-  await this.probot.receive(require("./events/purchase-enterprise.json"));
+  await probot.receive(require("./events/purchase-enterprise.json"));
 
   t.equal(output[0].msg, "🆕💰 Organization wip purchased Enterprise");
 
   t.end();
 });
 test("upgrade", async function (t) {
-  await this.probot.receive(require("./events/upgrade.json"));
+  await probot.receive(require("./events/upgrade.json"));
 
   t.equal(output[0].msg, "⬆️💵 Organization wip changed to Pro");
 
   t.end();
 });
 test("upgrade", async function (t) {
-  await this.probot.receive(require("./events/downgrade.json"));
+  await probot.receive(require("./events/downgrade.json"));
 
   t.equal(output[0].msg, "⬇️💵 Organization wip changed to Pro");
 
   t.end();
 });
 test("cancellation", async function (t) {
-  await this.probot.receive(require("./events/cancellation.json"));
+  await probot.receive(require("./events/cancellation.json"));
 
   t.equal(output[0].msg, "🚫🆓 Organization wip cancelled Free");
 
@@ -78,7 +79,7 @@ test("cancellation", async function (t) {
 });
 
 test("pending_change", async function (t) {
-  await this.probot.receive(require("./events/upgrade-pending.json"));
+  await probot.receive(require("./events/upgrade-pending.json"));
 
   t.equal(output.length, 0);
 
