@@ -32,7 +32,7 @@
     "proxyquire": "^2.0.1",
     "simple-mock": "^0.8.0",
     "smee-client": "^1.2.3",
-    "tap": "^18.5.0"
+    "tap": "^18.5.2"
   },
   "jest": {
     "testURL": "http://localhost/"
