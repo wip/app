@@ -21,7 +21,7 @@
   "dependencies": {
     "gemoji": "^8.1.0",
     "pluralize": "^8.0.0",
-    "probot": "^12.3.1"
+    "probot": "^12.3.2"
   },
   "devDependencies": {
     "@sinonjs/fake-timers": "^11.2.2",
