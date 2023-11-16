@@ -4,6 +4,7 @@ const FakeTimers = require("@sinonjs/fake-timers");
 const { before, beforeEach, test } = require("tap");
 const nock = require("nock");
 const pino = require("pino");
+const fetch = require("node-fetch");
 
 nock.disableNetConnect();
 
@@ -37,6 +38,7 @@ beforeEach(function () {
       log: pino(streamLogsToOutput),
     }),
     log: pino(streamLogsToOutput),
+    request: { fetch },
   });
   probot.load(app);
 });
