@@ -3,13 +3,13 @@ const { beforeEach, afterEach, test } = require("tap");
 
 beforeEach((t) => {
   // Preserve GHE_HOST value before removal
-  t.context.GHE_HOST = process.env.GHE_HOST;
+  t.GHE_HOST = process.env.GHE_HOST;
   delete process.env.GHE_HOST;
 });
 
 afterEach((t) => {
   // Restore initial GHE_HOST value
-  process.env.GHE_HOST = t.context.GHE_HOST;
+  process.env.GHE_HOST = t.GHE_HOST;
 });
 
 test('returns "pro" if account is enabled manually', async function (t) {
