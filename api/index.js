@@ -1,16 +1,25 @@
-const { createNodeMiddleware, createProbot } = require("probot");
+// @ts-check
 
-const app = require("../");
+import { createNodeMiddleware, createProbot } from "probot";
+
+import app from "../index.js";
+
 const probot = createProbot();
 const middleware = createNodeMiddleware(app, { probot, webhooksPath: "/" });
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
 
 /**
  * Redirect `GET /` to `/stats`, pass `POST /` to Probot's middleware
  *
- * @param {import('@vercel/node').NowRequest} request
- * @param {import('@vercel/node').NowResponse} response
+ * @param {import('@vercel/node').VercelRequest} request
+ * @param {import('@vercel/node').VercelResponse} response
  */
-module.exports = (request, response) => {
+export default async function handler(request, response) {
   if (request.method !== "POST") {
     response.writeHead(302, {
       Location: "/stats",
@@ -20,10 +29,4 @@ module.exports = (request, response) => {
   }
 
   middleware(request, response);
-};
-
-module.exports.config = {
-  api: {
-    bodyParser: false,
-  },
-};
+}
