@@ -21,3 +21,9 @@ module.exports = (request, response) => {
 
   middleware(request, response);
 };
+
+module.exports.config = {
+  api: {
+    bodyParser: false,
+  },
+};
