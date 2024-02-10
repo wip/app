@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "start": "probot run ./index.js",
-    "test": "tap test/**/*-test.js --timeout 240",
+    "test": "tap test/**/*-test.js",
     "posttest": "npm run lint",
     "coverage-report": "npx tap report --coverage-report lcov",
     "lint": "prettier --check '{lib,test}/**/*.{js,json,ts}' index.js *.md package.json",
