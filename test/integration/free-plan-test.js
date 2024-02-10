@@ -31,10 +31,13 @@ beforeEach(async () => {
   probot = new Probot({
     id: 1,
     githubToken: "test",
-    Octokit: ProbotOctokit.defaults({
-      throttle: { enabled: false },
-      retry: { enabled: false },
-      log: pino(streamLogsToOutput),
+    Octokit: ProbotOctokit.defaults((instanceOptions) => {
+      return {
+        ...instanceOptions,
+        throttle: { enabled: false },
+        retry: { enabled: false },
+        log: pino(streamLogsToOutput),
+      };
     }),
     log: pino(streamLogsToOutput),
   });
