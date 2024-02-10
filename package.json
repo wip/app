@@ -21,14 +21,14 @@
   "dependencies": {
     "gemoji": "^8.1.0",
     "pluralize": "^8.0.0",
-    "probot": "^13.0.2"
+    "probot": "^12.3.3"
   },
   "devDependencies": {
     "@sinonjs/fake-timers": "^11.2.2",
     "@vercel/node": "^3.0.18",
     "lodash.clonedeep": "^4.5.0",
     "nock": "^14.0.0-beta.2",
-    "prettier": "^3.1.0",
+    "prettier": "^3.2.5",
     "proxyquire": "^2.0.1",
     "simple-mock": "^0.8.0",
     "smee-client": "^2.0.1",
