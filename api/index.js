@@ -1,14 +1,16 @@
+// @ts-check
+
 const { createNodeMiddleware, createProbot } = require("probot");
 
 const app = require("../");
 const probot = createProbot();
-const middleware = createNodeMiddleware(app, { probot });
+const middleware = createNodeMiddleware(app, { probot, webhooksPath: "/" });
 
 /**
  * Redirect `GET /` to `/stats`, pass `POST /` to Probot's middleware
  *
- * @param {import('@vercel/node').NowRequest} request
- * @param {import('@vercel/node').NowResponse} response
+ * @param {import('@vercel/node').VercelRequest} request
+ * @param {import('@vercel/node').VercelResponse} response
  */
 module.exports = (request, response) => {
   if (request.method !== "POST") {

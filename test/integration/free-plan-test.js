@@ -23,7 +23,7 @@ before(function () {
 });
 
 let probot;
-beforeEach(function () {
+beforeEach(async () => {
   // Clear log output
   output = [];
   delete process.env.APP_NAME;
