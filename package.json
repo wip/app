@@ -31,7 +31,7 @@
     "prettier": "^3.3.3",
     "proxyquire": "^2.0.1",
     "simple-mock": "^0.8.0",
-    "smee-client": "^2.0.1",
+    "smee-client": "^2.0.2",
     "tap": "^21.0.0"
   },
   "jest": {
