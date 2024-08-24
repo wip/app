@@ -86,3 +86,11 @@ The logo was created by [Micah Ilbery](https://github.com/micahilbery).
 ## Legal
 
 License: [Apache 2.0](LICENSE). [Privacy Policy](https://github.com/wip/policies/blob/master/PRIVACY.md). [Security Policy](https://github.com/wip/policies/blob/master/SECURITY.md). [Code of Conduct](CODE_OF_CONDUCT.md)
+
+
+## Support My Work
+
+If you appreciate my work and want to support me, consider becoming a sponsor on GitHub!
+
+[![Sponsor me on GitHub](https://img.shields.io/badge/Sponsor_me_on-GitHub-brightgreen)](https://github.com/sponsors/gr2m)
+
