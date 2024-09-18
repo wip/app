@@ -24,7 +24,7 @@
     "probot": "^12.3.3"
   },
   "devDependencies": {
-    "@sinonjs/fake-timers": "^13.0.1",
+    "@sinonjs/fake-timers": "^13.0.2",
     "@vercel/node": "^3.2.11",
     "lodash.clonedeep": "^4.5.0",
     "nock": "^13.5.5",
