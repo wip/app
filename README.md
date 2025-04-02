@@ -1,15 +1,15 @@
-<p align=center><a href="https://github.com/wip/app/tree/master/assets"><img src="https://github.com/wip/app/raw/master/assets/wip-logo.png" alt="" width="200" height="200"></a></p>
+<p align=center><a href="https://github.com/wip/app/tree/main/assets"><img src="https://github.com/wip/app/raw/main/assets/wip-logo.png" alt="" width="200" height="200"></a></p>
 
 <h1 align="center">DO NOT MERGE – as a service.</h1>
 
 <p align="center">
-  <a href="https://vercel.com/?utm_source=wip&utm_campaign=oss" rel="nofollow"><img src="https://github.com/wip/app/raw/master/assets/powered-by-vercel.svg" alt="Powered by Vercel"></a>
+  <a href="https://vercel.com/?utm_source=wip&utm_campaign=oss" rel="nofollow"><img src="https://github.com/wip/app/raw/main/assets/powered-by-vercel.svg" alt="Powered by Vercel"></a>
   <br>
   <a href="https://stats.uptimerobot.com/Dq46zf6PY" rel="nofollow"><img src="https://img.shields.io/uptimerobot/status/m779429441-a6394a1f5546b634ac6b52f8.svg" alt="Uptime Robot status"></a>
   <a href="https://github.com/octokit/app.js/actions?workflow=Test" rel="nofollow"><img alt="Build Status" src="https://github.com/octokit/app.js/workflows/Test/badge.svg"></a>
 </p>
 
-![WIP bot screencast](https://github.com/wip/app/raw/master/assets/wip.gif)
+![WIP bot screencast](https://github.com/wip/app/raw/main/assets/wip.gif)
 
 By default, WIP is setting a pull request status to pending if it finds one of the following terms in the pull request titles
 
