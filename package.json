@@ -20,7 +20,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "gemoji": "^8.1.0",
-    "probot": "^12.3.3"
+    "probot": "^13.4.4"
   },
   "devDependencies": {
     "@sinonjs/fake-timers": "^13.0.5",
