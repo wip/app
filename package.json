@@ -20,7 +20,6 @@
   "license": "Apache-2.0",
   "dependencies": {
     "gemoji": "^8.1.0",
-    "pluralize": "^8.0.0",
     "probot": "^12.3.3"
   },
   "devDependencies": {
