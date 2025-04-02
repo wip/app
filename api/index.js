@@ -7,8 +7,8 @@ const middleware = createNodeMiddleware(app, { probot });
 /**
  * Redirect `GET /` to `/stats`, pass `POST /` to Probot's middleware
  *
- * @param {import('@vercel/node').NowRequest} request
- * @param {import('@vercel/node').NowResponse} response
+ * @param {import('@vercel/node').VercelRequest} request
+ * @param {import('@vercel/node').VercelResponse} response
  */
 module.exports = (request, response) => {
   if (request.method !== "POST") {
