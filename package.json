@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@sinonjs/fake-timers": "^15.0.0",
-    "@vercel/node": "^5.3.26",
+    "@vercel/node": "^5.4.0",
     "lodash.clonedeep": "^4.5.0",
     "nock": "^14.0.10",
     "prettier": "^3.6.1",
