@@ -5,7 +5,7 @@
   "description": "DO NOT MERGE – as a service.",
   "main": "index.js",
   "scripts": {
-    "start": "probot run ./index.js",
+    "start": "node api/index.js",
     "test": "tap test/**/*-test.js",
     "posttest": "npm run lint",
     "coverage-report": "npx tap report --coverage-report lcov",
@@ -14,13 +14,16 @@
   },
   "repository": "https://github.com/wip/app",
   "keywords": [
-    "probot"
+    "github-app",
+    "octokit"
   ],
   "author": "Gregor Martynus (https://github.com/gr2m)",
   "license": "Apache-2.0",
   "dependencies": {
     "gemoji": "^8.1.0",
-    "probot": "^13.4.4"
+    "js-yaml": "^4.1.1",
+    "octokit": "^5.0.5",
+    "pino": "^10.3.1"
   },
   "devDependencies": {
     "@sinonjs/fake-timers": "^15.3.2",
@@ -30,7 +33,6 @@
     "prettier": "^3.8.2",
     "proxyquire": "^2.0.1",
     "simple-mock": "^0.8.0",
-    "smee-client": "^5.0.0",
     "tap": "^21.6.3"
   },
   "jest": {

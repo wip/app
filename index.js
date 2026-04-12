@@ -5,11 +5,12 @@ const handleMarketplacePurchase = require("./lib/handle-marketplace-purchase");
 const handleInstallation = require("./lib/handle-installation");
 
 /**
- * @param {import('probot').Probot} app
+ * @param {import('octokit').App} app
+ * @param {import('pino').Logger} log
  */
-function wip(app) {
+function wip(app, log) {
   // listen to all relevant pull request event actions
-  app.on(
+  app.webhooks.on(
     [
       "pull_request.opened",
       "pull_request.edited",
@@ -17,22 +18,36 @@ function wip(app) {
       "pull_request.unlabeled",
       "pull_request.synchronize",
     ],
-    handlePullRequestChange.bind(null, app),
+    ({ octokit, payload }) =>
+      handlePullRequestChange({ app, octokit, payload, log }),
   );
 
   // listen to relevant marketplace purchase events
-  app.on(
+  app.webhooks.on(
     [
       "marketplace_purchase.purchased",
       "marketplace_purchase.changed",
       "marketplace_purchase.cancelled",
     ],
-    handleMarketplacePurchase.bind(null, app),
+    ({ octokit, payload }) =>
+      handleMarketplacePurchase({
+        octokit,
+        payload,
+        log,
+        eventName: "marketplace_purchase",
+      }),
   );
 
   // listen to installation events
-  app.on(
+  app.webhooks.on(
     ["installation", "installation_repositories"],
-    handleInstallation.bind(null, app),
+    ({ octokit, payload, name }) =>
+      handleInstallation({
+        app,
+        octokit,
+        payload,
+        log,
+        eventName: name,
+      }),
   );
 }

@@ -7,9 +7,8 @@ const pino = require("pino");
 
 nock.disableNetConnect();
 
-const { Probot, ProbotOctokit } = require("probot");
-
-const app = require("../../");
+const { createTestApp, nockAccessToken } = require("../helpers/setup");
+const wip = require("../../");
 
 let output;
 const streamLogsToOutput = new Stream.Writable({ objectMode: true });
@@ -22,30 +21,21 @@ before(function () {
   FakeTimers.install({ toFake: ["Date"] });
 });
 
-let probot;
+let app;
 beforeEach(function () {
   // Clear log output
   output = [];
   delete process.env.APP_NAME;
 
-  probot = new Probot({
-    id: 1,
-    githubToken: "test",
-    Octokit: ProbotOctokit.defaults((instanceOptions) => {
-      return {
-        ...instanceOptions,
-        throttle: { enabled: false },
-        retry: { enabled: false },
-        log: pino(streamLogsToOutput),
-      };
-    }),
-    log: pino(streamLogsToOutput),
-  });
-  probot.load(app);
+  app = createTestApp();
+  wip(app, pino(streamLogsToOutput));
 });
 
 test('new pull request with "Test" title', async function (t) {
-  const mock = nock("https://api.github.com")
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
     // has no plan
     .get("/marketplace_listing/accounts/1")
     .reply(404)
@@ -85,15 +75,19 @@ test('new pull request with "Test" title', async function (t) {
     })
     .reply(201, {});
 
-  await probot.receive(
-    require("./events/new-pull-request-with-test-title.json"),
-  );
+  await app.webhooks.receive({
+    id: "1",
+    ...require("./events/new-pull-request-with-test-title.json"),
+  });
 
   t.same(mock.activeMocks(), []);
 });
 
 test('new pull request with "[WIP] Test" title', async function (t) {
-  const mock = nock("https://api.github.com")
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
     // has no plan
     .get("/marketplace_listing/accounts/1")
     .reply(404)
@@ -122,15 +116,19 @@ test('new pull request with "[WIP] Test" title', async function (t) {
     })
     .reply(201, {});
 
-  await probot.receive(
-    require("./events/new-pull-request-with-wip-title.json"),
-  );
+  await app.webhooks.receive({
+    id: "1",
+    ...require("./events/new-pull-request-with-wip-title.json"),
+  });
 
   t.same(mock.activeMocks(), []);
 });
 
 test('new pull request with "[Work in Progress] Test" title', async function (t) {
-  const mock = nock("https://api.github.com")
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
     // has no plan
     .get("/marketplace_listing/accounts/1")
     .reply(404)
@@ -162,15 +160,19 @@ test('new pull request with "[Work in Progress] Test" title', async function (t)
     })
     .reply(201, {});
 
-  await probot.receive(
-    require("./events/new-pull-request-with-work-in-progress-title.json"),
-  );
+  await app.webhooks.receive({
+    id: "1",
+    ...require("./events/new-pull-request-with-work-in-progress-title.json"),
+  });
 
   t.same(mock.activeMocks(), []);
 });
 
 test('new pull request with "🚧 Test" title', async function (t) {
-  const mock = nock("https://api.github.com")
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
     // has no plan
     .get("/marketplace_listing/accounts/1")
     .reply(404)
@@ -202,15 +204,19 @@ test('new pull request with "🚧 Test" title', async function (t) {
     })
     .reply(201, {});
 
-  await probot.receive(
-    require("./events/new-pull-request-with-emoji-title.json"),
-  );
+  await app.webhooks.receive({
+    id: "1",
+    ...require("./events/new-pull-request-with-emoji-title.json"),
+  });
 
   t.same(mock.activeMocks(), []);
 });
 
 test('new pull request with "🚧Test" title', async function (t) {
-  const mock = nock("https://api.github.com")
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
     // has no plan
     .get("/marketplace_listing/accounts/1")
     .reply(404)
@@ -242,15 +248,19 @@ test('new pull request with "🚧Test" title', async function (t) {
     })
     .reply(201, {});
 
-  await probot.receive(
-    require("./events/new-pull-request-with-emoji-no-space-title.json"),
-  );
+  await app.webhooks.receive({
+    id: "1",
+    ...require("./events/new-pull-request-with-emoji-no-space-title.json"),
+  });
 
   t.same(mock.activeMocks(), []);
 });
 
 test('pending pull request with "Test" title', async function (t) {
-  const mock = nock("https://api.github.com")
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
     // has no plan
     .get("/marketplace_listing/accounts/1")
     .reply(404)
@@ -277,15 +287,19 @@ test('pending pull request with "Test" title', async function (t) {
     })
     .reply(201, {});
 
-  await probot.receive(
-    require("./events/new-pull-request-with-test-title.json"),
-  );
+  await app.webhooks.receive({
+    id: "1",
+    ...require("./events/new-pull-request-with-test-title.json"),
+  });
 
   t.same(mock.activeMocks(), []);
 });
 
 test('ready pull request with "[WIP] Test" title', async function (t) {
-  const mock = nock("https://api.github.com")
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
     // has no plan
     .get("/marketplace_listing/accounts/1")
     .reply(404)
@@ -311,15 +325,19 @@ test('ready pull request with "[WIP] Test" title', async function (t) {
     })
     .reply(201, {});
 
-  await probot.receive(
-    require("./events/new-pull-request-with-wip-title.json"),
-  );
+  await app.webhooks.receive({
+    id: "1",
+    ...require("./events/new-pull-request-with-wip-title.json"),
+  });
 
   t.same(mock.activeMocks(), []);
 });
 
 test('pending pull request with "[WIP] Test" title', async function (t) {
-  const mock = nock("https://api.github.com")
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
     // has no plan
     .get("/marketplace_listing/accounts/1")
     .reply(404)
@@ -337,15 +355,19 @@ test('pending pull request with "[WIP] Test" title', async function (t) {
       ],
     });
 
-  await probot.receive(
-    require("./events/new-pull-request-with-wip-title.json"),
-  );
+  await app.webhooks.receive({
+    id: "1",
+    ...require("./events/new-pull-request-with-wip-title.json"),
+  });
 
   t.same(mock.activeMocks(), []);
 });
 
 test('ready pull request with "Test" title', async function (t) {
-  const mock = nock("https://api.github.com")
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
     // has no plan
     .get("/marketplace_listing/accounts/1")
     .reply(404)
@@ -363,15 +385,19 @@ test('ready pull request with "Test" title', async function (t) {
       ],
     });
 
-  await probot.receive(
-    require("./events/new-pull-request-with-test-title.json"),
-  );
+  await app.webhooks.receive({
+    id: "1",
+    ...require("./events/new-pull-request-with-test-title.json"),
+  });
 
   t.same(mock.activeMocks(), []);
 });
 
 test('active marketplace "free" plan', async function (t) {
-  const mock = nock("https://api.github.com")
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
     // has no plan
     .get("/marketplace_listing/accounts/1")
     .reply(200, {
@@ -400,9 +426,10 @@ test('active marketplace "free" plan', async function (t) {
     })
     .reply(201, {});
 
-  await probot.receive(
-    require("./events/new-pull-request-with-test-title.json"),
-  );
+  await app.webhooks.receive({
+    id: "1",
+    ...require("./events/new-pull-request-with-test-title.json"),
+  });
 
   t.same(mock.activeMocks(), []);
 });
@@ -410,7 +437,10 @@ test('active marketplace "free" plan', async function (t) {
 test("request error", async function (t) {
   t.plan(4);
 
-  const mock = nock("https://api.github.com")
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
     // has no plan
     .get("/marketplace_listing/accounts/1")
     .reply(404)
@@ -422,14 +452,15 @@ test("request error", async function (t) {
     })
     .reply(500);
 
-  await probot
-    .receive(require("./events/new-pull-request-with-test-title.json"))
+  await app.webhooks
+    .receive({
+      id: "1",
+      ...require("./events/new-pull-request-with-test-title.json"),
+    })
     .catch((error) => {
       t.equal(error.name, "AggregateError");
-
-      const errors = Array.from(error);
-      t.equal(errors.length, 1);
-      t.equal(errors[0].status, 500);
+      t.equal(error.errors.length, 1);
+      t.equal(error.errors[0].status, 500);
     });
 
   t.same(mock.activeMocks(), []);
@@ -438,7 +469,10 @@ test("request error", async function (t) {
 test("Create check error", async function (t) {
   t.plan(4);
 
-  const mock = nock("https://api.github.com")
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
     // has no plan
     .get("/marketplace_listing/accounts/1")
     .reply(404)
@@ -456,14 +490,15 @@ test("Create check error", async function (t) {
     .post("/repos/wip/app/check-runs")
     .reply(500);
 
-  await probot
-    .receive(require("./events/new-pull-request-with-test-title.json"))
+  await app.webhooks
+    .receive({
+      id: "1",
+      ...require("./events/new-pull-request-with-test-title.json"),
+    })
     .catch((error) => {
       t.equal(error.name, "AggregateError");
-
-      const errors = Array.from(error);
-      t.equal(errors.length, 1);
-      t.equal(errors[0].status, 500);
+      t.equal(error.errors.length, 1);
+      t.equal(error.errors[0].status, 500);
     });
 
   t.same(mock.activeMocks(), []);
@@ -472,7 +507,10 @@ test("Create check error", async function (t) {
 test("custom APP_NAME", async function (t) {
   process.env.APP_NAME = "WIP (local-dev)";
 
-  const mock = nock("https://api.github.com")
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
     // has no plan
     .get("/marketplace_listing/accounts/1")
     .reply(404)
@@ -494,15 +532,19 @@ test("custom APP_NAME", async function (t) {
     })
     .reply(201, {});
 
-  await probot.receive(
-    require("./events/new-pull-request-with-test-title.json"),
-  );
+  await app.webhooks.receive({
+    id: "1",
+    ...require("./events/new-pull-request-with-test-title.json"),
+  });
 
   t.same(mock.activeMocks(), []);
 });
 
 test("404 from hasStatusChange check (spam)", async function (t) {
-  const apiMock = nock("https://api.github.com")
+  const apiMock = nock("https://api.github.com");
+  nockAccessToken(apiMock);
+
+  apiMock
     // has no plan
     .get("/marketplace_listing/accounts/1")
     .reply(404)
@@ -516,16 +558,20 @@ test("404 from hasStatusChange check (spam)", async function (t) {
 
   const dotcomMock = nock("https://github.com").head("/wip").reply(404);
 
-  await probot.receive(
-    require("./events/new-pull-request-with-wip-title.json"),
-  );
+  await app.webhooks.receive({
+    id: "1",
+    ...require("./events/new-pull-request-with-wip-title.json"),
+  });
 
   t.same(apiMock.activeMocks(), []);
   t.same(dotcomMock.activeMocks(), []);
 });
 
 test("404 from hasStatusChange check (not spam)", async function (t) {
-  const apiMock = nock("https://api.github.com")
+  const apiMock = nock("https://api.github.com");
+  nockAccessToken(apiMock);
+
+  apiMock
     // has no plan
     .get("/marketplace_listing/accounts/1")
     .reply(404)
@@ -540,14 +586,14 @@ test("404 from hasStatusChange check (not spam)", async function (t) {
   const dotcomMock = nock("https://github.com").head("/wip").reply(200);
 
   try {
-    await probot.receive(
-      require("./events/new-pull-request-with-wip-title.json"),
-    );
+    await app.webhooks.receive({
+      id: "1",
+      ...require("./events/new-pull-request-with-wip-title.json"),
+    });
     throw new Error("Should not resolve");
   } catch (error) {
-    const errors = Array.from(error);
-    t.equal(errors.length, 1);
-    t.equal(errors[0].status, 404);
+    t.equal(error.errors.length, 1);
+    t.equal(error.errors[0].status, 404);
   }
 
   t.same(apiMock.activeMocks(), []);

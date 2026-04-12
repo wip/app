@@ -7,9 +7,8 @@ const pino = require("pino");
 
 nock.disableNetConnect();
 
-const { Probot, ProbotOctokit } = require("probot");
-
-const app = require("../../");
+const { createTestApp, nockAccessToken } = require("../helpers/setup");
+const wip = require("../../");
 
 let output;
 const streamLogsToOutput = new Stream.Writable({ objectMode: true });
@@ -22,48 +21,47 @@ before(function () {
   FakeTimers.install({ toFake: ["Date"] });
 });
 
-let probot;
+let app;
 beforeEach(function () {
   output = [];
   delete process.env.APP_NAME;
 
-  probot = new Probot({
-    id: 1,
-    githubToken: "test",
-    Octokit: ProbotOctokit.defaults((instanceOptions) => {
-      return {
-        ...instanceOptions,
-        throttle: { enabled: false },
-        retry: { enabled: false },
-        log: pino(streamLogsToOutput),
-      };
-    }),
-    log: pino(streamLogsToOutput),
-  });
-
-  probot.load(app);
+  app = createTestApp();
+  wip(app, pino(streamLogsToOutput));
 });
 
 test("uninstall", async function (t) {
-  await probot.receive(require("./events/uninstall.json"));
+  await app.webhooks.receive({
+    id: "1",
+    ...require("./events/uninstall.json"),
+  });
 
   t.equal(output[0].msg, "😭 Organization wip uninstalled");
 });
 
 test("suspend", async function (t) {
-  await probot.receive(require("./events/suspend.json"));
+  await app.webhooks.receive({
+    id: "1",
+    ...require("./events/suspend.json"),
+  });
 
   t.equal(output[0].msg, "ℹ️ installation.suspend by wip");
 });
 
 test("repositories removed", async function (t) {
-  await probot.receive(require("./events/repositories-removed.json"));
+  await app.webhooks.receive({
+    id: "1",
+    ...require("./events/repositories-removed.json"),
+  });
 
   t.equal(output[0].msg, "➖ Organization wip removed 2 repositories");
 });
 
 test("installation", async function (t) {
-  const mock = nock("https://api.github.com")
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
     // has no plan
     // https://docs.github.com/en/rest/reference/apps#get-a-subscription-plan-for-an-account
     .get("/marketplace_listing/accounts/1")
@@ -180,13 +178,19 @@ test("installation", async function (t) {
     })
     .reply(201, {});
 
-  await probot.receive(require("./events/install.json"));
+  await app.webhooks.receive({
+    id: "1",
+    ...require("./events/install.json"),
+  });
 
   t.same(mock.activeMocks(), []);
 });
 
 test("repositories added", async function (t) {
-  const mock = nock("https://api.github.com")
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
     // has no plan
     // https://docs.github.com/en/rest/reference/apps#get-a-subscription-plan-for-an-account
     .get("/marketplace_listing/accounts/1")
@@ -408,15 +412,21 @@ test("repositories added", async function (t) {
     })
     .reply(201, {});
 
-  await probot
-    .receive(require("./events/repositories-added.json"))
+  await app.webhooks
+    .receive({
+      id: "1",
+      ...require("./events/repositories-added.json"),
+    })
     .catch(t.error);
 
   t.same(mock.activeMocks(), []);
 });
 
 test("permissions accepted", async function (t) {
-  const mock = nock("https://api.github.com")
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
     // has no plan
     // https://docs.github.com/en/rest/reference/apps#get-a-subscription-plan-for-an-account
     .get("/marketplace_listing/accounts/1")
@@ -544,15 +554,21 @@ test("permissions accepted", async function (t) {
     })
     .reply(201, {});
 
-  await probot
-    .receive(require("./events/new-permissions-accepted.json"))
+  await app.webhooks
+    .receive({
+      id: "1",
+      ...require("./events/new-permissions-accepted.json"),
+    })
     .catch(t.error);
 
   t.same(mock.activeMocks(), []);
 });
 
 test("installation for pro plan", async function (t) {
-  const mock = nock("https://api.github.com")
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
     // has pro plan
     // https://docs.github.com/en/rest/reference/apps#get-a-subscription-plan-for-an-account
     .get("/marketplace_listing/accounts/1")
@@ -617,6 +633,14 @@ test("installation for pro plan", async function (t) {
         },
       },
     ])
+
+    // has no config (fetched for each PR)
+    .get("/repos/wip/repo1/contents/.github%2Fwip.yml")
+    .times(2)
+    .reply(404)
+    .get("/repos/wip/.github/contents/.github%2Fwip.yml")
+    .times(2)
+    .reply(404)
 
     // List commits on first pull request
     // https://docs.github.com/en/rest/reference/pulls#list-commits-on-a-pull-request
@@ -686,7 +710,9 @@ test("installation for pro plan", async function (t) {
     })
     .reply(201, {});
 
-  await probot.receive(require("./events/install.json")).catch(t.error);
+  await app.webhooks
+    .receive({ id: "1", ...require("./events/install.json") })
+    .catch(t.error);
 
   t.same(mock.activeMocks(), []);
 });

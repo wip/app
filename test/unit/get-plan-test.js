@@ -39,14 +39,14 @@ test('returns "pro" for GitHub Enterprise Server installations', async function 
 test("throws error if getting current plan fails with error other than 404", async function (t) {
   const getPlan = require("../../lib/get-plan");
   const app = {
-    auth() {
-      return {
+    octokit: {
+      rest: {
         apps: {
           getSubscriptionPlanForAccount() {
             throw new Error("oops");
           },
         },
-      };
+      },
     },
   };
   const owner = { login: "foo" };
