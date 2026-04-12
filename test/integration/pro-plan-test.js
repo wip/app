@@ -1,14 +1,17 @@
-const Stream = require("stream");
+import { createRequire } from "node:module";
+import Stream from "stream";
 
-const FakeTimers = require("@sinonjs/fake-timers");
-const { before, beforeEach, test } = require("tap");
-const nock = require("nock");
-const pino = require("pino");
+import FakeTimers from "@sinonjs/fake-timers";
+import { before, beforeEach, test } from "tap";
+import nock from "nock";
+import pino from "pino";
 
 nock.disableNetConnect();
 
-const { createTestApp, nockAccessToken } = require("../helpers/setup");
-const wip = require("../../");
+import { createTestApp, nockAccessToken } from "../helpers/setup.js";
+import wip from "../../index.js";
+
+const require = createRequire(import.meta.url);
 
 let output;
 const streamLogsToOutput = new Stream.Writable({ objectMode: true });

@@ -1,14 +1,12 @@
-module.exports = wip;
-
-const handlePullRequestChange = require("./lib/handle-pull-request-change");
-const handleMarketplacePurchase = require("./lib/handle-marketplace-purchase");
-const handleInstallation = require("./lib/handle-installation");
+import handlePullRequestChange from "./lib/handle-pull-request-change.js";
+import handleMarketplacePurchase from "./lib/handle-marketplace-purchase.js";
+import handleInstallation from "./lib/handle-installation.js";
 
 /**
  * @param {import('octokit').App} app
  * @param {import('pino').Logger} log
  */
-function wip(app, log) {
+export default function wip(app, log) {
   // listen to all relevant pull request event actions
   app.webhooks.on(
     [

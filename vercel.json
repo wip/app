@@ -2,7 +2,8 @@
   "functions": {
     "api/index.js": {
       "memory": 128,
-      "maxDuration": 15
+      "maxDuration": 15,
+      "runtime": "nodejs24.x"
     }
   },
   "rewrites": [{ "source": "/", "destination": "/api" }]

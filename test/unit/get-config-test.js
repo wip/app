@@ -1,7 +1,7 @@
-const { test } = require("tap");
+import { test } from "tap";
 
-const getConfig = require("../../lib/pro/get-config");
-const getConfigFromRepo = require("../../lib/utils/get-config-from-repo");
+import getConfig from "../../lib/pro/get-config.js";
+import getConfigFromRepo from "../../lib/utils/get-config-from-repo.js";
 
 test("throws error if getting config fails with error other than 404", async function (t) {
   try {

@@ -1,6 +1,6 @@
-const { test } = require("tap");
+import { test } from "tap";
 
-test("smoke test", (t) => {
-  require("../../");
+test("smoke test", async (t) => {
+  await import("../../index.js");
   t.end();
 });

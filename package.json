@@ -3,6 +3,7 @@
   "version": "0.0.0-development",
   "private": true,
   "description": "DO NOT MERGE – as a service.",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "start": "node api/index.js",
@@ -31,7 +32,6 @@
     "lodash.clonedeep": "^4.5.0",
     "nock": "^14.0.12",
     "prettier": "^3.8.2",
-    "proxyquire": "^2.0.1",
     "simple-mock": "^0.8.0",
     "tap": "^21.6.3"
   },

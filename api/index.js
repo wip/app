@@ -1,7 +1,7 @@
-const { App } = require("octokit");
-const pino = require("pino");
+import { App } from "octokit";
+import pino from "pino";
 
-const wip = require("../");
+import wip from "../index.js";
 
 const log = pino({ name: "wip" });
 const app = new App({
@@ -19,7 +19,7 @@ wip(app, log);
  * @param {import('@vercel/node').VercelRequest} request
  * @param {import('@vercel/node').VercelResponse} response
  */
-module.exports = async (request, response) => {
+export default async (request, response) => {
   if (request.method !== "POST") {
     response.writeHead(302, {
       Location: "/stats",

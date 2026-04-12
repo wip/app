@@ -1,5 +1,5 @@
-const pino = require("pino");
-const { App, Octokit } = require("octokit");
+import pino from "pino";
+import { App, Octokit } from "octokit";
 
 // Test RSA private key - only used for signing test JWTs, not a real secret
 const TEST_PRIVATE_KEY = `-----BEGIN PRIVATE KEY-----
@@ -36,7 +36,7 @@ const TestOctokit = Octokit.defaults({
   retry: { enabled: false },
 });
 
-function createTestApp() {
+export function createTestApp() {
   return new App({
     appId: 1,
     privateKey: TEST_PRIVATE_KEY,
@@ -46,7 +46,7 @@ function createTestApp() {
   });
 }
 
-function nockAccessToken(nockInstance) {
+export function nockAccessToken(nockInstance) {
   return nockInstance.post("/app/installations/1/access_tokens").reply(201, {
     token: "test",
     expires_at: "2099-01-01T00:00:00.000Z",
@@ -57,10 +57,3 @@ function nockAccessToken(nockInstance) {
     },
   });
 }
-
-module.exports = {
-  TEST_PRIVATE_KEY,
-  TestOctokit,
-  createTestApp,
-  nockAccessToken,
-};
