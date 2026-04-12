@@ -9,7 +9,7 @@ jobs:
   stats:
     runs-on: ubuntu-latest
     steps:
-      - uses: gr2m/app-stats-action@v1.2.16
+      - uses: gr2m/app-stats-action@v1.x
         id: stats
         with:
           id: 3414
