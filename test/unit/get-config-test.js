@@ -1,12 +1,21 @@
-const { test } = require("tap");
+import { test } from "tap";
 
-const getConfig = require("../../lib/pro/get-config");
+import getConfig from "../../lib/pro/get-config.js";
+import getConfigFromRepo from "../../lib/utils/get-config-from-repo.js";
 
 test("throws error if getting config fails with error other than 404", async function (t) {
   try {
     await getConfig({
-      config() {
-        throw new Error("oops");
+      octokit: {
+        request() {
+          throw Object.assign(new Error("oops"), { status: 500 });
+        },
+      },
+      payload: {
+        repository: {
+          name: "app",
+          owner: { login: "wip" },
+        },
       },
     });
     t.fail("should throw error");

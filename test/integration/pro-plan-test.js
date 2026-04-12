@@ -1,15 +1,17 @@
-const Stream = require("stream");
+import { createRequire } from "node:module";
+import Stream from "stream";
 
-const FakeTimers = require("@sinonjs/fake-timers");
-const { before, beforeEach, test } = require("tap");
-const nock = require("nock");
-const pino = require("pino");
+import FakeTimers from "@sinonjs/fake-timers";
+import { before, beforeEach, test } from "tap";
+import nock from "nock";
+import pino from "pino";
 
 nock.disableNetConnect();
 
-const { Probot, ProbotOctokit } = require("probot");
+import { createTestApp, nockAccessToken } from "../helpers/setup.js";
+import wip from "../../index.js";
 
-const app = require("../../");
+const require = createRequire(import.meta.url);
 
 let output;
 const streamLogsToOutput = new Stream.Writable({ objectMode: true });
@@ -22,30 +24,20 @@ before(function () {
   FakeTimers.install({ toFake: ["Date"] });
 });
 
-let probot;
+let app;
 beforeEach(function () {
   output = [];
   delete process.env.APP_NAME;
 
-  probot = new Probot({
-    id: 1,
-    githubToken: "test",
-    Octokit: ProbotOctokit.defaults((instanceOptions) => {
-      return {
-        ...instanceOptions,
-        throttle: { enabled: false },
-        retry: { enabled: false },
-        log: pino(streamLogsToOutput),
-      };
-    }),
-    log: pino(streamLogsToOutput),
-  });
-
-  probot.load(app);
+  app = createTestApp();
+  wip(app, pino(streamLogsToOutput));
 });
 
 test('new pull request with "Test" title', async function (t) {
-  const mock = nock("https://api.github.com")
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
     // has pro plan
     .get("/marketplace_listing/accounts/1")
     .reply(200, {
@@ -96,8 +88,11 @@ test('new pull request with "Test" title', async function (t) {
     })
     .reply(201, {});
 
-  await probot
-    .receive(require("./events/new-pull-request-with-test-title.json"))
+  await app.webhooks
+    .receive({
+      id: "1",
+      ...require("./events/new-pull-request-with-test-title.json"),
+    })
     .catch(t.error);
 
   t.equal(output[0].msg, "✅ wip/app#1");
@@ -129,7 +124,10 @@ test('new pull request with "Test" title', async function (t) {
 });
 
 test('new pull request with "[WIP] Test" title', async function (t) {
-  const mock = nock("https://api.github.com")
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
     // has pro plan
     .get("/marketplace_listing/accounts/1")
     .reply(200, {
@@ -175,9 +173,10 @@ test('new pull request with "[WIP] Test" title', async function (t) {
     })
     .reply(201, {});
 
-  await probot.receive(
-    require("./events/new-pull-request-with-wip-title.json"),
-  );
+  await app.webhooks.receive({
+    id: "1",
+    ...require("./events/new-pull-request-with-wip-title.json"),
+  });
 
   // check resulting logs
   const logParams = output[0];
@@ -190,7 +189,10 @@ test('new pull request with "[WIP] Test" title', async function (t) {
 });
 
 test('pending pull request with "Test" title', async function (t) {
-  const mock = nock("https://api.github.com")
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
     // has pro plan
     .get("/marketplace_listing/accounts/1")
     .reply(200, {
@@ -234,9 +236,10 @@ test('pending pull request with "Test" title', async function (t) {
     })
     .reply(201, {});
 
-  await probot.receive(
-    require("./events/new-pull-request-with-test-title.json"),
-  );
+  await app.webhooks.receive({
+    id: "1",
+    ...require("./events/new-pull-request-with-test-title.json"),
+  });
 
   // check resulting logs
   const logParams = output[0];
@@ -247,7 +250,10 @@ test('pending pull request with "Test" title', async function (t) {
 });
 
 test('ready pull request with "[WIP] Test" title', async function (t) {
-  const mock = nock("https://api.github.com")
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
     // has pro plan
     .get("/marketplace_listing/accounts/1")
     .reply(200, {
@@ -290,9 +296,10 @@ test('ready pull request with "[WIP] Test" title', async function (t) {
     })
     .reply(201, {});
 
-  await probot.receive(
-    require("./events/new-pull-request-with-wip-title.json"),
-  );
+  await app.webhooks.receive({
+    id: "1",
+    ...require("./events/new-pull-request-with-wip-title.json"),
+  });
 
   // check resulting logs
   const logParams = output[0];
@@ -303,7 +310,10 @@ test('ready pull request with "[WIP] Test" title', async function (t) {
 });
 
 test('pending pull request with "[WIP] Test" title', async function (t) {
-  const mock = nock("https://api.github.com")
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
     // has pro plan
     .get("/marketplace_listing/accounts/1")
     .reply(200, {
@@ -338,9 +348,10 @@ test('pending pull request with "[WIP] Test" title', async function (t) {
       ],
     });
 
-  await probot.receive(
-    require("./events/new-pull-request-with-wip-title.json"),
-  );
+  await app.webhooks.receive({
+    id: "1",
+    ...require("./events/new-pull-request-with-wip-title.json"),
+  });
 
   // check resulting logs
   const logParams = output[0];
@@ -351,7 +362,10 @@ test('pending pull request with "[WIP] Test" title', async function (t) {
 });
 
 test('ready pull request with "Test" title', async function (t) {
-  const mock = nock("https://api.github.com")
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
     // has pro plan
     .get("/marketplace_listing/accounts/1")
     .reply(200, {
@@ -386,9 +400,10 @@ test('ready pull request with "Test" title', async function (t) {
       ],
     });
 
-  await probot.receive(
-    require("./events/new-pull-request-with-test-title.json"),
-  );
+  await app.webhooks.receive({
+    id: "1",
+    ...require("./events/new-pull-request-with-test-title.json"),
+  });
 
   // check resulting logs
   const logParams = output[0];
@@ -399,7 +414,10 @@ test('ready pull request with "Test" title', async function (t) {
 });
 
 test("custom term: 🚧", async function (t) {
-  const mock = nock("https://api.github.com")
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
     // has pro plan
     .get("/marketplace_listing/accounts/1")
     .reply(200, {
@@ -456,9 +474,10 @@ test("custom term: 🚧", async function (t) {
     })
     .reply(201, {});
 
-  await probot.receive(
-    require("./events/new-pull-request-with-emoji-title.json"),
-  );
+  await app.webhooks.receive({
+    id: "1",
+    ...require("./events/new-pull-request-with-emoji-title.json"),
+  });
 
   // check resulting logs
   t.equal(output[0].msg, '⏳ wip/app#1 - "🚧" found in title');
@@ -492,7 +511,10 @@ test("custom term: 🚧", async function (t) {
 });
 
 test("custom term: 🚧NoSpace", async function (t) {
-  const mock = nock("https://api.github.com")
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
     // has pro plan
     .get("/marketplace_listing/accounts/1")
     .reply(200, {
@@ -548,9 +570,10 @@ test("custom term: 🚧NoSpace", async function (t) {
     })
     .reply(201, {});
 
-  await probot.receive(
-    require("./events/new-pull-request-with-emoji-no-space-title.json"),
-  );
+  await app.webhooks.receive({
+    id: "1",
+    ...require("./events/new-pull-request-with-emoji-no-space-title.json"),
+  });
 
   // check resulting logs
   t.equal(output[0].msg, '⏳ wip/app#1 - "🚧" found in title');
@@ -584,7 +607,10 @@ test("custom term: 🚧NoSpace", async function (t) {
 });
 
 test("custom location: label_name", async function (t) {
-  const mock = nock("https://api.github.com")
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
     // has pro plan
     .get("/marketplace_listing/accounts/1")
     .reply(200, {
@@ -635,9 +661,10 @@ test("custom location: label_name", async function (t) {
     })
     .reply(201, {});
 
-  await probot.receive(
-    require("./events/new-pull-request-with-wip-label.json"),
-  );
+  await app.webhooks.receive({
+    id: "1",
+    ...require("./events/new-pull-request-with-wip-label.json"),
+  });
 
   // check resulting logs
   const logParams = output[0];
@@ -648,7 +675,10 @@ test("custom location: label_name", async function (t) {
 });
 
 test("custom location: commits", async function (t) {
-  const mock = nock("https://api.github.com")
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
     // has pro plan
     .get("/marketplace_listing/accounts/1")
     .reply(200, {
@@ -704,9 +734,10 @@ test("custom location: commits", async function (t) {
     })
     .reply(201, {});
 
-  await probot.receive(
-    require("./events/new-pull-request-with-wip-label.json"),
-  );
+  await app.webhooks.receive({
+    id: "1",
+    ...require("./events/new-pull-request-with-wip-label.json"),
+  });
 
   // check resulting logs
   const logParams = output[0];
@@ -717,7 +748,10 @@ test("custom location: commits", async function (t) {
 });
 
 test("complex config", async function (t) {
-  const mock = nock("https://api.github.com")
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
     // has pro plan
     .get("/marketplace_listing/accounts/1")
     .reply(200, {
@@ -791,9 +825,10 @@ test("complex config", async function (t) {
     })
     .reply(201, {});
 
-  await probot.receive(
-    require("./events/new-pull-request-with-test-title.json"),
-  );
+  await app.webhooks.receive({
+    id: "1",
+    ...require("./events/new-pull-request-with-test-title.json"),
+  });
 
   // check resulting logs
   const logParams = output[0];
@@ -804,7 +839,10 @@ test("complex config", async function (t) {
 });
 
 test("loads config from .github repository", async function (t) {
-  const mock = nock("https://api.github.com")
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
     // has pro plan
     .get("/marketplace_listing/accounts/1")
     .reply(200, {
@@ -839,15 +877,19 @@ test("loads config from .github repository", async function (t) {
     .post("/repos/wip/app/check-runs")
     .reply(201, {});
 
-  await probot.receive(
-    require("./events/new-pull-request-with-emoji-title.json"),
-  );
+  await app.webhooks.receive({
+    id: "1",
+    ...require("./events/new-pull-request-with-emoji-title.json"),
+  });
 
   t.same(mock.activeMocks(), []);
 });
 
 test("loads commits once only", async function (t) {
-  const mock = nock("https://api.github.com")
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
     // has pro plan
     .get("/marketplace_listing/accounts/1")
     .reply(200, {
@@ -895,15 +937,19 @@ test("loads commits once only", async function (t) {
     .post("/repos/wip/app/check-runs")
     .reply(201, {});
 
-  await probot.receive(
-    require("./events/new-pull-request-with-test-title.json"),
-  );
+  await app.webhooks.receive({
+    id: "1",
+    ...require("./events/new-pull-request-with-test-title.json"),
+  });
 
   t.same(mock.activeMocks(), []);
 });
 
 test("override", async function (t) {
-  const mock = nock("https://api.github.com")
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
     // has pro plan
     .get("/marketplace_listing/accounts/1")
     .reply(200, {
@@ -935,9 +981,10 @@ test("override", async function (t) {
     })
     .reply(201, {});
 
-  await probot.receive(
-    require("./events/new-pull-request-with-wip-title-and-override.json"),
-  );
+  await app.webhooks.receive({
+    id: "1",
+    ...require("./events/new-pull-request-with-wip-title-and-override.json"),
+  });
 
   // check resulting logs
   t.equal(output[0].msg, "❗️ wip/app#1");
@@ -950,7 +997,10 @@ test("override", async function (t) {
 });
 
 test("pending pull request with override", async function (t) {
-  const mock = nock("https://api.github.com")
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
     // has pro plan
     .get("/marketplace_listing/accounts/1")
     .reply(200, {
@@ -1002,9 +1052,10 @@ test("pending pull request with override", async function (t) {
     })
     .reply(201, {});
 
-  await probot.receive(
-    require("./events/new-pull-request-with-test-title.json"),
-  );
+  await app.webhooks.receive({
+    id: "1",
+    ...require("./events/new-pull-request-with-test-title.json"),
+  });
 
   // check resulting logs
   const logParams = output[0];
@@ -1015,7 +1066,10 @@ test("pending pull request with override", async function (t) {
 });
 
 test('pending pull request with override and "[WIP] test" title', async function (t) {
-  const mock = nock("https://api.github.com")
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
     // has pro plan
     .get("/marketplace_listing/accounts/1")
     .reply(200, {
@@ -1061,9 +1115,10 @@ test('pending pull request with override and "[WIP] test" title', async function
     })
     .reply(201, {});
 
-  await probot.receive(
-    require("./events/new-pull-request-with-wip-title.json"),
-  );
+  await app.webhooks.receive({
+    id: "1",
+    ...require("./events/new-pull-request-with-wip-title.json"),
+  });
 
   // check resulting logs
   const logParams = output[0];
@@ -1077,7 +1132,10 @@ test('pending pull request with override and "[WIP] test" title', async function
 test("custom APP_NAME", async function (t) {
   process.env.APP_NAME = "WIP (local-dev)";
 
-  const mock = nock("https://api.github.com")
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
     // has pro plan
     .get("/marketplace_listing/accounts/1")
     .reply(200, {
@@ -1114,9 +1172,10 @@ test("custom APP_NAME", async function (t) {
     })
     .reply(201, {});
 
-  await probot.receive(
-    require("./events/new-pull-request-with-test-title.json"),
-  );
+  await app.webhooks.receive({
+    id: "1",
+    ...require("./events/new-pull-request-with-test-title.json"),
+  });
 
   t.equal(output[0].name, "WIP (local-dev)");
 
