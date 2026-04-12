@@ -35,7 +35,7 @@
     "simple-mock": "^0.8.0",
     "tap": "^21.6.3"
   },
-  "jest": {
-    "testURL": "http://localhost/"
+  "engines": {
+    "node": "24.x"
   }
 }
