@@ -838,6 +838,127 @@ test("complex config", async function (t) {
   t.same(mock.activeMocks(), []);
 });
 
+test("custom location: body with pending tasks", async function (t) {
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
+    // has pro plan
+    .get("/marketplace_listing/accounts/1")
+    .reply(200, {
+      marketplace_purchase: {
+        plan: {
+          price_model: "FLAT_RATE",
+        },
+      },
+    })
+
+    // has config
+    .get("/repos/wip/app/contents/.github%2Fwip.yml")
+    .reply(
+      200,
+      `terms: "- [ ]"
+locations: body`,
+    )
+
+    // List commits on a pull request
+    // https://docs.github.com/en/rest/reference/pulls#list-commits-on-a-pull-request
+    .get("/repos/wip/app/pulls/1/commits")
+    .reply(200, [])
+
+    // check for current status
+    .get("/repos/wip/app/commits/sha123/check-runs")
+    .query({
+      check_name: "WIP",
+    })
+    .reply(200, {
+      check_runs: [
+        {
+          conclusion: "success",
+        },
+      ],
+    })
+
+    // create new check run
+    .post("/repos/wip/app/check-runs", (createCheckParams) => {
+      t.equal(createCheckParams.status, "in_progress");
+      t.match(
+        createCheckParams.output.summary,
+        /The body "[\s\S]*" contains "- \[ \]"/,
+      );
+      t.equal(createCheckParams.output.title, 'Body contains "- [ ]"');
+      t.match(createCheckParams.output.text, /<td>body<\/td>/);
+
+      return true;
+    })
+    .reply(201, {});
+
+  await app.webhooks.receive({
+    id: "1",
+    ...require("./events/new-pull-request-with-pending-tasks.json"),
+  });
+
+  // check resulting logs
+  const logParams = output[0];
+  t.equal(logParams.location, "body");
+  t.equal(logParams.match, "- [ ]");
+
+  t.same(mock.activeMocks(), []);
+});
+
+test("custom location: body with all tasks completed", async function (t) {
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
+    // has pro plan
+    .get("/marketplace_listing/accounts/1")
+    .reply(200, {
+      marketplace_purchase: {
+        plan: {
+          price_model: "FLAT_RATE",
+        },
+      },
+    })
+
+    // has config
+    .get("/repos/wip/app/contents/.github%2Fwip.yml")
+    .reply(
+      200,
+      `terms: "- [ ]"
+locations: body`,
+    )
+
+    // List commits on a pull request
+    // https://docs.github.com/en/rest/reference/pulls#list-commits-on-a-pull-request
+    .get("/repos/wip/app/pulls/1/commits")
+    .reply(200, [])
+
+    // check for current status
+    .get("/repos/wip/app/commits/sha123/check-runs")
+    .query({
+      check_name: "WIP",
+    })
+    .reply(200, { check_runs: [] })
+
+    // create new check run
+    .post("/repos/wip/app/check-runs", (createCheckParams) => {
+      t.equal(createCheckParams.status, "completed");
+      t.equal(createCheckParams.conclusion, "success");
+      t.equal(createCheckParams.output.title, "Ready for review");
+
+      return true;
+    })
+    .reply(201, {});
+
+  await app.webhooks.receive({
+    id: "1",
+    ...require("./events/new-pull-request-with-test-title.json"),
+  });
+
+  t.same(mock.activeMocks(), []);
+});
+
 test("loads config from .github repository", async function (t) {
   const mock = nock("https://api.github.com");
   nockAccessToken(mock);
