@@ -28,12 +28,20 @@ export default async (request, response) => {
     return;
   }
 
+  // Read raw body from request stream for signature verification
+  const payload = await new Promise((resolve, reject) => {
+    let data = "";
+    request.on("data", (chunk) => (data += chunk));
+    request.on("end", () => resolve(data));
+    request.on("error", reject);
+  });
+
   try {
     await app.webhooks.verifyAndReceive({
       id: request.headers["x-github-delivery"],
       name: request.headers["x-github-event"],
       signature: request.headers["x-hub-signature-256"],
-      payload: request.body,
+      payload,
     });
 
     response.writeHead(200);
