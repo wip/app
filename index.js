@@ -15,6 +15,7 @@ export default function wip(app, log) {
       "pull_request.labeled",
       "pull_request.unlabeled",
       "pull_request.synchronize",
+      "merge_group.checks_requested",
     ],
     ({ octokit, payload }) =>
       handlePullRequestChange({ app, octokit, payload, log }),
