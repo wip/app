@@ -123,6 +123,61 @@ test('new pull request with "Test" title', async function (t) {
   t.same(mock.activeMocks(), []);
 });
 
+test('merge group with "Test" title', async function (t) {
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
+    // has pro plan
+    .get("/marketplace_listing/accounts/1")
+    .reply(200, {
+      marketplace_purchase: {
+        plan: {
+          price_model: "FLAT_RATE",
+        },
+      },
+    })
+
+    // has no config
+    .get("/repos/wip/app/contents/.github%2Fwip.yml")
+    .reply(404)
+    .get("/repos/wip/.github/contents/.github%2Fwip.yml")
+    .reply(404)
+
+    // List commits on a pull request
+    .get("/repos/wip/app/pulls/1/commits")
+    .reply(200, [])
+
+    // check for current status
+    .get("/repos/wip/app/commits/sha456/check-runs")
+    .query({
+      check_name: "WIP",
+    })
+    .reply(200, { check_runs: [] })
+
+    // create new check run
+    .post("/repos/wip/app/check-runs", (createCheckParams) => {
+      t.equal(createCheckParams.head_sha, "sha456");
+      t.equal(createCheckParams.status, "completed");
+      t.equal(createCheckParams.conclusion, "success");
+
+      return true;
+    })
+    .reply(201, {});
+
+  await app.webhooks
+    .receive({
+      id: "1",
+      ...require("./events/merge-group-checks-requested-with-test-title.json"),
+    })
+    .catch(t.error);
+
+  t.equal(output[0].msg, "✅ wip/app@sha456");
+  t.equal(output[0].event, "merge_group");
+
+  t.same(mock.activeMocks(), []);
+});
+
 test('new pull request with "[WIP] Test" title', async function (t) {
   const mock = nock("https://api.github.com");
   nockAccessToken(mock);

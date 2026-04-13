@@ -86,6 +86,40 @@ test('new pull request with "Test" title', async function (t) {
   t.same(mock.activeMocks(), []);
 });
 
+test('merge group with "Test" title', async function (t) {
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
+    // has no plan
+    .get("/marketplace_listing/accounts/1")
+    .reply(404)
+
+    // check for current status
+    .get("/repos/wip/app/commits/sha456/check-runs")
+    .query({
+      check_name: "WIP",
+    })
+    .reply(200, { check_runs: [] })
+
+    // create new check run
+    .post("/repos/wip/app/check-runs", (createCheckParams) => {
+      t.equal(createCheckParams.head_sha, "sha456");
+      t.equal(createCheckParams.status, "completed");
+      t.equal(createCheckParams.conclusion, "success");
+
+      return true;
+    })
+    .reply(201, {});
+
+  await app.webhooks.receive({
+    id: "1",
+    ...require("./events/merge-group-checks-requested-with-test-title.json"),
+  });
+
+  t.same(mock.activeMocks(), []);
+});
+
 test('new pull request with "[WIP] Test" title', async function (t) {
   const mock = nock("https://api.github.com");
   nockAccessToken(mock);
