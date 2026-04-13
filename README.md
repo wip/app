@@ -56,9 +56,11 @@ You can also configure different terms for different locations:
     - fixup!
     - squash!
   locations: commit_subject
+- terms: "- [ ]"
+  locations: body
 ```
 
-The above configuration looks first for :no_entry: in the pull request title and assigned label names. After that it looks for `fixup!` and `squash!` in the commit subjects.
+The above configuration looks first for :no_entry: in the pull request title and assigned label names. After that it looks for `fixup!` and `squash!` in the commit subjects. Finally, it looks for unchecked checkboxes (`- [ ]`) in the pull request body.
 
 **A Note About Term Matching:**  
 Terms which contain only non-word characters as defined by JS RegExp [^a-za-z0-9_] are matched regardless of word boundaries. Any other terms (which may contain a mix of word and non-word characters will only match when surrounded by start/end OR non-word characters.
