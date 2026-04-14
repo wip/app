@@ -1357,3 +1357,200 @@ test("custom APP_NAME", async function (t) {
 
   t.same(mock.activeMocks(), []);
 });
+
+test('draft pull request with "Test" title', async function (t) {
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
+    // has pro plan
+    .get("/marketplace_listing/accounts/1")
+    .reply(200, {
+      marketplace_purchase: {
+        plan: {
+          price_model: "FLAT_RATE",
+        },
+      },
+    })
+
+    // check for current status
+    .get("/repos/wip/app/commits/sha123/check-runs")
+    .query({
+      check_name: "WIP",
+    })
+    .reply(200, { check_runs: [] })
+
+    // create new check run
+    .post("/repos/wip/app/check-runs", (createCheckParams) => {
+      t.equal(createCheckParams.status, "in_progress");
+      t.equal(createCheckParams.output.title, "draft mode override");
+      t.match(
+        createCheckParams.output.summary,
+        /The pull request is in draft mode/,
+      );
+
+      return true;
+    })
+    .reply(201, {});
+
+  await app.webhooks.receive({
+    id: "1",
+    ...require("./events/new-draft-pull-request-with-test-title.json"),
+  });
+
+  // check resulting logs
+  const logParams = output[0];
+  t.equal(logParams.wip, true);
+  t.equal(logParams.draft, true);
+  t.equal(logParams.change, true);
+  t.equal(logParams.msg, "📝 wip/app#1");
+
+  t.same(mock.activeMocks(), []);
+});
+
+test('draft pull request with "[WIP] Test" title', async function (t) {
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
+    // has pro plan
+    .get("/marketplace_listing/accounts/1")
+    .reply(200, {
+      marketplace_purchase: {
+        plan: {
+          price_model: "FLAT_RATE",
+        },
+      },
+    })
+
+    // check for current status
+    .get("/repos/wip/app/commits/sha123/check-runs")
+    .query({
+      check_name: "WIP",
+    })
+    .reply(200, { check_runs: [] })
+
+    // create new check run
+    .post("/repos/wip/app/check-runs", (createCheckParams) => {
+      t.equal(createCheckParams.status, "in_progress");
+      t.equal(createCheckParams.output.title, "draft mode override");
+
+      return true;
+    })
+    .reply(201, {});
+
+  await app.webhooks.receive({
+    id: "1",
+    ...require("./events/new-draft-pull-request-with-wip-title.json"),
+  });
+
+  // check resulting logs
+  const logParams = output[0];
+  t.equal(logParams.wip, true);
+  t.equal(logParams.draft, true);
+
+  t.same(mock.activeMocks(), []);
+});
+
+test("pull request converted to draft", async function (t) {
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
+    // has pro plan
+    .get("/marketplace_listing/accounts/1")
+    .reply(200, {
+      marketplace_purchase: {
+        plan: {
+          price_model: "FLAT_RATE",
+        },
+      },
+    })
+
+    // check for current status
+    .get("/repos/wip/app/commits/sha123/check-runs")
+    .query({
+      check_name: "WIP",
+    })
+    .reply(200, {
+      check_runs: [
+        {
+          conclusion: "success",
+        },
+      ],
+    })
+
+    // create new check run
+    .post("/repos/wip/app/check-runs", (createCheckParams) => {
+      t.equal(createCheckParams.status, "in_progress");
+      t.equal(createCheckParams.output.title, "draft mode override");
+
+      return true;
+    })
+    .reply(201, {});
+
+  await app.webhooks.receive({
+    id: "1",
+    ...require("./events/pull-request-converted-to-draft.json"),
+  });
+
+  t.same(mock.activeMocks(), []);
+});
+
+test("pull request ready for review", async function (t) {
+  const mock = nock("https://api.github.com");
+  nockAccessToken(mock);
+
+  mock
+    // has pro plan
+    .get("/marketplace_listing/accounts/1")
+    .reply(200, {
+      marketplace_purchase: {
+        plan: {
+          price_model: "FLAT_RATE",
+        },
+      },
+    })
+
+    // has no config
+    .get("/repos/wip/app/contents/.github%2Fwip.yml")
+    .reply(404)
+    .get("/repos/wip/.github/contents/.github%2Fwip.yml")
+    .reply(404)
+
+    // List commits on a pull request
+    .get("/repos/wip/app/pulls/1/commits")
+    .reply(200, [])
+
+    // check for current status
+    .get("/repos/wip/app/commits/sha123/check-runs")
+    .query({
+      check_name: "WIP",
+    })
+    .reply(200, {
+      check_runs: [
+        {
+          output: {
+            title: "draft mode override",
+          },
+        },
+      ],
+    })
+
+    // create new check run
+    .post("/repos/wip/app/check-runs", (createCheckParams) => {
+      t.equal(createCheckParams.status, "completed");
+      t.equal(createCheckParams.conclusion, "success");
+      t.equal(createCheckParams.output.title, "Ready for review");
+
+      return true;
+    })
+    .reply(201, {});
+
+  await app.webhooks.receive({
+    id: "1",
+    ...require("./events/pull-request-ready-for-review.json"),
+  });
+
+  t.same(mock.activeMocks(), []);
+});

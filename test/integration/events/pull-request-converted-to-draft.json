@@ -1,0 +1,32 @@
+{
+  "name": "pull_request",
+  "payload": {
+    "action": "converted_to_draft",
+    "pull_request": {
+      "title": "Test",
+      "number": 1,
+      "draft": true,
+      "head": {
+        "sha": "sha123"
+      },
+      "labels": []
+    },
+    "repository": {
+      "id": 1,
+      "name": "app",
+      "full_name": "wip/app",
+      "private": false,
+      "owner": {
+        "id": 1,
+        "login": "wip",
+        "type": "Organization"
+      }
+    },
+    "organization": {
+      "login": "wip"
+    },
+    "installation": {
+      "id": 1
+    }
+  }
+}

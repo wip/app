@@ -15,6 +15,8 @@ export default function wip(app, log) {
       "pull_request.labeled",
       "pull_request.unlabeled",
       "pull_request.synchronize",
+      "pull_request.converted_to_draft",
+      "pull_request.ready_for_review",
       "merge_group.checks_requested",
     ],
     ({ octokit, payload }) =>
