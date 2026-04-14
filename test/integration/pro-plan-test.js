@@ -123,7 +123,7 @@ test('new pull request with "Test" title', async function (t) {
   t.same(mock.activeMocks(), []);
 });
 
-test('merge group with "Test" title', async function (t) {
+test("merge group checks requested (always passes)", async function (t) {
   const mock = nock("https://api.github.com");
   nockAccessToken(mock);
 
@@ -138,16 +138,6 @@ test('merge group with "Test" title', async function (t) {
       },
     })
 
-    // has no config
-    .get("/repos/wip/app/contents/.github%2Fwip.yml")
-    .reply(404)
-    .get("/repos/wip/.github/contents/.github%2Fwip.yml")
-    .reply(404)
-
-    // List commits on a pull request
-    .get("/repos/wip/app/pulls/1/commits")
-    .reply(200, [])
-
     // check for current status
     .get("/repos/wip/app/commits/sha456/check-runs")
     .query({
@@ -160,6 +150,7 @@ test('merge group with "Test" title', async function (t) {
       t.equal(createCheckParams.head_sha, "sha456");
       t.equal(createCheckParams.status, "completed");
       t.equal(createCheckParams.conclusion, "success");
+      t.equal(createCheckParams.output.title, "Ready for review");
 
       return true;
     })
