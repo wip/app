@@ -31,7 +31,7 @@
     "@vercel/node": "^5.7.5",
     "lodash.clonedeep": "^4.5.0",
     "nock": "^14.0.12",
-    "prettier": "^3.8.2",
+    "prettier": "^3.8.3",
     "simple-mock": "^0.8.0",
     "tap": "^21.6.3"
   },
