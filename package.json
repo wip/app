@@ -30,7 +30,7 @@
     "@sinonjs/fake-timers": "^15.3.2",
     "@vercel/node": "^5.7.11",
     "lodash.clonedeep": "^4.5.0",
-    "nock": "^14.0.12",
+    "nock": "^14.0.13",
     "prettier": "^3.8.3",
     "simple-mock": "^0.8.0",
     "tap": "^21.7.1"
