@@ -27,7 +27,7 @@
     "pino": "^10.3.1"
   },
   "devDependencies": {
-    "@sinonjs/fake-timers": "^15.3.2",
+    "@sinonjs/fake-timers": "^15.4.0",
     "@vercel/node": "^5.7.15",
     "lodash.clonedeep": "^4.5.0",
     "nock": "^14.0.14",
