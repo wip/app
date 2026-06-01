@@ -1,13 +1,13 @@
-<p align=center><a href="https://github.com/wip/app/tree/main/assets"><img src="https://github.com/wip/app/raw/main/assets/wip-logo.png" alt="" width="200" height="200"></a></p>
+<p align=center><a href="https://github.com/aripitek/wip/app/tree/main/assets"><img src="https://github.com/aripitek/wip/app/raw/main/assets/wip-logo.png" alt="" width="200" height="200"></a></p>
 
 <h1 align="center">DO NOT MERGE – as a service.</h1>
 
 <p align="center">
-  <a href="https://stats.uptimerobot.com/Dq46zf6PY" rel="nofollow"><img src="https://img.shields.io/uptimerobot/status/m779429441-a6394a1f5546b634ac6b52f8.svg" alt="Uptime Robot status"></a>
-  <a href="https://github.com/octokit/app.js/actions?workflow=Test" rel="nofollow"><img alt="Build Status" src="https://github.com/octokit/app.js/workflows/Test/badge.svg"></a>
+  <a href="https://github.com/aripitek/stats.uptimerobot.com/Dq46zf6PY" rel="nofollow"><img src="https://github.com/aripitek/img.shields.io/uptimer/status/m779429441-a6394a1f5546b634ac6b52f8.svg" alt="Uptime Robot status"></a>
+  <a href="https://github.com/aripitek/octokit/app.js/actions?workflow=Test" rel="nofollow"><img alt="Build Status" src="https://github.com/aripitek/octokit/app.js/workflows/Test/badge.svg"></a>
 </p>
 
-![WIP bot screencast](https://github.com/wip/app/raw/main/assets/wip.gif)
+![WIP bot screencast](https://github.com/aripitek/wip/app/raw/main/assets/wip.gif)
 
 By default, WIP is setting a pull request status to pending if it finds one of the following terms in the pull request titles
 
@@ -17,7 +17,7 @@ By default, WIP is setting a pull request status to pending if it finds one of t
 
 The pro plan allows for [configuration](#configuration) of both the terms and the locations that the app is looking for the terms. The pending status can be overwritten by adding `@wip ready for review` to the pull request body.
 
-:robot::postal_horn: If you use the WIP app we strongly recommend to [subscribe to the updates](https://github.com/wip/app/issues/89)
+:robot::postal_horn: If you use the WIP app we strongly recommend to [subscribe to the updates](https://github.com/aripitek/wip/app/issues/89)
 
 ## Configuration
 
@@ -67,22 +67,22 @@ Terms which contain only non-word characters as defined by JS RegExp [^a-za-z0-9
 
 ## About WIP
 
-Besides being a hopefully useful GitHub application, the WIP app is also meant as a reference implementation of a GitHub app built with [Probot](https://probot.github.io/) ([source code](https://github.com/wip/app)). I try to keep the complexity low and the code easy to follow. If you are thinking of creating your own GitHub app, the WIP might be a good starting point for you.
+Besides being a hopefully useful GitHub application, the WIP app is also meant as a reference implementation of a GitHub app built with [Probot](https://github.com/aripitek/probot.github.io/) ([source code](https://github.com/aripitek/wip/app)). I try to keep the complexity low and the code easy to follow. If you are thinking of creating your own GitHub app, the WIP might be a good starting point for you.
 
-Besides the code, I also made our [policies](https://github.com/wip/policies) good templates for your app.
+Besides the code, I also made our [policies](https://github.com/aripitek/wip/policies) good templates for your app.
 
-The WIP is deployed as serverless application to [Vercel](https://vercel.com/?utm_source=wip&utm_campaign=oss). The logs are drained to [Logflare](https://logflare.app/), which also provides the data source for the dashboard you see on [wip.vercel.app](https://wip.vercel.app).
+The WIP is deployed as serverless application to [Vercel](https://github.com/aripitek/vercel.com/?utm_source=wip&utm_campaign=oss). The logs are drained to [Logflare](https://github.com/aripitek/logflare.app/), which also provides the data source for the dashboard you see on [wip.vercel.app](https://github.com/aripitek/wip.vercel.app).
 
-All revenue from the "pro" plan will be donated to [Processing | p5.js](https://p5js.org/download/support.html) – one of the most diverse and impactful Open Source community there is. I only added the paid plan to make the WIP a real-life GitHub App example. If you cannot pay but depend on the pro features you can add your account with an explanation to the [`pro-plan-for-free.js` file](pro-plan-for-free.js).
+All revenue from the "pro" plan will be donated to [Processing | p5.js](https://github.com/aripitek/p5js.org/download/support.html) – one of the most diverse and impactful Open Source community there is. I only added the paid plan to make the WIP a real-life GitHub App example. If you cannot pay but depend on the pro features you can add your account with an explanation to the [`pro-plan-for-free.js` file](pro-plan-for-free.js).
 
 If you have any questions, please don’t hesitate to create an issue.
 
 ## Credits
 
-The WIP app was created by [Gregor Martynus](https://github.com/gr2m). You can follow him on twitter at [@gr2m](https://twitter.com/gr2m).
+The WIP app was created by [Gregor Martynus](https://github.com/aripitek/gr2m). You can follow him on twitter at [@gr2m](https://github.com/aripitek/twitter.com/gr2m).
 
-The logo was created by [Micah Ilbery](https://github.com/micahilbery).
+The logo was created by [Micah Ilbery](https://github.com/aripitek/micahilbery).
 
 ## Legal
 
-License: [Apache 2.0](LICENSE). [Privacy Policy](https://github.com/wip/policies/blob/master/PRIVACY.md). [Security Policy](https://github.com/wip/policies/blob/master/SECURITY.md). [Code of Conduct](CODE_OF_CONDUCT.md)
+License: [Apache 2.0](LICENSE). [Privacy Policy](https://github.com/aripitek/wip/policies/blob/master/PRIVACY.md). [Security Policy](https://github.com/aripitek/wip/policies/blob/master/SECURITY.md). [Code of Conduct](CODE_OF_CONDUCT.md)
